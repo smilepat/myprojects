@@ -2,10 +2,12 @@
 
 ## 1️⃣ 학습자 진단 (Diagnosis) — "지금 내 수준 정확히 알기"
 
-### 어휘 수준 진단
-- **vocab-cat-test**의 IRT(문항반응이론) 엔진으로 **15~20문항만에 9,000단어 중 학습자 어휘 수준 정밀 측정** 가능
-- 단순 "맞춤/틀림"이 아닌 **CEFR (A1~C2) / Lexile / 수능 레벨** 다중 좌표로 위치 파악
-- "이 학생은 B1+ 수준인데 추상 어휘에서 약하다" 같은 **세부 약점 자동 추출**
+### 어휘 수준 진단 (vocab-cat-test)
+- **IRT 2PL + Fisher Information 알고리즘**으로 **15~40문항만에 100문항 고정형 수준의 정확도** 달성
+- 9,183개 단어 × 58개 메타데이터 컬럼 기반 → 단순 "맞춤/틀림"이 아닌 **CEFR A1~C1 확률 분포** 자동 산출
+- **5차원 분석 영역**: 의미(Meaning) · 관계(Relation) · 맥락(Context) · 형태(Form) · 화용(Pragmatic)
+- "이 학생은 B1+ 수준인데 추상 어휘·연어(collocation)에서 약하다" 같은 **세부 약점 자동 추출**
+- **기술 스택**: Python 3.13 + FastAPI + NumPy/SciPy (Backend), React 19 + TypeScript + Vite (Frontend), PostgreSQL/SQLite + Alembic, Docker + Cloud Run/Vercel 배포 — **162개 테스트 100% pass**
 
 ### 리딩 수준 진단
 - **level-test-pat**: 초등~유학 6단계 적응형 진단 → 어떤 텍스트 난이도부터 시작해야 할지 결정

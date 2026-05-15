@@ -46,7 +46,7 @@
 |---------|------------|
 | **[ontology-english-learning-solution](https://github.com/smilepat/ontology-english-learning-solution)** | LogicFlow 메인 구현체 |
 | **efl-reading-trainer** ([Live](https://efl-reading-trainer.vercel.app)) | 문법번역식 EFL 학습자 → 읽기 과정 훈련 (4 스킬 모듈) |
-| **[vocab-cat-test](https://github.com/smilepat/vocab-cat-test)** | IRT 기반 적응형 어휘 진단 |
+| **[vocab-cat-test](https://github.com/smilepat/vocab-cat-test)** | IRT 2PL + Fisher Information 기반 적응형 어휘 진단 (Python/FastAPI + React 19, 162 tests pass) — 5차원 분석 + CEFR A1~C1 자동 매핑, 15~40문항으로 100문항급 정확도 |
 | **[level-test-pat](https://github.com/smilepat/level-test-pat)** | 6단계 적응형 영어 레벨 테스트 (초~유학) |
 | **[vocab-learn-pat](https://github.com/smilepat/vocab-learn-pat)** | 5D Learning Engine — 137,745 학습문항 |
 | **[hotelier-english](https://github.com/smilepat/hotelier-english)** | 호텔리어 영어 응대 훈련 |
