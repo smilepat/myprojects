@@ -15,6 +15,8 @@ footer: "수능 1등급까지의 거리, 계량화하다"
 
 ---
 
+<!-- _class: layout-section -->
+
 # 1 │ 교육과정과 수능영어수준의 격차
 
 > *교과과정의 약속*과 *수능이 요구하는 능력* 사이에는 **수학적·구조적 갭**이 존재한다.
@@ -113,18 +115,57 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 1-G. 교육과정 vs CEFR — **학년별 도달 갭** 매트릭스
 
-```mermaid
-xychart-beta
-    title "한국 교육과정 목표 CEFR vs 실제 도달 (학년별, 1=A1·2=A2·3=B1·4=B2)"
-    x-axis ["초3-4","초5-6","중1","중2-3","고1","고2-3"]
-    y-axis "CEFR 단계" 0 --> 5
-    line [1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
-    line [0.8, 1.0, 1.5, 2.0, 2.0, 2.5]
+```echarts h=480
+{
+  "title": { "text": "한국 교육과정 목표 CEFR vs 실제 도달 (학년별)", "subtext": "1=A1 · 2=A2 · 3=B1 · 4=B2", "left": "center", "top": 8 },
+  "legend": { "data": ["목표 CEFR", "실제 도달"], "bottom": 8 },
+  "grid": { "left": 60, "right": 32, "top": 70, "bottom": 60, "containLabel": true },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["초3-4","초5-6","중1","중2-3","고1","고2-3"],
+    "axisLabel": { "fontWeight": 600 }
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "CEFR 단계",
+    "min": 0, "max": 4,
+    "interval": 1,
+    "axisLabel": {
+      "formatter": "{value}"
+    }
+  },
+  "series": [
+    {
+      "name": "목표 CEFR", "type": "line",
+      "data": [1.0, 1.5, 2.0, 2.5, 3.0, 3.5],
+      "smooth": true, "symbol": "circle", "symbolSize": 9,
+      "lineStyle": { "width": 3, "color": "#2563eb" },
+      "itemStyle": { "color": "#2563eb" },
+      "areaStyle": { "color": "rgba(37, 99, 235, 0.10)" }
+    },
+    {
+      "name": "실제 도달", "type": "line",
+      "data": [0.8, 1.0, 1.5, 2.0, 2.0, 2.5],
+      "smooth": true, "symbol": "circle", "symbolSize": 9,
+      "lineStyle": { "width": 3, "color": "#ef4444" },
+      "itemStyle": { "color": "#ef4444" },
+      "areaStyle": { "color": "rgba(239, 68, 68, 0.10)" },
+      "markArea": {
+        "silent": true,
+        "itemStyle": { "color": "rgba(239, 68, 68, 0.06)" },
+        "data": [[{ "xAxis": "고2-3" }, { "xAxis": "고2-3" }]]
+      }
+    }
+  ]
+}
 ```
 
-상단(목표) vs 하단(실제) — 모든 학년에서 **목표 미달** + 고2–3에서 **격차 최대 1단계**.
+목표 vs 실제 — 모든 학년에서 **목표 미달** + 고2–3에서 **격차 최대 1단계**.
 
 | 학교급 | 학년 | 한국 목표 | CEFR | **실제 도달 (다수)** |
 |---|---|---|---|---|
@@ -183,6 +224,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-section -->
+
 # 2 │ 학습자의 역량과 시험 문항 해결력의 괴리
 
 > 수능 영어를 푼다는 건 **12개 micro-skill의 조합 동작**이다.
@@ -191,18 +234,38 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 2-A. 12 micro-skill: 1등급 목표 vs 교과과정 도달 추정
 
-```mermaid
-xychart-beta
-    title "수능 1등급 목표 (GRADE1_TARGETS, 실측) vs 교과과정 도달 (추정)"
-    x-axis ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"]
-    y-axis "마스터리 (0–100)" 0 --> 100
-    bar [85,80,80,75,80,85,80,75,90,85,80,80]
-    bar [65,60,55,50,50,45,40,45,55,35,40,35]
+```echarts h=500
+{
+  "title": { "text": "수능 1등급 목표 (실측) vs 교과과정 도달 (추정)", "left": "center", "top": 8 },
+  "legend": { "data": ["1등급 목표", "교과과정 도달 (추정)"], "bottom": 8 },
+  "grid": { "left": 56, "right": 32, "top": 56, "bottom": 60, "containLabel": true },
+  "xAxis": {
+    "type": "category",
+    "data": ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"],
+    "axisLabel": { "fontWeight": 600 }
+  },
+  "yAxis": { "type": "value", "name": "마스터리 (0–100)", "max": 100, "min": 0, "nameGap": 18 },
+  "series": [
+    {
+      "name": "1등급 목표", "type": "bar",
+      "data": [85,80,80,75,80,85,80,75,90,85,80,80],
+      "itemStyle": { "color": "#2563eb", "borderRadius": [4,4,0,0] },
+      "barGap": "10%"
+    },
+    {
+      "name": "교과과정 도달 (추정)", "type": "bar",
+      "data": [65,60,55,50,50,45,40,45,55,35,40,35],
+      "itemStyle": { "color": "#f59e0b", "borderRadius": [4,4,0,0] }
+    }
+  ]
+}
 ```
 
-- **상단 막대 (실측):** `csat-text-graph-maker/src/lib/logicflow/micro-skills.ts` `GRADE1_TARGETS` 정규치
+- **파란 막대 (실측):** `csat-text-graph-maker/src/lib/logicflow/micro-skills.ts` `GRADE1_TARGETS` 정규치
 - **하단 막대 (추정):** 정성적 진단에서 역추정한 *placeholder*. production 학습자 코호트(n≥30) 형성 후 실측 교체 예정 — 트리거 조건은 [Plan §8.4](docs/01-plan/features/slides-cohort-replacement.plan.md) 참조
 - **Layer 평균 갭 (추정 기준):** A −22.5 → B −35.0 → **C −42.5** (상위 인지로 갈수록 갭 단조 증가)
 
@@ -253,91 +316,110 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 2-D. 19 수능 유형 ↔ 12 skill 풀 매핑 그래프
 
-```mermaid
-graph LR
-    subgraph 유형["📝 19 수능 유형"]
-        direction TB
-        T1["빈칸추론"]:::rc
-        T2["순서배열"]:::rc
-        T3["문장삽입"]:::rc
-        T4["무관문장"]:::rc
-        T5["주제·제목"]:::rc
-        T6["요지·요약"]:::rc
-        T7["함의추론"]:::rc
-        T8["어법"]:::gr
-        T9["어휘선택"]:::lex
-        T10["내용일치"]:::rc
-        T11["장문"]:::rc
-        T12["기타<br/>(공지·도표·심경·필자의도)"]:::misc
-    end
-    subgraph skill["🎯 12 micro-skill"]
-        direction TB
-        S_A01["A-01<br/>어휘"]:::a
-        S_A02["A-02<br/>구문"]:::a
-        S_A03["A-03<br/>절경계"]:::a
-        S_B01["B-01<br/>지시추적<br/>★ 8/19"]:::b_strong
-        S_B02["B-02<br/>논리전환<br/>★ 7/19"]:::b_strong
-        S_B03["B-03<br/>패러프레이즈<br/>★ 7/19"]:::b_strong
-        S_B04["B-04<br/>어휘연쇄"]:::b
-        S_C01["C-01<br/>주제도출<br/>★ 7/19"]:::c_strong
-        S_C02["C-02<br/>암묵추론"]:::c
-        S_C03["C-03<br/>필자의도"]:::c
-        S_C04["C-04<br/>논증구조"]:::c
-    end
+```echarts w=960 h=560
+{
+  "title": { "text": "19 수능 유형 → 12 micro-skill 매핑 (Sankey)", "left": "center", "top": 6 },
+  "tooltip": { "trigger": "item", "triggerOn": "mousemove" },
+  "series": [{
+    "type": "sankey",
+    "left": 24, "right": 24, "top": 44, "bottom": 12,
+    "nodeWidth": 18, "nodeGap": 8,
+    "lineStyle": { "color": "gradient", "curveness": 0.5 },
+    "label": { "fontFamily": "'Pretendard Variable', sans-serif", "fontSize": 12, "fontWeight": 600, "color": "#0f172a" },
+    "emphasis": { "focus": "adjacency" },
+    "nodes": [
+      { "name": "빈칸추론",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "순서배열",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "문장삽입",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "무관문장",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "주제·제목",  "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "요지·요약",  "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "함의추론",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "어법",       "itemStyle": { "color": "#ca8a04" } },
+      { "name": "어휘선택",   "itemStyle": { "color": "#16a34a" } },
+      { "name": "내용일치",   "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "장문",       "itemStyle": { "color": "#0ea5e9" } },
+      { "name": "기타",       "itemStyle": { "color": "#9333ea" } },
 
-    T1 ==> S_C02
-    T1 ==> S_B03
-    T2 ==> S_B02
-    T2 ==> S_B04
-    T3 ==> S_B02
-    T3 ==> S_B01
-    T4 ==> S_C01
-    T4 ==> S_B02
-    T5 ==> S_C01
-    T6 ==> S_C01
-    T6 ==> S_C03
-    T7 ==> S_C02
-    T8 ==> S_A02
-    T8 ==> S_A03
-    T9 ==> S_A01
-    T10 ==> S_B03
-    T10 ==> S_B01
-    T11 ==> S_C01
-    T11 ==> S_C02
-    T12 -.-> S_C03
-    T12 -.-> S_A01
-
-    classDef rc fill:#e0f2fe,stroke:#0284c7
-    classDef gr fill:#fef3c7,stroke:#ca8a04
-    classDef lex fill:#dcfce7,stroke:#16a34a
-    classDef misc fill:#f3e8ff,stroke:#9333ea
-    classDef a fill:#fef9c3,stroke:#a16207
-    classDef b fill:#dbeafe,stroke:#1d4ed8
-    classDef b_strong fill:#bfdbfe,stroke:#1e40af,stroke-width:3px
-    classDef c fill:#fce7f3,stroke:#be185d
-    classDef c_strong fill:#fbcfe8,stroke:#9d174d,stroke-width:3px
+      { "name": "A-01 어휘",            "itemStyle": { "color": "#eab308" } },
+      { "name": "A-02 구문",            "itemStyle": { "color": "#eab308" } },
+      { "name": "A-03 절경계",          "itemStyle": { "color": "#eab308" } },
+      { "name": "B-01 지시추적 ★",      "itemStyle": { "color": "#1e40af" } },
+      { "name": "B-02 논리전환 ★",      "itemStyle": { "color": "#1e40af" } },
+      { "name": "B-03 패러프레이즈 ★",  "itemStyle": { "color": "#1e40af" } },
+      { "name": "B-04 어휘연쇄",        "itemStyle": { "color": "#3b82f6" } },
+      { "name": "C-01 주제도출 ★",      "itemStyle": { "color": "#9d174d" } },
+      { "name": "C-02 암묵추론",        "itemStyle": { "color": "#ec4899" } },
+      { "name": "C-03 필자의도",        "itemStyle": { "color": "#ec4899" } },
+      { "name": "C-04 논증구조",        "itemStyle": { "color": "#ec4899" } }
+    ],
+    "links": [
+      { "source": "빈칸추론",  "target": "C-02 암묵추론",        "value": 2 },
+      { "source": "빈칸추론",  "target": "B-03 패러프레이즈 ★",  "value": 2 },
+      { "source": "순서배열",  "target": "B-02 논리전환 ★",      "value": 2 },
+      { "source": "순서배열",  "target": "B-04 어휘연쇄",        "value": 2 },
+      { "source": "문장삽입",  "target": "B-02 논리전환 ★",      "value": 2 },
+      { "source": "문장삽입",  "target": "B-01 지시추적 ★",      "value": 2 },
+      { "source": "무관문장",  "target": "C-01 주제도출 ★",      "value": 2 },
+      { "source": "무관문장",  "target": "B-02 논리전환 ★",      "value": 2 },
+      { "source": "주제·제목", "target": "C-01 주제도출 ★",      "value": 2 },
+      { "source": "요지·요약", "target": "C-01 주제도출 ★",      "value": 2 },
+      { "source": "요지·요약", "target": "C-03 필자의도",        "value": 2 },
+      { "source": "함의추론",  "target": "C-02 암묵추론",        "value": 2 },
+      { "source": "어법",      "target": "A-02 구문",            "value": 2 },
+      { "source": "어법",      "target": "A-03 절경계",          "value": 2 },
+      { "source": "어휘선택",  "target": "A-01 어휘",            "value": 2 },
+      { "source": "내용일치",  "target": "B-03 패러프레이즈 ★",  "value": 2 },
+      { "source": "내용일치",  "target": "B-01 지시추적 ★",      "value": 2 },
+      { "source": "장문",      "target": "C-01 주제도출 ★",      "value": 2 },
+      { "source": "장문",      "target": "C-02 암묵추론",        "value": 2 },
+      { "source": "기타",      "target": "C-03 필자의도",        "value": 1, "lineStyle": { "opacity": 0.35 } },
+      { "source": "기타",      "target": "A-01 어휘",            "value": 1, "lineStyle": { "opacity": 0.35 } }
+    ]
+  }]
+}
 ```
 
-굵은 화살표 = **Primary** 의존. 점선 = secondary. **굵은 테두리 노드 = 영향력 ★ 표시 skill**.
+좌(19 수능 유형) → 우(12 micro-skill). 흐름의 두께 = Primary(굵음) vs Secondary(반투명). **★ skill** 4개(B-01·B-02·B-03·C-01)가 가장 많은 유형을 수렴.
 
 > 출처: `csat-text-graph-maker/.../micro-skills.ts` `QUESTION_TYPE_SKILL_MAP` 전수.
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 2-E. Performance Descriptor 5축 — 목표 vs 고2 실측
 
-```mermaid
-xychart-beta
-    title "한국교육과정평가원 Performance Descriptor 5축 — 목표 vs 고2 실측"
-    x-axis ["문법 정확성","어휘 다양성","논리 구성력","창의성","맥락 적절성"]
-    y-axis "성취도 (0–100)" 0 --> 100
-    bar [80, 75, 70, 65, 75]
-    bar [35, 25, 20, 15, 5]
+```echarts h=520
+{
+  "title": { "text": "한국교육과정평가원 Performance Descriptor 5축 — 목표 vs 고2 실측", "left": "center", "top": 8 },
+  "legend": { "data": ["목표", "고2 실측"], "bottom": 8 },
+  "radar": {
+    "indicator": [
+      { "name": "문법 정확성", "max": 100 },
+      { "name": "어휘 다양성", "max": 100 },
+      { "name": "논리 구성력", "max": 100 },
+      { "name": "창의성",     "max": 100 },
+      { "name": "맥락 적절성", "max": 100 }
+    ],
+    "radius": "62%",
+    "center": ["50%", "54%"]
+  },
+  "series": [{
+    "type": "radar",
+    "data": [
+      { "name": "목표",     "value": [80, 75, 70, 65, 75], "areaStyle": { "color": "rgba(37, 99, 235, 0.18)" }, "lineStyle": { "width": 2 }, "symbolSize": 6 },
+      { "name": "고2 실측", "value": [35, 25, 20, 15, 5],  "areaStyle": { "color": "rgba(239, 68, 68, 0.20)" }, "lineStyle": { "width": 2 }, "symbolSize": 6 }
+    ]
+  }]
+}
 ```
 
-상단(목표) vs 하단(고2 실측) — 모든 축에서 **목표의 ½ 미만**. 특히 **맥락 적절성 5점**(목표 75)으로 **D5 전략 차원의 사각지대**가 외부 출처에서도 확인됨.
+5축 모두에서 **목표의 ½ 미만**. 특히 **맥락 적절성 5점**(목표 75)으로 **D5 전략 차원의 사각지대**가 외부 출처에서도 확인됨.
 
 | 축 | 목표 | 고2 실측 | 갭 |
 |---|---:|---:|---:|
@@ -368,6 +450,8 @@ pie showData
 > 출처: `Korea_English_Solution/components/charts.tsx::PieChart`, 2022–2023 영어교육 실태조사.
 
 ---
+
+<!-- _class: layout-section -->
 
 # 3 │ 해결책 — 학습자의 역량 진단
 
@@ -461,6 +545,8 @@ gantt
 > 출처: `md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md`.
 
 ---
+
+<!-- _class: layout-section -->
 
 # 4 │ 목표까지의 거리와 로드맵
 
@@ -588,6 +674,8 @@ def calculate_required_time(current_level, target_level):
 > 출처: `Korea_English_Solution/components/personalized-roadmap.tsx`.
 
 ---
+
+<!-- _class: layout-section -->
 
 # 5 │ 계량화된 기반의 학습 경험 제공
 
@@ -730,24 +818,50 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-section -->
+
 # 6 │ 눈에 보이는 progress
 
 > 진단·학습·재진단의 닫힌 루프 → **점수가 아닌 좌표의 이동**으로 성장을 본다.
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 6-A. Before / After — 12 skill 좌표 이동 (예시·추정)
 
-```mermaid
-xychart-beta
-    title "8주 학습 후 12 micro-skill 좌표 이동 (예시 학습자 · 추정값)"
-    x-axis ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"]
-    y-axis "마스터리 (0–100)" 0 --> 100
-    bar [65,60,55,50,50,45,40,45,55,35,40,35]
-    bar [78,75,72,68,72,72,68,68,75,62,65,62]
+```echarts h=500
+{
+  "title": { "text": "8주 학습 후 12 micro-skill 좌표 이동 (예시 학습자 · 추정값)", "left": "center", "top": 8 },
+  "legend": { "data": ["Before (W0)", "After (W8)"], "bottom": 8 },
+  "grid": { "left": 56, "right": 32, "top": 56, "bottom": 60, "containLabel": true },
+  "xAxis": {
+    "type": "category",
+    "data": ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"],
+    "axisLabel": { "fontWeight": 600 }
+  },
+  "yAxis": { "type": "value", "name": "마스터리 (0–100)", "max": 100, "min": 0, "nameGap": 18 },
+  "series": [
+    {
+      "name": "Before (W0)", "type": "bar",
+      "data": [65,60,55,50,50,45,40,45,55,35,40,35],
+      "itemStyle": { "color": "#94a3b8", "borderRadius": [4,4,0,0] },
+      "barGap": "10%"
+    },
+    {
+      "name": "After (W8)", "type": "bar",
+      "data": [78,75,72,68,72,72,68,68,75,62,65,62],
+      "itemStyle": { "color": "#10b981", "borderRadius": [4,4,0,0] },
+      "label": {
+        "show": true, "position": "top", "color": "#10b981", "fontSize": 11, "fontWeight": 600,
+        "formatter": "+{@score}"
+      }
+    }
+  ]
+}
 ```
 
-> ⚠️ **추정값**: 상단(Before)·하단(After) 모두 정성적 진단 기반의 예시 학습자 시나리오. 실제 production 코호트(개입 전 첫 진단 vs 8주 경과 재진단의 페어드 평균, n≥30)로 교체 예정 — 트리거 조건은 [Plan §8.4](docs/01-plan/features/slides-cohort-replacement.plan.md) 참조.
+> ⚠️ **추정값**: Before·After 모두 정성적 진단 기반의 예시 학습자 시나리오. 실제 production 코호트(개입 전 첫 진단 vs 8주 경과 재진단의 페어드 평균, n≥30)로 교체 예정 — 트리거 조건은 [Plan §8.4](docs/01-plan/features/slides-cohort-replacement.plan.md) 참조.
 
 **의미 설명:** B-03 패러프레이즈 40→68 (+28)의 효과로 빈칸·요지·내용일치 유형이 일제히 상승하는 *메커니즘*은 `QUESTION_TYPE_SKILL_MAP`이 보장(실측).
 
@@ -808,6 +922,8 @@ flowchart LR
 **모트(Moat):** 풀이 로그가 쌓일수록 b·a 파라미터가 한국 학습자에 맞춰 재조정됨 → **데이터 네트워크 효과**.
 
 ---
+
+<!-- _class: layout-section -->
 
 # 7 │ 시장·비즈니스 (Investor section)
 

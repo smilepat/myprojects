@@ -1,0 +1,13 @@
+{
+  "name": "et-craft-slides-build",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build pipeline for SLIDES_GAP_TO_PROGRESS.md → self-contained Reveal.js HTML",
+  "scripts": {
+    "build": "node build_revealjs.js"
+  },
+  "dependencies": {
+    "echarts": "^5.5.1",
+    "jsdom": "^25.0.1"
+  }
+}
