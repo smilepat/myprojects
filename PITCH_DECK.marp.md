@@ -1,0 +1,322 @@
+---
+marp: true
+theme: default
+class: invert
+paginate: false
+size: 16:9
+style: |
+  section {
+    font-family: 'Pretendard', 'SF Pro Display', -apple-system, sans-serif;
+    background: #000;
+    color: #fff;
+    padding: 80px;
+  }
+  h1 {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: 44px;
+    font-weight: 600;
+  }
+  .big {
+    font-size: 120px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .red { color: #FF3B30; }
+  .muted { color: #8E8E93; font-size: 28px; }
+  ul { font-size: 32px; line-height: 1.6; }
+  table { font-size: 28px; }
+  footer { color: #48484A; font-size: 16px; }
+---
+
+<!-- _class: invert -->
+
+# 공교육 영어,
+# <span class="red">다시 설계합니다.</span>
+
+<br>
+
+## Apple 생태계 협업 제안
+### 한국 EFL EdTech 콘텐츠 파트너십 전략 공유
+
+<br><br>
+
+<span class="muted">2026.05 · LogicFlow · eltkorea@gmail.com</span>
+
+---
+
+## The Problem
+
+# 성취목표 도달
+# <span class="red">30%.</span>
+
+<br>
+
+<span class="muted">국가 영어 교육과정 성취목표에 도달한 학생은 10명 중 3명.<br>
+나머지 7명이 어디서, 왜 막혔는지 — 시스템은 알지 못한다.</span>
+
+---
+
+## Why Current Approach Fails
+
+# 시험은 결과만 본다.
+# <span class="red">12년의 흔적</span>은
+# 본 적이 없다.
+
+<br>
+
+- **스냅샷 평가** — 시험은 그 순간만 본다. 그 사이 흐름은 사라진다.
+- **늦은 발견** — 학기말에 알게 되면, 이미 다음 단원에 들어가 있다.
+- **같은 처방** — 한 반 30명에게 같은 교재. 다른 환자, 같은 약.
+
+---
+
+## The Solution
+
+# 초1부터 고3 수능까지,
+# 단 한 줄의
+# <span class="red">학습 궤적.</span>
+
+<br>
+
+- **Trajectory 관측** — 매 단원·매 문제·매 발음을 12년 누적 기록
+- **데이터 기반 약점 탐지** — 어디서 막혔는지 실시간 신호
+- **맞춤 콘텐츠·경험** — 그 학생에게 지금 필요한 것을, 그 시점에
+
+---
+
+## Our Promise #1
+
+# 파닉스부터 대입까지,
+# <span class="red">하나의 데이터</span>로
+# 이어진다.
+
+<br>
+
+- **스킬별 정밀 진단** — AI가 어휘·리딩·발음·논리까지 차원별로 측정
+- **계량화 학습 경로** — 모든 학습 행동이 수치로 변환되어 다음 단계가 자동 결정
+- **단일 앱 생태계** — 파닉스 → 사이트워드 → 정독 → 수능까지 한 계정·한 데이터·한 흐름
+
+---
+
+## Our Promise #2
+
+# 어디서 태어났든,
+# <span class="red">같은 출발선.</span>
+
+<br>
+
+<span class="muted">대한민국 영어 격차는 지역·소득에 따라 최대 4등급 차이.<br>
+이 시스템은 그 격차를 좁히기 위해 설계된다.</span>
+
+<br>
+
+- **차등화 학습 모듈** — 시작 수준·학습 속도·디바이스 환경별 자동 분기
+- **저자원 환경 대응** — 오프라인 모드 · 저사양 단말 · 데이터 절감 패키지
+- **모두에게 같은 AI 코치** — 강원도 농촌 초등생도, 강남 고3도 동일 진단 좌표
+
+---
+
+## The Spine
+
+# K-12 전체를 잇는
+# 7개 정거장.
+
+<br>
+
+| Stage | 연령 | CEFR | 핵심 모듈 |
+|-------|------|------|----------|
+| S1 Phonics | 5–7세 | Pre-A1 | 44 phonemes |
+| S2 Sight Words | 7–9세 | A1 | Dolch 220 |
+| S3 Early Reading | 초3–4 | A1–A2 | 기초 어휘 |
+| S4 Intermediate | 초5–중1 | A2–B1 | 5D 어휘 |
+| S5 Advanced | 중2–3 | B1–B2 | 4-layer 리딩 |
+| S6 CSAT Foundation | 고1–2 | B2 | 기출 D1→D3 |
+| S7 CSAT Mastery | 고3 | B2–C1 | IRT 적응형 |
+
+---
+
+## Capability #1 — Phonics
+
+# 5살이 알파벳을 발음하면,
+# AI는 <span class="red">음소</span>를 본다.
+
+<br>
+
+<span class="muted">[15초 라이브 데모 — 온디바이스 음소 평가]</span>
+
+<br>
+
+- "rabbit" 발음 → /r/ 음소 정확도 측정
+- 한국 EFL 약점 /r/–/l/ 자동 추천
+- 첫 학습 기록 = 12년 trajectory의 시작점
+
+---
+
+## Capability #2 — Trajectory Detection
+
+# 15문항 시험이 아닌,
+# <span class="red">12년 누적 좌표.</span>
+
+<br>
+
+<span class="muted">[IRT 진단 + 누적 학습 로그 → 현재 위치 + 다음 단계 자동 결정]</span>
+
+<br>
+
+- **현재 좌표** — B1+ · 어휘 5,200 · 약점=추상어휘
+- **Trajectory** — 지난 3년 학습 곡선 시각화
+- **Prescription** — 다음 4주 학습 자동 큐레이션
+
+---
+
+## The Engine
+
+# 47개 데이터·AI 자산을
+# <span class="red">하나의 궤적</span>으로.
+
+<br>
+
+- 🟦 **Data** — 9,000 단어 · 565 수능 지문 · 12,849 문장 · 12년 학습 로그
+- 🟩 **AI** — IRT · semantic_link_analyzer · copyright-cleansing
+- 🟨 **App** — Phonics → CSAT Mastery 단일 셸
+
+<br>
+
+<span class="muted">4년 누적 — 0에서 시작이 아닙니다.</span>
+
+---
+
+## Already in the Field
+
+# 현장에서 검증된
+# <span class="red">3가지 배포 방식.</span>
+
+<br>
+
+- **온디바이스 임베디드** — 학교 단말 내장형, 오프라인 환경 운영 검증 완료
+- **교육청 플랫폼 통합** — 지역 교육청 LMS에 모듈 제공, 강원도 베타 운영
+- **APK 직접 배포** — 학원·개별 학습자, 누적 사용자 데이터 확보
+
+<br>
+
+<span class="muted">파편화된 셋을, 이제 하나의 생태계로.</span>
+
+---
+
+## Why Apple, Why Now
+
+# 애플이 한국 공교육에
+# <span class="red">들어오는 5년.</span>
+
+<br>
+
+- **iPad 1인 1기기** — 디지털 교과서 2025 본격 도입
+- **Apple Intelligence** — 한국어 정식 출시, 온디바이스 LLM
+- **Apple School Manager** — 시도 교육청 도입 가속
+- **iPadOS Pencil + 음성** — 쓰기·말하기 평가 네이티브 지원
+
+<br>
+
+<span class="muted">2026–2030 — 정책·기술·디바이스가 동시에 정렬되는 단 한 번의 창.</span>
+
+---
+
+## The Conversion Plan
+
+# 파편화된 셋 →
+# <span class="red">통합 앱 생태계.</span>
+
+<br>
+
+| 현재 (분산) | 전환 후 (통합) |
+|------------|---------------|
+| 임베디드 (학교 단말) | iPad 네이티브 앱 |
+| 교육청 플랫폼 모듈 | Apple School Manager 연동 |
+| APK 다운로드 | App Store 정식 출시 |
+| 분리된 학습 데이터 | 통합 trajectory 코퍼스 |
+| 단발성 콘텐츠 | 12년 학습 경로 |
+
+---
+
+## Apple Stack Integration
+
+# 애플 스택 위에
+# <span class="red">정확히</span> 올라간다.
+
+<br>
+
+- **Apple School Manager** — 학교·학생 계정 일괄 프로비저닝
+- **Classroom** — 교사 실시간 모니터링·진도 제어
+- **Schoolwork** — 과제 자동 분배·자동 채점·trajectory 리포트
+- **Apple Intelligence** — 온디바이스 발음 평가·요약 (개인정보 보호 기본)
+
+---
+
+## Joint Roadmap
+
+# 3단계
+# <span class="red">파트너십 로드맵.</span>
+
+<br>
+
+| Phase | 기간 | 산출물 |
+|-------|------|--------|
+| **1. Pilot** | 6개월 | 3개 학교 시범 · iPad 앱 PoC · 콘텐츠 통합 |
+| **2. Region** | 6개월 | 강원도 교육청 광역 배포 · ASM 정식 연동 |
+| **3. National** | 12개월 | 전국 확산 · Apple 공식 EduPartner 인증 |
+
+---
+
+## Who Brings What
+
+# 각자의 자산을
+# 가지고 모인다.
+
+<br>
+
+- **콘텐츠 파트너사 (귀사)** — 검증된 교재·문항·교사 네트워크·브랜드 신뢰
+- **LogicFlow (우리 팀)** — 진단 엔진·trajectory 코퍼스·온톨로지 그래프
+- **Apple** — 디바이스·OS·계정 인프라·글로벌 EduPartner 채널
+
+<br>
+
+<span class="muted">셋이 합쳐질 때, 30%가 100%로 향한다.</span>
+
+---
+
+## The Partnership Ask
+
+# 세 가지
+# <span class="red">협업 제안.</span>
+
+<br>
+
+1. **콘텐츠 라이선스 협약** — 각사 교재·문항을 trajectory 엔진에 연결
+2. **공동 파일럿 운영** — 3개 학교, 6개월, 비용·성과 공동 부담·공유
+3. **Apple Korea 공동 제안** — 컨소시엄 명의 단일 제안서로 협상력 N배
+
+<br>
+
+<span class="muted">개별 사가 각자 들이밀면 협상력은 1/N. 함께 들이밀면 N배.</span>
+
+---
+
+<!-- _class: invert -->
+
+<br><br>
+
+# 이제 70%도
+# <span class="red">같은 출발선</span>에 섭니다.
+
+<br><br>
+
+<span class="muted">5살에 알파벳을 발음한 그 순간부터,</span>
+<span class="muted">시스템이 그 아이의 12년을 함께 갑니다.</span>
+
+<br>
+
+**eltkorea@gmail.com** · github.com/smilepat
