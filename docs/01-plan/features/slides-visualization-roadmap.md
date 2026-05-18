@@ -2,7 +2,8 @@
 
 **Feature ID:** `slides-visualization-roadmap`
 **Created:** 2026-05-18
-**Status:** Active backlog
+**Last Updated:** 2026-05-18 (amendment: +8 items from Korea_English_Solution)
+**Status:** Active backlog (v1.1)
 **Owner:** smilepat
 **Related:** [SLIDES_GAP_TO_PROGRESS.md](../../../SLIDES_GAP_TO_PROGRESS.md), [slides-cohort-replacement.plan.md](slides-cohort-replacement.plan.md)
 
@@ -73,6 +74,26 @@ Part 6 Progress       │ 6-A Before/After · 6-B 마스터리 분포 · 6-C θ 
 | **VIZ-15** | 신규 6-E 또는 부록 | 4 mastery level 게이트별 학습자 비율 변화 (Sankey) | `learnerMastery` 코호트 시계열 | L | 🌟 |
 | **VIZ-16** | 부록 | 레포 자산 sunburst (md-graph-db → docs → 137,745 / micro-skills.ts 등 계층) | 종합 | L | 🌑 |
 
+### P1+ — Korea_English_Solution 외부 데이터 (2026-05-18 추가)
+
+> 출처: `smilepat/Korea_English_Solution` ([deployed](https://korea-english-solution.vercel.app/))
+> 모두 ✅ 데이터 가용. 한국교육과정평가원·MetaMetrics·GEPS 등 **외부 공인 출처 인용** → Plan-B 추정 라벨링 불필요.
+
+| ID | 슬라이드 위치 | 차트 유형 | 데이터 (정확치) | 출처 | Effort | Impact |
+|---|---|---|---|---|---|---|
+| **VIZ-23** | 신규 **1-D** | 한국 vs 미국 읽기 노출량 막대 (44배 격차) | 누적 167K~220K vs 9.75M 단어, 초 40배·중 33배·**고 66배** | `EDUCATION_ANALYSIS.md` §1.1 | S | 🌟 |
+| **VIZ-24** | 신규 **1-E** | 수업시간 부족 막대 | 한국 980시간 vs CEFR B1 필요 1,200-2,000 → **220-1,020시간 부족** | 同 §1.2 | S | 🌟 |
+| **VIZ-25** | 1-A 강화 또는 신규 1-F | 10년 종단 Lexile × 4 cohort (목표·상위5%·평균·하위25%) | 초3~고3, Lexile 300-1200, MetaMetrics: 고3 **43%가 1000L 미만** | `learning-trajectory.tsx`, `lexile-chart.tsx` | M | 🌟 |
+| **VIZ-26** | 1-C 강화 | 교육과정-CEFR 정렬 매트릭스 (학년×목표×실제 heatmap) | 6행 (초3-고3) × CEFR A1~B2 | `EDUCATION_ANALYSIS.md` §1.3 | M | 🌗 |
+| **VIZ-27** | 2-A 보강 또는 신규 2-E | 5축 역량 radar (문법·어휘·논리·창의성·맥락) | 목표[80/75/70/65/75] vs **고2 실측[35/25/20/15/5]** | `charts.tsx::RadarChart`, 한국교육과정평가원 Performance Descriptor | M | 🌗 |
+| **VIZ-28** | 2-B 보강 | 학습 결손 영역 pie | 어휘 30 / 문법 25 / 독해 20 / 듣기 15 / 말·쓰기 10 | `charts.tsx::PieChart`, 2022-23 영어교육 실태조사 | S | 🌗 |
+| **VIZ-29** | 4-C 강화 또는 신규 4-D | 개인 로드맵 케이스 (Student B) | 410L → 1000L, **390L 상승**, 2년(주3회 45분), **CEFR 1단계 300시간** | `personalized-roadmap.tsx` | M | 🌟 |
+| **VIZ-30** | 6-A 보강 | 격차율 누진 막대 (외부 출처) | 초6 **35%** → 중3 **58%** → 고2 **72%** (격차 누진) | `charts.tsx::BarChart`, GEPS 2017-2022 + CSAT 분석 | S | 🌟 |
+
+> **Plan-B 면제 적용:** 위 8개 모두 외부 공인 출처 인용이라 `slides-cohort-replacement.plan.md` §8의 "(추정)" 라벨링 정책 불필요 — 출처만 캡션에 명시.
+
+---
+
 ### P3 — Aspirational / Data-pending (🔴 신규 데이터 또는 코호트 필요)
 
 | ID | 슬라이드 위치 | 차트 유형 | 데이터 출처 | 트리거 |
@@ -86,26 +107,41 @@ Part 6 Progress       │ 6-A Before/After · 6-B 마스터리 분포 · 6-C θ 
 
 ---
 
-## 4. Sequencing — 권장 진행 순서
+## 4. Sequencing — 권장 진행 순서 (v1.1 재조정)
 
-### Sprint 1 (즉시, ~2시간) — 비즈니스 메시지 보강
+### Sprint 1A — 갭 강화 4종 (즉시, ~1.5시간) ★ 최우선
 
-> 투자자 deck로서 가장 시급한 자산.
+> Korea_English_Solution 외부 출처 데이터로 Part 1·2의 갭 메시지 강화. 외부 출처 인용이라 신뢰성 즉시 확보.
+
+1. **VIZ-23** 한국 vs 미국 44배 막대 (S, 🌟) — 신규 1-D
+2. **VIZ-24** 수업시간 980 vs 1,200-2,000 막대 (S, 🌟) — 신규 1-E
+3. **VIZ-25** 10년 종단 Lexile × 4 cohort (M, 🌟) — 1-A 교체 또는 1-F
+4. **VIZ-30** 격차율 누진 막대 (S, 🌟) — 6-A 보강
+
+→ 신규 슬라이드 ~3개 추가, 차트 23개 → 27개.
+
+### Sprint 1B — 비즈니스 메시지 5종 (~2시간)
+
+> 투자자 deck용 — TAM·단가·경쟁 포지셔닝. (이전 v1.0 Sprint 1 그대로)
 
 1. **VIZ-01** TAM/SAM/SOM (S, 🌟)
 2. **VIZ-04** 단가 비교 100-180배 (S, 🌟)
-3. **VIZ-07** 경쟁 포지셔닝 heatmap (M, 🌟)
-4. **VIZ-08** 마일스톤 timeline (M, 🌟)
-5. **VIZ-05** D5 모드 vs 인간 코칭 (S, 🌟)
+3. **VIZ-05** D5 모드 vs 인간 코칭 (S, 🌟)
+4. **VIZ-07** 경쟁 포지셔닝 heatmap (M, 🌟)
+5. **VIZ-08** 마일스톤 timeline (M, 🌟)
 
-→ 신규 슬라이드 5개 추가 → 총 슬라이드 35개 내외, 차트 24개.
+→ 신규 슬라이드 5개 추가 → 총 차트 32개. **investor mini-deck 분리 권장**.
 
-### Sprint 2 (~1.5시간) — 시스템 깊이 강화
+### Sprint 2 (~2.5시간) — 시스템 깊이 + 보강 시각화
 
 1. **VIZ-02** 19×12 풀 히트맵 (M, 🌟)
-2. **VIZ-06** 학교 vs 수능 radar (M, 🌗)
-3. **VIZ-03** IRT phase timeline (M, 🌗)
-4. **VIZ-14** KPI radar (S, 🌗)
+2. **VIZ-29** 개인 로드맵 케이스 (Student B 410L→1000L, 2년) (M, 🌟)
+3. **VIZ-06** 학교 vs 수능 radar (M, 🌗)
+4. **VIZ-26** 교육과정-CEFR 정렬 heatmap (M, 🌗)
+5. **VIZ-27** 5축 Performance Descriptor radar (M, 🌗)
+6. **VIZ-28** 학습 결손 영역 pie (S, 🌗)
+7. **VIZ-03** IRT phase timeline (M, 🌗)
+8. **VIZ-14** KPI radar (S, 🌗)
 
 ### Sprint 3 (~1시간) — 실측 데이터 1회 확보 가능 시
 
@@ -124,6 +160,7 @@ VIZ-17, 18 (실측 교체) + VIZ-15, 19, 20 (새 시각화).
 |---|---|---|
 | canonical 정의 (micro-skills.ts, GRADE1_TARGETS, QUESTION_TYPE_SKILL_MAP) | ✅ 즉시 | VIZ-02 |
 | lecture 텍스트 (TAM, 단가, 경쟁) | ✅ 즉시 | VIZ-01, 04, 05, 06, 07, 08 |
+| **Korea_English_Solution 외부 출처 데이터** (한국교육과정평가원·MetaMetrics·GEPS) | ✅ 즉시 | **VIZ-23, 24, 25, 26, 27, 28, 29, 30** |
 | 운영 DB 1회 쿼리 (vocab_master.sqlite, CEFR CSV) | 🟡 1시간 작업 | VIZ-09, 10 |
 | Issue Code × Validator 매핑 | 🟡 PRD 정독 후 가공 | VIZ-13 |
 | production cohort (n≥30) | 🔴 트리거 대기 | VIZ-11, 12, 15, 17, 18, 19, 20 |
