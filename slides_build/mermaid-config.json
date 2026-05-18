@@ -1,0 +1,82 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+    "fontSize": "16px",
+
+    "primaryColor": "#dbeafe",
+    "primaryBorderColor": "#2563eb",
+    "primaryTextColor": "#0f172a",
+    "secondaryColor": "#fef3c7",
+    "secondaryBorderColor": "#d97706",
+    "secondaryTextColor": "#78350f",
+    "tertiaryColor": "#dcfce7",
+    "tertiaryBorderColor": "#059669",
+    "tertiaryTextColor": "#064e3b",
+
+    "lineColor": "#64748b",
+    "textColor": "#0f172a",
+    "mainBkg": "#ffffff",
+    "background": "#ffffff",
+
+    "edgeLabelBackground": "#ffffff",
+    "clusterBkg": "#f8fafc",
+    "clusterBorder": "#cbd5e1",
+
+    "errorBkgColor": "#fee2e2",
+    "errorTextColor": "#991b1b",
+
+    "xyChart": {
+      "backgroundColor": "#ffffff",
+      "titleColor": "#0f172a",
+      "xAxisLabelColor": "#475569",
+      "xAxisTitleColor": "#0f172a",
+      "xAxisTickColor": "#64748b",
+      "xAxisLineColor": "#cbd5e1",
+      "yAxisLabelColor": "#475569",
+      "yAxisTitleColor": "#0f172a",
+      "yAxisTickColor": "#64748b",
+      "yAxisLineColor": "#cbd5e1",
+      "plotColorPalette": "#2563eb,#ef4444,#10b981,#f59e0b,#8b5cf6,#ec4899"
+    },
+
+    "pie1": "#2563eb",
+    "pie2": "#ef4444",
+    "pie3": "#10b981",
+    "pie4": "#f59e0b",
+    "pie5": "#8b5cf6",
+    "pie6": "#ec4899",
+    "pieTitleTextSize": "20px",
+    "pieSectionTextSize": "14px",
+    "pieLegendTextSize": "14px",
+
+    "ganttFontColor": "#0f172a",
+    "sectionBkgColor": "#dbeafe",
+    "altSectionBkgColor": "#dcfce7",
+    "sectionBkgColor2": "#fef3c7",
+    "taskBkgColor": "#2563eb",
+    "taskTextColor": "#ffffff",
+    "taskTextOutsideColor": "#0f172a",
+    "todayLineColor": "#ef4444",
+    "gridColor": "#e2e8f0"
+  },
+  "flowchart": {
+    "curve": "basis",
+    "padding": 20,
+    "diagramPadding": 12,
+    "useMaxWidth": true,
+    "htmlLabels": true
+  },
+  "xyChart": {
+    "width": 900,
+    "height": 480
+  },
+  "gantt": {
+    "fontSize": 14,
+    "barHeight": 24,
+    "leftPadding": 130
+  },
+  "pie": {
+    "useMaxWidth": true
+  }
+}

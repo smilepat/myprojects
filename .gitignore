@@ -1,7 +1,11 @@
-# Build artifacts — Marp/Mermaid output
+# Build artifacts — Marp/Mermaid/ECharts output
 slides_build/*
 !slides_build/build_revealjs.js
 !slides_build/inline_svgs.js
+!slides_build/echarts-ssr.js
+!slides_build/mermaid-config.json
+!slides_build/theme.css
+!slides_build/package.json
 !slides_build/README.md
 *.html
 
