@@ -1,8 +1,9 @@
 // Build a Reveal.js-based standalone HTML from SLIDES_GAP_TO_PROGRESS.md
 // Pipeline:
-//   1. mmdc renders all Mermaid blocks to SVGs (deterministic, server-side)
-//   2. Each SVG is inlined as base64 data URI in markdown
-//   3. Result is embedded in a Reveal.js HTML template
+//   1a. ECharts blocks → SSR-rendered SVG (themed)
+//   1b. mmdc renders remaining Mermaid blocks to SVGs (themed)
+//   2.  Each SVG is inlined as base64 data URI in markdown
+//   3.  Result is embedded in a Reveal.js HTML template
 //
 // Output is self-contained: charts are pre-rendered SVGs, no Mermaid CDN
 // needed at runtime. Only Reveal.js/Pretendard CSS still loads from CDN
@@ -11,6 +12,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync, spawnSync } = require('child_process');
+const { renderEchartsToSvg } = require('./echarts-ssr');
 
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'SLIDES_GAP_TO_PROGRESS.md');
@@ -18,15 +20,48 @@ const OUT = path.join(ROOT, 'SLIDES_GAP_TO_PROGRESS.html');
 const WORK = __dirname;
 const RENDERED_MD = path.join(WORK, 'rendered.md');
 
-// ---- Step 1: run mmdc to render Mermaid blocks ----
-console.log('[1/3] Rendering Mermaid blocks via mmdc...');
-// Use the source markdown directly; mmdc will preserve everything else and
-// only substitute mermaid blocks with image references.
+// ---- Step 1a: render ECharts blocks to themed SVGs ----
+console.log('[1a/3] Rendering ECharts blocks via SSR...');
+let srcText = fs.readFileSync(SRC, 'utf8');
+
+// Clean up stale echarts SVGs from previous builds
+for (const f of fs.readdirSync(WORK)) {
+  if (/^rendered-echarts-\d+\.svg$/.test(f)) fs.unlinkSync(path.join(WORK, f));
+}
+
+const echartsBlockRe = /```echarts(?:\s+w=(\d+))?(?:\s+h=(\d+))?\r?\n([\s\S]*?)\r?\n```/g;
+let echartsIdx = 0;
+srcText = srcText.replace(echartsBlockRe, (_match, wStr, hStr, body) => {
+  echartsIdx += 1;
+  const width = wStr ? parseInt(wStr, 10) : 900;
+  const height = hStr ? parseInt(hStr, 10) : 520;
+  let option;
+  try {
+    option = JSON.parse(body);
+  } catch (e) {
+    console.error(`  ! echarts block #${echartsIdx} JSON parse error:`, e.message);
+    process.exit(1);
+  }
+  const svg = renderEchartsToSvg(option, { width, height });
+  const fname = `rendered-echarts-${echartsIdx}.svg`;
+  fs.writeFileSync(path.join(WORK, fname), svg, 'utf8');
+  console.log(`  ✅ echarts #${echartsIdx} → ${fname} (${svg.length} bytes, ${width}×${height})`);
+  return `![echarts-${echartsIdx}](./${fname})`;
+});
+console.log(`[1a/3] Rendered ${echartsIdx} ECharts chart${echartsIdx === 1 ? '' : 's'}.`);
+
+// ---- Step 1b: run mmdc on the (echarts-substituted) markdown ----
+console.log('[1b/3] Rendering Mermaid blocks via mmdc (themed)...');
 const srcCopy = path.join(WORK, '.src.tmp.md');
-fs.copyFileSync(SRC, srcCopy);
+fs.writeFileSync(srcCopy, srcText, 'utf8');
+const MERMAID_CONFIG = path.join(WORK, 'mermaid-config.json');
 const mmdcResult = spawnSync(
   'npx',
-  ['--yes', '-p', '@mermaid-js/mermaid-cli', 'mmdc', '-i', srcCopy, '-o', RENDERED_MD, '--backgroundColor', 'white'],
+  ['--yes', '-p', '@mermaid-js/mermaid-cli', 'mmdc',
+    '-i', srcCopy,
+    '-o', RENDERED_MD,
+    '-c', MERMAID_CONFIG,
+    '--backgroundColor', 'white'],
   { cwd: WORK, stdio: 'inherit', shell: true }
 );
 if (mmdcResult.status !== 0) {
@@ -58,6 +93,9 @@ md = md.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
 md = md.replace(/<!--\s*_?class:\s*([^>\s]+)\s*-->/g, (_, cls) => `<!-- .slide: class="${cls}" -->`);
 md = md.replace(/<!--\s*_?(header|footer):.*?-->/g, '');
 
+// Read theme.css (design tokens + slide masters) for inlining
+const THEME_CSS = fs.readFileSync(path.join(WORK, 'theme.css'), 'utf8');
+
 const html = `<!DOCTYPE html>
 <html lang="ko-KR">
 <head>
@@ -74,67 +112,7 @@ const html = `<!DOCTYPE html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
 
 <style>
-  :root {
-    --r-main-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', sans-serif;
-    --r-heading-font: var(--r-main-font);
-    --r-main-font-size: 26px;
-    --r-main-color: #1f2937;
-    --r-heading-color: #0f172a;
-    --r-link-color: #2563eb;
-    --r-background-color: #ffffff;
-    --r-block-margin: 16px;
-  }
-  .reveal { font-family: var(--r-main-font); color: var(--r-main-color); }
-  .reveal h1 { font-size: 1.7em; margin-bottom: 0.4em; font-weight: 700; color: var(--r-heading-color); letter-spacing: -0.02em; }
-  .reveal h2 { font-size: 1.25em; margin-bottom: 0.5em; font-weight: 600; color: var(--r-heading-color); }
-  .reveal h3 { font-size: 1.05em; font-weight: 600; color: var(--r-heading-color); }
-  .reveal p, .reveal li { font-size: 0.9em; line-height: 1.5; }
-  .reveal blockquote {
-    width: 92%; padding: 12px 18px; margin: 12px auto;
-    background: #f8fafc; border-left: 4px solid #94a3b8;
-    font-size: 0.78em; font-style: normal; color: #475569;
-    box-shadow: none;
-  }
-  .reveal table {
-    margin: 8px auto; border-collapse: collapse; font-size: 0.65em;
-    background: white; max-width: 95%;
-  }
-  .reveal table th { background: #f1f5f9; color: #0f172a; font-weight: 600; padding: 6px 12px; border: 1px solid #e2e8f0; text-align: left; }
-  .reveal table td { padding: 5px 12px; border: 1px solid #e2e8f0; vertical-align: top; }
-  .reveal table tr:nth-child(even) td { background: #fafbfc; }
-  .reveal code { font-family: 'JetBrains Mono', 'D2Coding', Consolas, monospace; font-size: 0.85em; background: #f1f5f9; padding: 1px 6px; border-radius: 3px; }
-  .reveal pre code { font-size: 0.7em; line-height: 1.45; padding: 12px; border-radius: 6px; }
-  .reveal a { color: var(--r-link-color); text-decoration: none; border-bottom: 1px dotted; }
-  .reveal a:hover { border-bottom-style: solid; }
-  .reveal strong { color: #0f172a; font-weight: 700; }
-  .reveal hr { display: none; }
-  /* Mermaid SVG sizing */
-  .reveal img {
-    display: block; margin: 8px auto;
-    max-width: 95%; max-height: 460px;
-    background: white;
-  }
-  .reveal .slides section.lead { text-align: center; }
-  .reveal .slides section.lead h1 { font-size: 2.2em; margin-bottom: 0.3em; }
-  .reveal .slides section.lead h3 { font-size: 1.1em; color: #64748b; font-weight: 400; }
-  .reveal .slides section { text-align: left; padding: 24px 36px; box-sizing: border-box; height: 100%; }
-  .reveal .slides section > h1:first-child,
-  .reveal .slides section > h2:first-child { margin-top: 0; }
-  .deck-footer {
-    position: fixed; bottom: 8px; right: 16px; z-index: 10;
-    font-size: 11px; color: #94a3b8; font-family: var(--r-main-font);
-  }
-  .reveal .progress { color: #2563eb; height: 4px; }
-  .reveal .slide-number {
-    background: rgba(15, 23, 42, 0.6); color: white; font-size: 12px;
-    padding: 2px 8px; border-radius: 3px; right: 12px; bottom: 12px;
-  }
-  #loading {
-    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: white; z-index: 100;
-    font-family: var(--r-main-font); color: #64748b;
-  }
-  body.loaded #loading { display: none; }
+${THEME_CSS}
 </style>
 </head>
 <body>
