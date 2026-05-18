@@ -281,20 +281,27 @@ flowchart TD
 
 ---
 
-## 5-A. 학습 문항 자산 — 9,183 × 5D × 3단계
+## 5-A. 학습 문항 자산 — 데이터 + 생성 시스템
 
 ```mermaid
 xychart-beta
-    title "학습 자산 규모 (개)"
-    x-axis ["어휘 마스터DB","IRT 진단 문항","학습 스캐폴딩","CEFR 분할 파일"]
-    y-axis "개수" 0 --> 150000
-    bar [9183, 9017, 137745, 6]
+    title "ET-Craft 자산 규모 (대수 척도)"
+    x-axis ["어휘DB","IRT진단","스캐폴딩","CEFR분할","수능유형","프롬프트","검증기"]
+    y-axis "log10(개수)" 0 --> 6
+    bar [3.96, 3.96, 5.14, 0.78, 1.64, 1.61, 0.95]
 ```
 
-- **마스터 어휘:** 9,183 단어 × 58 속성
-- **IRT 진단 문항:** 9,017 (1PL Rasch)
-- **학습 스캐폴딩:** **137,745 문항** = 9,183 × 5D × 3 step (Gemini 2.5 Flash × 45,915 호출 생성)
-- **배포:** `learning_{Level}.json` × A1~C2 6개
+| 자산 | 규모 | 비고 |
+|---|---:|---|
+| **마스터 어휘** | 9,183 단어 × 58 속성 | `vocab_master.sqlite` |
+| **IRT 진단 문항** | 9,017 | 1PL Rasch, b ∈ [−3.00, +3.67] |
+| **학습 스캐폴딩** | **137,745 문항** | 9,183 × 5D × 3 step (Gemini 2.5 Flash × 45,915 호출) |
+| **CEFR 분할 패키지** | 6 | A1~C2 `learning_{Level}.json` |
+| **수능 유형 풀커버리지** | **44** | LC 16 + RC 28 (`csat_itemgen` 모듈별 spec) |
+| **유형별 프롬프트 라이브러리** | **41** | 224 KB, 버전·메트릭 추적 *(ET-Craft lineage, current core: EBS-demo)* |
+| **모듈러 검증기** | **9** | common · grammar · gap · chart · listening · format · set 등 *(同上)* |
+
+> 자산 차트는 자릿수 차이가 크므로 log10 척도. 핵심은 *"양"이 아니라 **구조화된 자산의 폭"*.
 
 ---
 
@@ -318,22 +325,90 @@ xychart-beta
 
 ---
 
-## 5-C. 2-Stage LLM 파이프라인 — 품질 결정 구조
+## 5-C. 2-Stage LLM × 9 검증기 × Issue Code 분기
 
 ```mermaid
 flowchart LR
-    P["지문 + 유형 코드"] --> S1
-    S1["Stage 1<br/>지문 분석<br/>(담화구조, 핵심어휘)"] --> S2
-    S2["Stage 2<br/>문항 생성<br/>(컨텍스트 주입)"] --> V["3-Layer 검증"]
-    V --> V1["Layer 1: 구조<br/>(필드·5지·정답)"]
-    V --> V2["Layer 2: 내용<br/>(정답 유일성·매력도)"]
-    V --> V3["Layer 3: 수능 적합성<br/>(난이도·유형 부합)"]
-    V3 --> OK{"통과?"}
-    OK -->|Yes| OUT["✅ 즉시 학습자에게"]
-    OK -->|No| RETRY["재시도·백오프"]
+    P["지문 + 유형 코드<br/>(44종 중 1)"] --> S1
+    S1["Stage 1<br/>지문 분석<br/>(담화구조·핵심어휘)"] --> S2
+    S2["Stage 2<br/>문항 생성<br/>(컨텍스트 주입)"] --> V
+
+    V["3-Layer × 9 검증기"]
+    V --> L1["L1 구조<br/>common · format"]
+    V --> L2["L2 내용<br/>grammar · gap · chart · listening · set"]
+    V --> L3["L3 적합성<br/>itemEvaluator (5D)"]
+
+    L1 --> IC{"Issue Code<br/>분류"}
+    L2 --> IC
+    L3 --> IC
+    IC -->|"severity=error"| FAIL["❌ 재시도<br/>(promptEvaluator 피드백)"]
+    IC -->|"warning + auto_fixable"| FIX["🛠 autoRepair"]
+    IC -->|"PASS"| OUT["✅ 학습자에게"]
+    FIX --> V
+    FAIL --> S1
+
+    style OUT fill:#d4edda
+    style FAIL fill:#f8d7da
+    style FIX fill:#fff3cd
 ```
 
-출처: `et-craft/ET-Craft_Presentation.md` (validator_common.js, validator_grammar/gap/chart/set.js).
+- **9 검증기 모듈** (`validator_common`, `_grammar`, `_gap`, `_chart`, `_listening`, `_format`, `_set` 등) — 유형별 전용 spec
+- **3-Layer 검증** L1 구조 → L2 내용 → L3 수능 적합성
+- **Issue Code 분기** 결과를 severity·auto_fixable 메타데이터로 라우팅 (`failed → 재시도` / `warning → autoRepair` / `pass → 출력`)
+
+> 출처: ET-Craft 문항생성 계열 (`csat_itemgen` PRD, current core: `EBS-demo`).
+
+---
+
+## 5-D. Issue Code 분류 체계 — 검증의 메타데이터화
+
+```mermaid
+xychart-beta
+    title "60+ Issue Code의 6개 카테고리 분포"
+    x-axis ["P 지문","Q 문제","O 선택지","A 정답","F 형식","S 세트"]
+    y-axis "코드 수" 0 --> 20
+    bar [12, 8, 18, 6, 10, 6]
+```
+
+| 접두 | 영역 | 대표 코드 |
+|---|---|---|
+| **P0xx** | 지문 (Passage) | P001 너무 짧음 · P003 주제 이탈 |
+| **Q0xx** | 문제 (Question) | Q001 지시문 불명확 · Q002 유형 불일치 |
+| **O0xx** | 선택지 (Options) | O001 개수 오류 · **O003 매력도 낮음** · O005 복수정답 |
+| **A0xx** | 정답 (Answer) | A001 정답 모호 · A002 범위 초과 |
+| **F0xx** | 형식 (Format) | F001 JSON 구조 · F002 필드 누락 |
+| **S0xx** | 세트 (Set) | S001 공통지문 불일치 (16-17·41-42·43-45) |
+
+```json
+{ "code": "O003", "severity": "warning", "auto_fixable": false,
+  "message": "선택지 ②의 매력도가 낮음",
+  "suggestion": "지문 맥락 관련 오답으로 교체",
+  "location": "options[1]" }
+```
+
+> **함의:** 검증이 *분류·심각도·수정가능성* 3축으로 메타데이터화 → 자동 보정·재시도·통계 모두 가능. *"PASS/FAIL"이 아니라 **분류된 처방"*.
+
+---
+
+## 5-E. 문항 생성 시스템 운영 KPI
+
+```mermaid
+xychart-beta
+    title "문항 생성 시스템 목표 KPI"
+    x-axis ["1회 통과율(%)","검증 커버리지(%)","오답 매력도(점)","응답시간(초)","재생성(회×10)"]
+    y-axis "값 (단위 별 정규화)" 0 --> 100
+    bar [70, 95, 80, 30, 15]
+```
+
+| KPI | 현재 | **목표** | 측정 방법 |
+|---|---:|---:|---|
+| 1회 통과율 | 측정 인프라 구축 중 | **70%+** | 생성 → 검증 PASS 비율 |
+| 재생성 평균 횟수 | 同 | **≤ 1.5회** | 최종 OK까지 LLM 호출 수 |
+| 검증 커버리지 | ~60% (구조만) | **95%+** | spec 대비 검증 항목 비율 |
+| 오답 매력도 점수 | 미측정 | **80점+** (100 만점) | `itemEvaluator` 평균 distractor 점수 |
+| 단일 문항 응답 | 미측정 | **< 30초** | API 응답 시간 |
+
+> 출처: ET-Craft lineage `PRD_IMPROVEMENT_2026.md` §2.2. **데이터 회사 포지셔닝의 정량 증거** — 콘텐츠가 아니라 *통제된 생성 시스템*.
 
 ---
 
