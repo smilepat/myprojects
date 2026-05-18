@@ -81,14 +81,16 @@ xychart-beta
 
 ```mermaid
 xychart-beta
-    title "수능 1등급 목표(GRADE1_TARGETS) vs 교과과정 도달 추정"
+    title "수능 1등급 목표 (GRADE1_TARGETS, 실측) vs 교과과정 도달 (추정)"
     x-axis ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"]
     y-axis "마스터리 (0–100)" 0 --> 100
     bar [85,80,80,75,80,85,80,75,90,85,80,80]
     bar [65,60,55,50,50,45,40,45,55,35,40,35]
 ```
 
-**Layer 평균 갭:** A −22.5 → B −35.0 → **C −42.5** (상위 인지로 갈수록 갭 단조 증가)
+- **상단 막대 (실측):** `csat-text-graph-maker/src/lib/logicflow/micro-skills.ts` `GRADE1_TARGETS` 정규치
+- **하단 막대 (추정):** 정성적 진단에서 역추정한 *placeholder*. production 학습자 코호트(n≥30) 형성 후 실측 교체 예정 — 트리거 조건은 [Plan §8.4](docs/01-plan/features/slides-cohort-replacement.plan.md) 참조
+- **Layer 평균 갭 (추정 기준):** A −22.5 → B −35.0 → **C −42.5** (상위 인지로 갈수록 갭 단조 증가)
 
 ---
 
@@ -341,48 +343,54 @@ flowchart LR
 
 ---
 
-## 6-A. Before / After — 12 skill 좌표 이동
+## 6-A. Before / After — 12 skill 좌표 이동 (예시·추정)
 
 ```mermaid
 xychart-beta
-    title "8주 학습 후 12 micro-skill 좌표 이동 (예시 학습자)"
+    title "8주 학습 후 12 micro-skill 좌표 이동 (예시 학습자 · 추정값)"
     x-axis ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"]
     y-axis "마스터리 (0–100)" 0 --> 100
     bar [65,60,55,50,50,45,40,45,55,35,40,35]
     bar [78,75,72,68,72,72,68,68,75,62,65,62]
 ```
 
-상단(Before) → 하단(After) 모두 표시. **B-03 패러프레이즈 40→68(+28)** 의 효과로 빈칸·요지·내용일치 유형이 일제히 상승.
+> ⚠️ **추정값**: 상단(Before)·하단(After) 모두 정성적 진단 기반의 예시 학습자 시나리오. 실제 production 코호트(개입 전 첫 진단 vs 8주 경과 재진단의 페어드 평균, n≥30)로 교체 예정 — 트리거 조건은 [Plan §8.4](docs/01-plan/features/slides-cohort-replacement.plan.md) 참조.
+
+**의미 설명:** B-03 패러프레이즈 40→68 (+28)의 효과로 빈칸·요지·내용일치 유형이 일제히 상승하는 *메커니즘*은 `QUESTION_TYPE_SKILL_MAP`이 보장(실측).
 
 ---
 
-## 6-B. 마스터리 레벨 이동 — 시각적 카운트
+## 6-B. 마스터리 레벨 이동 — 시각적 카운트 (예시·추정)
 
 ```mermaid
 xychart-beta
-    title "마스터리 레벨별 skill 수 (Before → After)"
+    title "마스터리 레벨별 skill 수 (Before → After · 추정)"
     x-axis ["Novice","Developing","Proficient","Mastered"]
     y-axis "skill 개수" 0 --> 12
     bar [3, 9, 0, 0]
     bar [0, 4, 8, 0]
 ```
 
+> ⚠️ **추정값**: 6-A와 동일한 예시 학습자 시나리오에서 파생. 실측 시 6-A 페어드 코호트의 skill별 `MASTERY_LEVELS` 카운트로 교체.
+
 **Before:** Novice 3 / Developing 9 → **After:** Developing 4 / Proficient 8.
 다음 8주: **Proficient → Mastered** 게이트 진입 → 수능 1등급 영역.
 
 ---
 
-## 6-C. 누적 학습 시간 ↔ θ 상승 — "노력의 가시화"
+## 6-C. 누적 학습 시간 ↔ θ 상승 — "노력의 가시화" (예시·추정)
 
 ```mermaid
 xychart-beta
-    title "누적 학습 시간 vs 평균 θ (학습자 코호트, 예시)"
+    title "누적 학습 시간 vs 평균 θ (학습자 코호트 · 추정 곡선)"
     x-axis ["W0","W2","W4","W6","W8","W10","W12"]
     y-axis "평균 θ (Rasch 척도)" -1.5 --> 1.5
     line [-1.2, -0.8, -0.4, 0.0, 0.4, 0.7, 1.0]
 ```
 
-**핵심:** θ가 0.0(=수능 평균 난이도 정답률 50%) → +1.0(=수능 상위권)으로 직진. 학습자·학부모·교사가 같은 좌표축으로 진행을 본다.
+> ⚠️ **추정 곡선**: 실측 시 production 코호트의 주별 평균 θ (Rasch 척도)로 교체. `learnerEvidence`(evidence event 로그)를 mastery-engine으로 시점별 재생하여 산출.
+
+**핵심:** θ가 0.0(=수능 평균 난이도 정답률 50%) → +1.0(=수능 상위권)으로 직진. **좌표축은 실측**(`md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md` b 범위 −3.00~+3.67), **진행 속도는 추정**.
 
 ---
 
@@ -427,13 +435,35 @@ flowchart LR
 
 # 부록 — 데이터 출처 (재현성)
 
-- 12 micro-skill 정의·목표·선수관계 — `csat-text-graph-maker/src/lib/logicflow/micro-skills.ts`
-- canonical 결정 — `logicflow-corpus/docs/skill-mapping.md` (D2, 2026-05-17)
-- 학습 자산 137,745 · 진단 9,017 · 어휘 9,183 — `md-graph-db/docs/DATABASE_ARCHITECTURE.md`
-- IRT 1PL Rasch·b 범위·Warm-start — `md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md`
-- 교과과정 누적 어휘 800/2,300/4,000/6,000 — `ai-english-platform/app/api/dashboard/vocab-level/route.ts`
-- Lexile 학년 표 · Bloom 비대칭 · 93초 — `md-graph-db/et-craft/lecture_v2.md`
-- Recommender 우선순위·reason — `csat-text-graph-maker/src/lib/logicflow/recommender.ts`
-- 2-Stage 파이프라인 · 3-Layer 검증 — `md-graph-db/et-craft/ET-Craft_Presentation.md`
+## ✅ 실측 · 정규(canonical) 자료
 
-**주의:** 슬라이드 2-A 하단 막대(교과과정 도달치 65/45/35…), 슬라이드 6-A·6-B의 학습자 사례는 정성적 진단에서 역추정한 예시값입니다. 실측 코호트 평균으로 교체 가능합니다.
+- 12 micro-skill 정의·목표·선수관계 — `csat-text-graph-maker/src/lib/logicflow/micro-skills.ts` (`GRADE1_TARGETS`)
+- 12-canonical 결정 (Layer A+B+C, D 제외) — `logicflow-corpus/docs/skill-mapping.md` (D2, 2026-05-17)
+- 학습 자산 137,745 · 진단 9,017 · 어휘 9,183 — `md-graph-db/docs/DATABASE_ARCHITECTURE.md`
+- IRT 1PL Rasch · b 범위 −3.00~+3.67 · Warm-start — `md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md`
+- 교과과정 누적 어휘 800/2,300/4,000/6,000 word families — `ai-english-platform/app/api/dashboard/vocab-level/route.ts` (`CURRICULUM_BANDS`)
+- Lexile 학년 표(중3 700L~수능 1200L) · Bloom 비대칭 · 93초/문항 — `md-graph-db/et-craft/lecture_v2.md`
+- Recommender 우선순위·reason 로직 — `csat-text-graph-maker/src/lib/logicflow/recommender.ts`
+- 2-Stage 파이프라인 · 3-Layer 검증 — `md-graph-db/et-craft/ET-Craft_Presentation.md`
+- 19개 수능 유형 ↔ 12 skill 매핑 — `csat-text-graph-maker/.../micro-skills.ts` `QUESTION_TYPE_SKILL_MAP`
+- `learnerMastery` / `learnerEvidence` / `diagnosticSessions` 스키마 — `csat-graphdb-318/src/lib/db/schema.ts`
+
+## ⚠️ 추정 · 보류 자료 (실측 대기 중)
+
+다음 슬라이드의 학습자 수치는 정성 진단에서 역추정한 **placeholder**입니다. 추정 사실은 본문 슬라이드에도 명시 라벨링되어 있습니다.
+
+| 슬라이드 | 추정 항목 | 실측 산출 방법 (예정) |
+|---|---|---|
+| 2-A 하단 막대 | 12 skill 교과과정 도달치 (65/60/55/50/50/45/40/45/55/35/40/35) | 신규 가입 7일 이내 첫 진단 완료자의 skill별 평균 (`learnerMastery`, n≥30) |
+| 6-A Before/After | 12 skill × 2(Before·After) = 24개 수치 | 개입 전 첫 진단 vs 56일 후 재진단의 페어드 코호트 평균 (`learnerEvidence` 시점 재생) |
+| 6-B 마스터리 분포 | (3,9,0,0) → (0,4,8,0) | 6-A와 동일 코호트의 skill별 `MASTERY_LEVELS` 카운트 |
+| 6-C θ 곡선 | W0–W12 7개 값 | 6-A 코호트의 주별 평균 θ (Rasch 척도, mastery-engine 재생) |
+
+**현 상태 (2026-05-18):**
+
+- 스키마 점검: ✅ 모든 테이블·컬럼 존재 (`csat-graphdb-318` 검증 완료)
+- 데이터 점검: ❌ production 학습자 누적 0 (3개 레포 모두 demo-user / visitor=default MVP 단계)
+- 재개 트리거: production 배포 후 distinct uid 30+, 또는 학원·학교 pilot 코호트 형성 시
+- PDCA 추적: [docs/01-plan/features/slides-cohort-replacement.plan.md](docs/01-plan/features/slides-cohort-replacement.plan.md) §8 (Plan-B)
+
+**투자자 Q&A 응대 가이드:** "이 수치는 추정입니다 — 다만 ① 어떤 코호트로 ② 어떤 쿼리로 교체할지 ③ 어떤 임계값(n≥30)에서 신뢰할지가 모두 Plan §8에 명시되어 있고, 동일 시스템(`learnerMastery` API)이 운영 중입니다. 데이터 회사답게 *측정 방법론을 먼저 정의*하고 있습니다."

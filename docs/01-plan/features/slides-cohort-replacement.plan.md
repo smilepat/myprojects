@@ -164,7 +164,61 @@ GROUP BY lm.skill_id;
 
 ---
 
+## 8. Data Availability Findings (2026-05-18) — Plan 보정
+
+Design 단계 진입 전 데이터 가용성 사전 점검 결과, **원본 Plan의 FR-01~FR-04는 현 시점 실행 불가**로 판단됨. Plan-B로 전환.
+
+### 8.1 점검 결과 (3개 레포 횡단)
+
+| 레포 | 스키마 | 운영 데이터 | 결정 |
+|---|---|---|---|
+| `csat-graphdb-318` | `learnerMastery`, `learnerEvidence`, `diagnosticSessions`, `userProfiles` 모두 존재 | `demo-user` 하드코딩 16곳, seed-sample.ts는 지문만 시드 | 사용 불가 |
+| `csat-mastery` | `learner_mastery`, `learner_evidence` (SQL 직접) | `visitor_id = "default"` MVP, "추후 Firebase Auth" 명시 | 사용 불가 |
+| `efl-ai-hub` | `learner_evidence` | 동일 MVP 단계 | 사용 불가 |
+
+### 8.2 스키마-Plan 가정 차이
+
+| Plan 가정 | 실제 | 영향 |
+|---|---|---|
+| `learner_mastery.measured_at` 컬럼 | 미존재 — `updatedAt`만 있음 (rolling aggregate) | Before/After 직접 비교 불가 |
+| 8주 페어드 코호트 추출 | `learnerEvidence`(events) 재생 필요 | mastery-engine 실행 + 시점별 스냅샷 구성 필요 |
+| n ≥ 30 코호트 | production 학습자 사실상 0 | 산출 자체 불가 |
+
+### 8.3 Plan-B (적용 결정)
+
+| 항목 | 원본 Plan | Plan-B |
+|---|---|---|
+| FR-01 (2-A 도달치 교체) | 신규 가입 첫 진단 평균 | **deferred** — production n≥30 도달 시 별도 PDCA로 재개 |
+| FR-02 (6-A Before/After) | 8주 페어드 평균 | **deferred** — 동일 |
+| FR-03 (6-B 분포) | 8주 코호트 카운트 | **deferred** — 동일 |
+| FR-04 (6-C θ 곡선) | 주별 평균 θ | **deferred** — 동일 |
+| **FR-05 (라벨링)** | 실측 수치 옆 `(n=X)` | **즉시 실행** — 모든 추정 수치에 `(추정)` 라벨 |
+| **FR-06 (부록 동기화)** | 미교체 항목만 ⚠️ 잔존 | **즉시 실행** — 부록에 코호트 정의·실측 대기 사실 명시 |
+
+### 8.4 재개 트리거 (Reopen Conditions)
+
+다음 조건 중 **하나라도 충족**되면 이 PDCA를 재개:
+
+1. `csat-graphdb-318` 또는 `csat-mastery`의 production 배포 후 `learnerMastery`에 distinct `uid` 30+ 누적
+2. 또는 baseline 진단을 완료한 demo·alpha 사용자 풀이 의도적으로 형성됨 (예: 학원·학교 pilot)
+3. 또는 슬라이드 사용 일정(투자자 미팅 등)이 임박해 정성적 라벨로는 부족하다고 판단됨
+
+### 8.5 Plan-B Success Criteria (Override)
+
+원본 SC-01~SC-05를 다음으로 대체:
+
+| ID | Criterion |
+|---|---|
+| SC-B1 | 슬라이드 2-A, 6-A, 6-B, 6-C의 모든 학습자 추정 수치에 `(추정)` 라벨 부착 — 라벨 누락 0개 |
+| SC-B2 | 부록 "데이터 출처" 섹션에 §8 발견사항 + 재개 트리거가 명시됨 |
+| SC-B3 | Marp HTML 재빌드 성공, 16개 차트 모두 정상 렌더링 |
+| SC-B4 | Plan 문서가 §8을 포함한 상태로 커밋되어, 향후 재개 시 컨텍스트 손실 없음 |
+
+---
+
 ## Sign-off
 
-- [x] Plan reviewed by: smilepat (2026-05-18)
-- [ ] Ready for `/pdca design slides-cohort-replacement`
+- [x] Plan reviewed by: smilepat (2026-05-18, original)
+- [x] Plan-B amendment reviewed by: smilepat (2026-05-18, after data availability check)
+- [ ] Plan-B execution complete (label-first) → 곧 진행
+- [ ] Original FR-01~04 deferred until reopen trigger met
