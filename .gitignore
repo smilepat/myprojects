@@ -1,5 +1,8 @@
 # Build artifacts — Marp/Mermaid output
-slides_build/
+slides_build/*
+!slides_build/build_revealjs.js
+!slides_build/inline_svgs.js
+!slides_build/README.md
 *.html
 
 # Tool state
