@@ -114,18 +114,28 @@ graph LR
 
 ---
 
-## 2-C. 유형 ↔ skill 의존 매트릭스 (요약)
+## 2-C. Skill 영향력 — 어느 skill이 가장 많은 유형을 좌우하나
 
-| 수능 유형 | Primary skill | Secondary skill |
-|---|---|---|
-| 빈칸추론 (blank_inference) | C-02, B-03 | A-01, B-02 |
-| 어법 (grammar) | A-02, A-03 | A-04 |
-| 주제·제목 | C-01 | C-03 |
-| 함의 (implication) | C-02 | B-01, C-04 |
-| 문장삽입 | B-02, B-01 | C-04 |
-| 어휘 선택 | A-01 | B-03 |
+```mermaid
+xychart-beta
+    title "19개 수능 유형 중 해당 skill이 Primary로 쓰이는 횟수"
+    x-axis ["A-01","A-02","A-03","A-04","B-01","B-02","B-03","B-04","C-01","C-02","C-03","C-04"]
+    y-axis "유형 수 (0–7)" 0 --> 7
+    bar [3,1,1,0,5,3,5,1,6,3,3,1]
+    bar [3,0,0,1,3,4,2,1,1,0,1,2]
+```
 
-> **시사점:** 같은 "오답 1개"라도 원인이 다르면 처방이 다르다. **분해 없이 처방 없다.**
+**상단(Primary) + 하단(Secondary)** = 해당 skill에 영향받는 총 유형 수. 출처: `QUESTION_TYPE_SKILL_MAP` 19개 유형 × 12 skill 전수 집계.
+
+| 영향력 순위 | skill | Primary 유형 수 | Total (P+S) | 시사점 |
+|---:|---|---:|---:|---|
+| 🥇 | **B-01** 지시 추적 | 5 | **8 / 19** | 응집성 핵심 — 보강 효율 최대 |
+| 🥈 | **C-01** 주제 도출 | **6** | 7 / 19 | Primary 단독 최다 — 1등급 게이트 |
+| 🥈 | **B-03** 패러프레이즈 | 5 | 7 / 19 | 5개 유형 일제히 무력화 가능 |
+| 🥈 | **B-02** 논리 전환 | 3 | 7 / 19 | 흐름 이해의 허브 |
+| ⬇️ | A-04 수식어 / B-04 어휘연쇄 | 0–1 | 1–2 / 19 | leverage 낮음 — 후순위 가능 |
+
+> **시사점:** 12개 skill이 동등하지 않다. **B-01·C-01·B-03 3개만 보강해도 19개 중 13개 유형이 영향권**에 들어옴 → 추천 알고리즘의 우선순위 가중치 기반.
 
 ---
 
@@ -260,17 +270,28 @@ flowchart TD
 
 ---
 
-## 4-C. 학습자 예시: 추천 로드맵 (5단계)
+## 4-C. 학습자 예시: 추천 로드맵 (5단계 우선순위)
 
-| # | skill | 현재 → 목표 | gap | reason |
+```mermaid
+xychart-beta
+    title "예시 학습자: top-5 추천 skill의 현재 vs 목표 (gap 시각화)"
+    x-axis ["①A-02 구문","②B-02 논리","③B-03 패러","④C-01 주제","⑤C-02 추론"]
+    y-axis "마스터리 (0–100)" 0 --> 100
+    bar [60, 45, 40, 55, 35]
+    bar [80, 85, 80, 90, 85]
+```
+
+상단(현재) → 하단(목표). 막대 길이 차이 = gap.
+
+| # | skill | 현재 → 목표 | gap | reason (recommender 자동 생성) |
 |---:|---|---:|---:|---|
-| 1 | **A-02** 구문 분석 | 60 → 80 | −20 | 선수 차단(B-02·C-04 진행 불가) |
-| 2 | **B-02** 논리 전환 | 45 → 85 | −40 | 집중 훈련 필요 |
-| 3 | **B-03** 패러프레이즈 | 40 → 80 | −40 | 5개 유형 동시 영향 |
-| 4 | **C-01** 주제 도출 | 55 → 90 | −35 | B-01·B-02 충족 후 진입 |
-| 5 | **C-02** 암묵적 추론 | 35 → 85 | −50 | B-03 보강 후 단계 진입 |
+| ① | **A-02** 구문 분석 | 60 → 80 | −20 | 선수 차단 — B-02·C-04 진행 불가 |
+| ② | **B-02** 논리 전환 | 45 → 85 | **−40** | 집중 훈련 필요 |
+| ③ | **B-03** 패러프레이즈 | 40 → 80 | **−40** | 5개 유형 동시 영향 (2-C 참조) |
+| ④ | **C-01** 주제 도출 | 55 → 90 | −35 | B-01·B-02 충족 후 진입 |
+| ⑤ | **C-02** 암묵적 추론 | 35 → 85 | **−50** | B-03 보강 후 단계 진입 |
 
-> **모든 학습자에게 다른 5개** 가 출력됨 → 일괄 커리큘럼의 종언.
+> **모든 학습자에게 다른 5개** 가 출력됨 → 일괄 커리큘럼의 종언. **순서는 gap 크기가 아니라 선수관계 우선** (4-A·4-B 참조).
 
 ---
 
@@ -497,14 +518,34 @@ flowchart LR
 
 > **"학습자의 거리, 좌표로 측정한다."**
 
-| 단계 | 핵심 산출 | 근거 레포 |
-|---|---|---|
-| ① 갭 인식 | Lexile · 어휘 · Bloom 비대칭 | `md-graph-db/et-craft/lecture_v2.md` |
-| ② 역량 분해 | 12 micro-skill × 4 mastery | `csat-text-graph-maker/.../micro-skills.ts` |
-| ③ 진단 | 1PL Rasch IRT CAT | `md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md` |
-| ④ 로드맵 | Prerequisite DAG + Recommender | `.../logicflow/recommender.ts` |
-| ⑤ 학습 | 137,745 문항 × 2-Stage LLM | `md-graph-db/docs/DATABASE_ARCHITECTURE.md` |
-| ⑥ Progress | θ 이동 + 마스터리 게이트 | 同上 + `MASTERY_LEVELS` |
+```mermaid
+flowchart LR
+    S1["① 갭 인식<br/>Lexile · 어휘 · Bloom"]
+    S2["② 역량 분해<br/>12 micro-skill<br/>× 4 mastery"]
+    S3["③ 진단<br/>1PL Rasch IRT<br/>CAT"]
+    S4["④ 로드맵<br/>Prerequisite DAG<br/>+ Recommender"]
+    S5["⑤ 학습<br/>137,745 문항<br/>× 2-Stage LLM"]
+    S6["⑥ Progress<br/>θ 이동 +<br/>마스터리 게이트"]
+
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    S6 -.재진단.-> S3
+
+    style S1 fill:#fee2e2,stroke:#dc2626
+    style S2 fill:#fed7aa,stroke:#ea580c
+    style S3 fill:#fef3c7,stroke:#ca8a04
+    style S4 fill:#d1fae5,stroke:#059669
+    style S5 fill:#dbeafe,stroke:#2563eb
+    style S6 fill:#e9d5ff,stroke:#9333ea
+```
+
+| 단계 | 핵심 출처 |
+|---|---|
+| ① 갭 인식 | `md-graph-db/et-craft/lecture_v2.md` |
+| ② 역량 분해 | `csat-text-graph-maker/.../micro-skills.ts` (12 skill × `MASTERY_LEVELS`) |
+| ③ 진단 | `md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md` (b ∈ [−3.00, +3.67]) |
+| ④ 로드맵 | `.../logicflow/recommender.ts` (`getRecommendations`) |
+| ⑤ 학습 | `md-graph-db/docs/DATABASE_ARCHITECTURE.md` (137,745) + ET-Craft lineage (9 검증기, Issue Code) |
+| ⑥ Progress | `csat-graphdb-318/.../schema.ts` (`learnerMastery`, `learnerEvidence`) |
 
 ---
 
