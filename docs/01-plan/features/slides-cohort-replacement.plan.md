@@ -220,5 +220,9 @@ Design 단계 진입 전 데이터 가용성 사전 점검 결과, **원본 Plan
 
 - [x] Plan reviewed by: smilepat (2026-05-18, original)
 - [x] Plan-B amendment reviewed by: smilepat (2026-05-18, after data availability check)
-- [ ] Plan-B execution complete (label-first) → 곧 진행
-- [ ] Original FR-01~04 deferred until reopen trigger met
+- [x] Plan-B execution complete (label-first) — 2026-05-18
+  - 2-A 하단 막대: "추정" 명시 + Plan §8.4 트리거 링크 부착 (`SLIDES_GAP_TO_PROGRESS.md`)
+  - 6-A, 6-B, 6-C: 각각 ⚠️ 추정값 박스 부착
+  - 부록: §"⚠️ 추정·보류 자료 (실측 대기 중)" 신설, 4개 슬라이드별 실측 산출 방법 명시
+  - SC-B1~B4 모두 충족 (2-A·6-A·6-B·6-C 라벨 누락 0개, 부록 동기화, Marp HTML 재빌드 성공, Plan §8 보존)
+- [x] Original FR-01~04 deferred until reopen trigger met (§8.4 참조)

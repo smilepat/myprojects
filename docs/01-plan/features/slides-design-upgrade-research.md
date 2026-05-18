@@ -424,5 +424,26 @@ build_revealjs.js (T2 후)
 ## Sign-off
 
 - [x] Research drafted: 2026-05-18 (smilepat)
-- [ ] Decision on track(s) to pursue (Q1–Q5 답변 후 결정)
-- [ ] If T1+T2 selected → spawn separate PDCA Plan for execution
+- [x] Decision logged: **시나리오 B (T1+T2)** — 2026-05-18 (smilepat)
+- [x] PDCA Plan spawned: [slides-design-t1t2.plan.md](slides-design-t1t2.plan.md)
+
+### Decision Log (2026-05-18)
+
+§10 의사결정 매트릭스 답변:
+
+| Q | 답변 | 영향 |
+|---|---|---|
+| Q1. 1차 청중 | **교사·교육청** (B2B/B2G, 30분+ 강연) | 정보밀도·구조 중심 → 코드 기반 트랙 적합 |
+| Q2. 사용 시점 | **3개월+** (장기 자산화) | 단계적 접근 가능, 즉시 1-shot 산출물 불필요 |
+| Q3. 디자이너 협업 | **없음 — 혼자** | T4d Figma 협업 트랙 배제 |
+| Q4. MD 단일 소스 | **절대 유지** | T4a~c 외부 AI 도구 배제 (snapshot 산출만 허용) |
+| Q5. 구독료 | (생략) | — |
+
+**선택된 트랙:** §8 우선순위 매트릭스의 🥇 + 🥈 — **T1 (디자인 토큰 + 마스터 슬라이드) + T2 (ECharts 부분 교체)**.
+
+**배제 트랙:**
+- T3 Slidev: Q2가 3개월+로 시간 여유가 있지만, T1+T2 누적 효과(+55%)가 T3 단독(+15%)보다 높음. T3는 PoC만 별도 브랜치 고려.
+- T4a–c (Gamma/Pitch/Beautiful.ai): Q4=절대 유지와 충돌.
+- T4d Figma: Q3=혼자와 충돌.
+
+**규모:** Phase A (T1) ~4h + Phase B (T2 / 5개 차트만) ~6h = **~10h 합계**.
