@@ -1,0 +1,19 @@
+# Build artifacts — Marp/Mermaid output
+slides_build/
+*.html
+
+# Tool state
+.bkit/
+.claude/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Node (in case marp/mmdc deps are installed locally)
+node_modules/
+package-lock.json
+yarn.lock
