@@ -5,31 +5,63 @@ class: invert
 paginate: false
 size: 16:9
 style: |
+  /* Pretendard Variable CDN (Marp HTML export inherits this) */
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+  /* Design tokens — dark variant (Apple SF palette).
+     Color scheme is intentionally distinct from SLIDES_GAP_TO_PROGRESS.md
+     (which uses #2563eb light theme). Typography & spacing tokens
+     are aligned with that deck via Pretendard Variable.        */
+  :root {
+    --pd-red:        #FF3B30;
+    --pd-muted:      #8E8E93;
+    --pd-footer:     #48484A;
+    --pd-bg:         #000000;
+    --pd-fg:         #FFFFFF;
+    --pd-font:       'Pretendard Variable', Pretendard, 'SF Pro Display',
+                     -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
   section {
-    font-family: 'Pretendard', 'SF Pro Display', -apple-system, sans-serif;
-    background: #000;
-    color: #fff;
+    font-family: var(--pd-font);
+    background: var(--pd-bg);
+    color: var(--pd-fg);
     padding: 80px;
+    letter-spacing: -0.01em;
   }
   h1 {
     font-size: 64px;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
   }
   h2 {
     font-size: 44px;
     font-weight: 600;
+    letter-spacing: -0.02em;
   }
+  h3 {
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--pd-muted);
+  }
+  strong { font-weight: 700; }
+
   .big {
     font-size: 120px;
     font-weight: 800;
     letter-spacing: -0.04em;
+    line-height: 1;
   }
-  .red { color: #FF3B30; }
-  .muted { color: #8E8E93; font-size: 28px; }
-  ul { font-size: 32px; line-height: 1.6; }
-  table { font-size: 28px; }
-  footer { color: #48484A; font-size: 16px; }
+  .red    { color: var(--pd-red); }
+  .muted  { color: var(--pd-muted); font-size: 28px; line-height: 1.45; }
+  ul      { font-size: 32px; line-height: 1.6; }
+  ul strong { color: var(--pd-fg); }
+  table   { font-size: 28px; border-collapse: collapse; }
+  table th { font-weight: 600; padding: 8px 16px; border-bottom: 2px solid var(--pd-muted); }
+  table td { padding: 6px 16px; border-bottom: 1px solid #2C2C2E; }
+  footer  { color: var(--pd-footer); font-size: 16px; }
+  a       { color: var(--pd-red); border-bottom: 1px dotted; }
 ---
 
 <!-- _class: invert -->
