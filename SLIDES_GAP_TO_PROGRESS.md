@@ -47,6 +47,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 1-D. 한국 vs 미국 — 읽기 노출량 **약 44배 격차**
 
 ```mermaid
