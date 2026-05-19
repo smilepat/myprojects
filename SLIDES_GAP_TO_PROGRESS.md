@@ -24,6 +24,8 @@ footer: "수능 1등급까지의 거리, 계량화하다"
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 1-A. 10년 종단 Lexile — 학년별 4 cohort 분기
 
 ```mermaid
@@ -74,6 +76,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 1-E. 수업시간 부족 — CEFR B1 도달이 **수학적으로 불가능**
 
 ```mermaid
@@ -95,6 +99,8 @@ xychart-beta
 > 출처: `Korea_English_Solution/EDUCATION_ANALYSIS.md` §1.2.
 
 ---
+
+<!-- _class: layout-chart-focus -->
 
 ## 1-F. 격차율 누진 — 학년 진행에 따라 **단조 증가**
 
@@ -183,6 +189,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 1-B. 어휘 누적 곡선 — 초등 800 → 수능 6,000 word families
 
 ```mermaid
@@ -201,6 +209,8 @@ xychart-beta
 | **수능** | **B2** | **6,000** | 同上 |
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 1-C. 평가 비대칭 — 학교 내신 vs 수능 (4축 비교)
 
@@ -273,6 +283,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 2-B. 1개 결함이 N개 문항 유형을 무력화한다
 
 **B-03 "패러프레이즈 매핑"이 결함일 때 영향받는 수능 문항 유형:**
@@ -292,6 +304,8 @@ graph LR
 출처: `QUESTION_TYPE_SKILL_MAP` (micro-skills.ts) — 19개 수능 유형이 12개 skill의 조합.
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 2-C. Skill 영향력 — 어느 skill이 가장 많은 유형을 좌우하나
 
@@ -436,6 +450,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 2-F. 학습 결손 영역 — 어디서 가장 자주 막히나
 
 ```mermaid
@@ -462,6 +478,8 @@ pie showData
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 3-A. IRT 1PL Rasch — 문항·학습자를 동일 척도 위에
 
 ```mermaid
@@ -477,6 +495,8 @@ xychart-beta
 - 학습자 능력 θ도 같은 척도 → **거리 = (목표 b) − (현재 θ)** 가 그대로 계산됨
 
 ---
+
+<!-- _class: layout-chart-focus -->
 
 ## 3-B. 적응형 진단 수렴 — 평균 풀이 단계 절반으로
 
@@ -498,6 +518,8 @@ CAT 표준: 고정형 대비 풀이 단계 약 **50% 단축** (Wainer 2000, `log
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 3-C. 4단계 마스터리 게이트 — 학습자의 현재 좌표
 
 ```mermaid
@@ -516,6 +538,8 @@ xychart-beta
 | **Mastered** | **86–100** | **마스터** | **수능 1등급 영역** |
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 3-D. IRT 캘리브레이션 로드맵 — Phase 1→2→3
 
@@ -556,6 +580,8 @@ gantt
 > 출처: `micro-skills.ts` (`prerequisites` 필드) + `recommender.ts`
 
 ---
+
+<!-- _class: layout-chart-focus -->
 
 ## 4-A. Skill 선수관계 DAG — 학습 경로의 골격
 
@@ -600,6 +626,8 @@ graph TD
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 4-B. Recommender 알고리즘 — 우선순위 자동 결정
 
 ```mermaid
@@ -618,6 +646,8 @@ flowchart TD
 출처: [`csat-text-graph-maker/src/lib/logicflow/recommender.ts`](https://github.com/smilepat/csat-text-graph-maker/blob/main/src/lib/logicflow/recommender.ts) `getRecommendations()`.
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 4-C. 학습자 예시: 추천 로드맵 (5단계 우선순위)
 
@@ -643,6 +673,8 @@ xychart-beta
 > **모든 학습자에게 다른 5개** 가 출력됨 → 일괄 커리큘럼의 종언. **순서는 gap 크기가 아니라 선수관계 우선** (4-A·4-B 참조).
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 4-D. 케이스 스터디 — Student B: 410L → 1000L (2년 계획)
 
@@ -686,6 +718,8 @@ def calculate_required_time(current_level, target_level):
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 5-A. 학습 문항 자산 — 데이터 + 생성 시스템
 
 ```mermaid
@@ -710,6 +744,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 5-B. 난이도가 좌표로 제어됨 — `learning_step` ↔ `b_value`
 
 ```mermaid
@@ -729,6 +765,8 @@ xychart-beta
 같은 단어라도 **5D × 3step**로 15가지 학습 패턴 → "어려우면 더 쉬운 같은 단어"가 즉시 출제됨.
 
 ---
+
+<!-- _class: layout-chart-focus -->
 
 ## 5-C. 2-Stage LLM × 9 검증기 × Issue Code 분기
 
@@ -765,6 +803,8 @@ flowchart LR
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 5-D. Issue Code 분류 체계 — 검증의 메타데이터화
 
 ```mermaid
@@ -794,6 +834,8 @@ xychart-beta
 > **함의:** 검증이 *분류·심각도·수정가능성* 3축으로 메타데이터화 → 자동 보정·재시도·통계 모두 가능. *"PASS/FAIL"이 아니라 **분류된 처방"*.
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 5-E. 문항 생성 시스템 운영 KPI — 현재 vs 목표 5축 비교
 
@@ -869,6 +911,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 6-B. 마스터리 레벨 이동 — 시각적 카운트 (예시·추정)
 
 ```mermaid
@@ -887,6 +931,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
 ## 6-C. 누적 학습 시간 ↔ θ 상승 — "노력의 가시화" (예시·추정)
 
 ```mermaid
@@ -902,6 +948,8 @@ xychart-beta
 **핵심:** θ가 0.0(=수능 평균 난이도 정답률 50%) → +1.0(=수능 상위권)으로 직진. **좌표축은 실측**(`md-graph-db/docs/IRT_CALIBRATION_GUIDELINE.md` b 범위 −3.00~+3.67), **진행 속도는 추정**.
 
 ---
+
+<!-- _class: layout-chart-focus -->
 
 ## 6-D. 진단 → 학습 → 재진단 루프
 
@@ -934,6 +982,8 @@ flowchart LR
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 7-A. TAM — 3개 세그먼트 × 3개 채널
 
 ```mermaid
@@ -953,6 +1003,8 @@ xychart-beta
 > **베이치헤드:** B2B(교사 도구)로 진입 — 교사 1명 → 학급 30명 = **1:30 레버리지**. 교사 신뢰 확보 후 B2C·B2G로 확장.
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 7-B. 단가 비교 — 인간 강사 대비 **100–180배** 저렴
 
@@ -977,6 +1029,8 @@ xychart-beta
 > 출처: `LECTURE_V2.md` 슬라이드 19 (Azure OpenAI GPT-4-turbo 기준 추정치).
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 7-C. D5 모드 vs 인간 1:1 코칭 — 카테고리 정의
 
@@ -1003,6 +1057,8 @@ xychart-beta
 
 ---
 
+<!-- _class: layout-2col -->
+
 ## 7-D. 경쟁 포지셔닝 — 5축에서 우리만 풀스택
 
 ```mermaid
@@ -1024,6 +1080,8 @@ xychart-beta
 > 출처: `LECTURE_V2.md` 슬라이드 20.
 
 ---
+
+<!-- _class: layout-2col -->
 
 ## 7-E. 마일스톤 — 2026.06 베타 → 2027 하반기 sLLM
 
