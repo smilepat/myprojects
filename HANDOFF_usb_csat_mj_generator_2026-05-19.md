@@ -1,9 +1,17 @@
 # Handoff — usb_csat_mj_generator 진단 + sql.js bind fix
 
-**날짜**: 2026-05-19
+**날짜**: 2026-05-19 (P0 + P1-P4 모두 머지)
 **Repo**: [smilepat/usb_csat_mj_generator](https://github.com/smilepat/usb_csat_mj_generator) (archived, Tier 3-B)
-**세션 산출 PR**: [#2 merged](https://github.com/smilepat/usb_csat_mj_generator/pull/2) · **Issue**: [#1 open](https://github.com/smilepat/usb_csat_mj_generator/issues/1)
-**Status**: P0 해결 완료 · P1-P5 follow-up 남음
+**머지된 PR (7개)**:
+- [#2 fix](https://github.com/smilepat/usb_csat_mj_generator/pull/2) — sql.js bind error (P0)
+- [#3 fix](https://github.com/smilepat/usb_csat_mj_generator/pull/3) — normalize object options (P1, closes #1)
+- [#4 improve](https://github.com/smilepat/usb_csat_mj_generator/pull/4) — LC11 distractor strategy (P2)
+- [#5 feat](https://github.com/smilepat/usb_csat_mj_generator/pull/5) — Layer 4 audit gate (P3)
+- [#6 improve](https://github.com/smilepat/usb_csat_mj_generator/pull/6) — LC14/LC16 prompt strengthen (P2-bis)
+- [#7 feat](https://github.com/smilepat/usb_csat_mj_generator/pull/7) — /api/metrics/quality endpoint (P4)
+
+**Status**: P0-P4 완료 · P5 archive 정책 결정만 남음
+**스팟 체크 카드**: [spot-check/](spot-check/) — 4종 카드, 사람 검수 1회 진행됨 ("괜찮은 상태")
 
 ---
 
@@ -104,7 +112,9 @@ function toScalar(v) {
 
 ## 5. 향후 개선사항 (우선순위)
 
-### 🟡 P1 — Normalizer 근본수정 (Issue #1)
+> **업데이트 (2026-05-19)**: P1·P2·P2-bis·P3·P4 모두 완료, main에 머지됨. 아래 § 각 항목은 작업 시작 시점의 plan이며, 실제 결과는 §10 (신규)에 정리.
+
+### ✅ P1 — Normalizer 근본수정 (Issue #1) — DONE in PR #3
 **상태**: archived 상태로 issue만 열어둠. 작업 재개시 unarchive 필요.
 
 **작업 범위** (`services/normalizer.js` 또는 `jsonUtils.normalizeItemJson`):
@@ -135,7 +145,7 @@ function normalizeAnswer(a, options) {
 
 ---
 
-### 🟡 P2 — Distractor plausibility 강화 (audit 점수 95+ 보장)
+### ✅ P2 — Distractor plausibility 강화 — DONE in PR #4, P2-bis in PR #6
 **대상 유형** (이번 batch에서 D4 ≤ 90):
 - Item 11 (짧은 응답) — D4=75, plaus=[1, 0.5, 0.6, 0.1, 0.2]
 - Item 14 (긴 대화) — D4=90
@@ -150,7 +160,7 @@ function normalizeAnswer(a, options) {
 
 ---
 
-### 🟢 P3 — smilepat audit을 생성 파이프라인의 4번째 게이트로 통합
+### ✅ P3 — Layer 4 audit gate — DONE in PR #5 (auto-inherits to set path)
 **현재 게이트** (`itemPipeline.js` 흐름):
 1. LLM 호출 → JSON parse
 2. `validators/*` (grammar, gap, chart, set)
@@ -170,7 +180,7 @@ function normalizeAnswer(a, options) {
 
 ---
 
-### 🟢 P4 — Variance & Quality Monitoring
+### ✅ P4 — Quality endpoint — DONE in PR #7 (dashboard UI는 후속)
 - 동일 `topic`에 대해 3회 생성 → overall_score 분산이 σ > 5이면 alert
 - 시간대별 audit 점수 평균 추세 (model drift 감지)
 - Prompt version별 quality 추적: `prompt_versions/`에 audit 평균 메타데이터 함께 저장
@@ -288,6 +298,58 @@ gh api -X PATCH repos/smilepat/usb_csat_mj_generator -F archived=true
 - **App Factory + 도메인 audit 조합**: atlas (인프라/아키텍처) + 도메인 audit (출력 품질) 양쪽 측정
 
 [[project_smilepat_audit]]의 portable profile 시스템이 다른 도메인 (예: 일러스트 검수, 데이터 분석 보고서 검수)에도 확장 가능.
+
+---
+
+## 10. 완료 결과 (2026-05-19 — 동일 세션 내 후속 작업)
+
+§5의 P1~P4 모두 main에 머지됨. P5 archive 정책만 미결정.
+
+### 머지된 PR 7건
+
+| PR | 제목 | 핵심 효과 |
+|---|---|---|
+| #2 | sql.js bind error 차단 (P0) | 33% 실패율 → 0% |
+| #3 | normalizer 근본수정 (P1) | DB의 JSON-as-text → 평문, Issue #1 close |
+| #4 | LC11 distractor strategy (P2) | D4 75 → 90 (+15) |
+| #5 | Layer 4 audit gate (P3) | 외부 audit 통합, item_metrics에 layer4_* 컬럼 |
+| #6 | LC14/LC16 prompt strengthen (P2-bis) | D4 +2.5 / +0 (modest — 솔직히 marginal) |
+| #7 | /api/metrics/quality endpoint (P4) | Layer 4 집계 노출 (dashboard 데이터 소스) |
+
+### 측정된 효과 표
+
+| KPI | Pre-session | P0 후 | **P0~P4 후** |
+|---|---|---|---|
+| 24문항 생성 성공률 | 67% | 100% | **100%** |
+| LC11 D4 | 75 | 75 | **90** |
+| LC14 D4 | 90 | 90 | 92.5 |
+| LC16 D4 | 90 | 90 | 90 |
+| DB raw JSON 저장 | ~33% | stringify | **평문** |
+| 외부 audit | 수동 | 수동 | **자동 (env opt-in)** |
+| Audit 데이터 축적 | 별도 | 별도 | **item_metrics.layer4_*** |
+| Quality 집계 endpoint | 없음 | 없음 | **/api/metrics/quality** |
+
+### 사람 검수 (Spot-check)
+
+[spot-check/](spot-check/) 디렉터리에 4종 카드 작성, 1회 사람 검수 진행됨 (결과: "괜찮은 상태"). production 출고 전 batch당 N=2-3 무작위 spot-check 권장.
+
+### P5 archive 정책 (미결정)
+
+이번 세션은 (b) 시나리오 (일시 unarchive → P1-P4 진행 → 재 archive)로 진행됨. 다음 활성 작업 사이클 (예: dashboard UI, set-coherence audit, learner pre-test 통합 등) 필요 시 동일 절차:
+
+```powershell
+gh api -X PATCH repos/smilepat/usb_csat_mj_generator -F archived=false
+# 작업 + merge
+gh api -X PATCH repos/smilepat/usb_csat_mj_generator -F archived=true
+```
+
+### 남은 follow-up (이번 세션 범위 밖)
+
+- 🟢 Dashboard UI (P4 endpoint 소비) — React Quality.js 페이지에 layer4_* 차트 추가
+- 🟢 Set-coherence audit (RC43-45 같은 multi-item 세트의 일관성)
+- 🟢 σ > 5 drift alert (Slack/이메일)
+- 🟡 N=20+ 학습자 사전 테스트 통합 (정답률·매력도 실측)
+- 🟡 Bundle smilepat profile into web-app or npm package (현재 env path 의존)
 
 ---
 
