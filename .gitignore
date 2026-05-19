@@ -9,6 +9,7 @@ slides_build/*
 !slides_build/package.json
 !slides_build/README.md
 *.html
+!slides_build/landing.html
 
 # Tool state
 .bkit/

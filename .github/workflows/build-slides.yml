@@ -140,3 +140,54 @@ jobs:
             PITCH_DECK.pdf
           if-no-files-found: warn
           retention-days: 30
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: [reveal-deck, marp-deck]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Reveal deck artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: SLIDES_GAP_TO_PROGRESS-html
+          path: ./_site
+
+      - name: Download Pitch deck artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PITCH_DECK
+          path: ./_site
+
+      - name: Add landing page + inject build timestamp + noindex meta
+        run: |
+          cp slides_build/landing.html ./_site/index.html
+          BUILD_TS=$(date -u '+%Y-%m-%d %H:%M UTC')
+          # Inject build timestamp as data attribute on <html>
+          sed -i "s|<html lang=\"ko-KR\">|<html lang=\"ko-KR\" data-build-ts=\"${BUILD_TS}\">|" ./_site/index.html
+          # Inject noindex meta into the deck HTML files (they didn't have it originally)
+          for f in ./_site/SLIDES_GAP_TO_PROGRESS.html ./_site/PITCH_DECK.html; do
+            if [ -f "$f" ] && ! grep -q "name=\"robots\"" "$f"; then
+              sed -i 's|<head>|<head>\n<meta name="robots" content="noindex,nofollow">|' "$f"
+            fi
+          done
+          echo "::notice::Pages bundle ready"
+          ls -lh ./_site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

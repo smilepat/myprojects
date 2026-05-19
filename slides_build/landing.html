@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ET-Craft 슬라이드 인덱스</title>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<style>
+  :root {
+    --color-primary:        #2563eb;
+    --color-primary-light:  #dbeafe;
+    --color-primary-dark:   #1e40af;
+    --color-accent:         #ef4444;
+    --color-success:        #10b981;
+    --color-warning:        #f59e0b;
+    --color-text:           #0f172a;
+    --color-text-muted:     #64748b;
+    --color-text-faint:     #94a3b8;
+    --color-bg:             #ffffff;
+    --color-bg-card:        #f8fafc;
+    --color-border:         #e2e8f0;
+    --radius-md:            12px;
+    --radius-lg:            16px;
+    --shadow-card:          0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg:            0 8px 28px rgba(15,23,42,0.08);
+    --font:                 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: var(--font); color: var(--color-text); background: var(--color-bg);
+    min-height: 100vh; line-height: 1.55;
+  }
+  body {
+    background:
+      radial-gradient(ellipse 1200px 600px at 20% -10%, var(--color-primary-light) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 500px at 110% 0%, #fef3c7 0%, transparent 55%),
+      var(--color-bg);
+    background-attachment: fixed;
+  }
+  main { max-width: 980px; margin: 0 auto; padding: 64px 32px 96px; }
+  header {
+    margin-bottom: 56px;
+  }
+  .eyebrow {
+    display: inline-block; padding: 4px 12px;
+    background: var(--color-primary-light); color: var(--color-primary-dark);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    border-radius: 9999px; margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.025em;
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: 12px;
+  }
+  .subtitle { font-size: 18px; color: var(--color-text-muted); max-width: 720px; }
+
+  section.decks { display: grid; gap: 24px; }
+  @media (min-width: 720px) { section.decks { grid-template-columns: 1fr 1fr; } }
+
+  .deck-card {
+    display: flex; flex-direction: column;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
+    text-decoration: none; color: inherit;
+    box-shadow: var(--shadow-card);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+  .deck-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+  }
+  .deck-card .tag {
+    display: inline-block; align-self: flex-start;
+    padding: 3px 10px; border-radius: 9999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .deck-card.main .tag  { background: var(--color-primary-light); color: var(--color-primary-dark); }
+  .deck-card.pitch .tag { background: #1c1c1e; color: #fff; }
+
+  .deck-card h2 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+    color: var(--color-text); margin-bottom: 8px;
+  }
+  .deck-card p {
+    font-size: 14px; color: var(--color-text-muted); margin-bottom: 16px; flex-grow: 1;
+  }
+  .deck-card .meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 12px; color: var(--color-text-faint);
+    padding-top: 14px; border-top: 1px dashed var(--color-border);
+  }
+  .deck-card .cta {
+    margin-top: 18px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 14px; font-weight: 600; color: var(--color-primary);
+  }
+  .deck-card .cta::after { content: "→"; transition: transform 160ms ease; }
+  .deck-card:hover .cta::after { transform: translateX(4px); }
+
+  footer {
+    margin-top: 64px; padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-faint); font-size: 13px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer code {
+    font-family: 'JetBrains Mono', 'D2Coding', Consolas, monospace;
+    font-size: 12px; color: var(--color-text-muted);
+    background: var(--color-bg-card); padding: 1px 6px; border-radius: 4px;
+  }
+  footer a { color: var(--color-text-muted); text-decoration: none; border-bottom: 1px dotted; }
+  footer a:hover { color: var(--color-primary); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="eyebrow">ET-CRAFT · 측정 가능한 영어교육</span>
+    <h1>슬라이드 인덱스</h1>
+    <p class="subtitle">
+      두 가지 deck — 데이터로 본 갭과 진단, Apple 생태계 협업 제안. 빌드는
+      GitHub Actions로 자동 (push to main).
+    </p>
+  </header>
+
+  <section class="decks">
+    <a class="deck-card main" href="./SLIDES_GAP_TO_PROGRESS.html">
+      <span class="tag">MAIN · Reveal.js</span>
+      <h2>수능 영어, 거리로 보다</h2>
+      <p>
+        교육과정 ↔ 수능 ↔ 학습자 역량을 하나의 좌표계에 올리는 시스템.
+        36 차트 · 12 micro-skill · IRT 1PL · 137,745 학습 문항.
+      </p>
+      <div class="meta">
+        <span>📊 36 차트 (31 Mermaid + 5 ECharts)</span>
+        <span>🎨 디자인 토큰 + 4 마스터</span>
+      </div>
+      <span class="cta">열기</span>
+    </a>
+
+    <a class="deck-card pitch" href="./PITCH_DECK.html">
+      <span class="tag">PITCH · Marp</span>
+      <h2>Apple 생태계 협업 제안</h2>
+      <p>
+        한국 EFL EdTech 콘텐츠 컨소시엄. Apple Keynote 스타일 다크
+        모드, K-12 전체 trajectory + 7 정거장 모델.
+      </p>
+      <div class="meta">
+        <span>🌑 Apple 다크 모드</span>
+        <span>📑 PDF/PPTX export 가능</span>
+      </div>
+      <span class="cta">열기</span>
+    </a>
+  </section>
+
+  <footer>
+    <span>
+      Build: <code id="build-ts">—</code> ·
+      <a href="https://github.com/smilepat/myprojects" rel="noopener">smilepat/myprojects</a>
+    </span>
+    <span>noindex · private repo · Pages auto-deploy</span>
+  </footer>
+</main>
+
+<script>
+  // Build timestamp is injected at deploy time; fall back to "—" locally.
+  const ts = document.documentElement.getAttribute("data-build-ts");
+  if (ts) document.getElementById("build-ts").textContent = ts;
+</script>
+</body>
+</html>
