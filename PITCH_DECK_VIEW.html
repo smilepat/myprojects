@@ -393,17 +393,38 @@ style: |
   const status = document.getElementById('status');
   const root = document.getElementById('root');
   try {
-    const { Marp } = await import('https://esm.run/@marp-team/marp-core@latest');
-    const md = document.getElementById('md-source').textContent;
-    const marp = new Marp({ html: true, inlineSVG: true });
-    const { html, css } = marp.render(md);
-    document.head.insertAdjacentHTML('beforeend', '<style>' + css + '</style>');
-    root.innerHTML = html;
-    const count = root.querySelectorAll('section').length;
-    status.textContent = `슬라이드 ${count}장 · 한 페이지씩 스크롤`;
+    const { marked } = await import('https://esm.sh/marked@12');
+    const raw = document.getElementById('md-source').textContent;
+
+    // Extract YAML frontmatter (first --- ... --- block at top)
+    const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+    const body = fmMatch ? raw.slice(fmMatch[0].length) : raw;
+
+    // Pull out the `style: |` block from frontmatter and inject as <style>
+    if (fmMatch) {
+      const styleMatch = fmMatch[1].match(/style:\s*\|\s*\r?\n((?:[ \t].*(?:\r?\n|$))+)/);
+      if (styleMatch) {
+        const css = styleMatch[1].replace(/^[ \t]{2}/gm, '');
+        document.head.insertAdjacentHTML('beforeend', '<style>' + css + '</style>');
+      }
+    }
+
+    // Split into slides on standalone `---` lines
+    const parts = body.split(/\r?\n---\r?\n/).map(s => s.trim()).filter(Boolean);
+
+    // Render each slide via marked, wrap in <section>
+    marked.setOptions({ gfm: true, breaks: false });
+    parts.forEach(md => {
+      const cleaned = md.replace(/<!--[\s\S]*?-->/g, '');
+      const section = document.createElement('section');
+      section.innerHTML = marked.parse(cleaned);
+      root.appendChild(section);
+    });
+
+    status.textContent = `슬라이드 ${parts.length}장 · 한 페이지씩 스크롤`;
   } catch (e) {
     status.textContent = '오류 — 인터넷 연결 확인';
-    root.innerHTML = `<pre style="color:#fff;background:#222;padding:30px;margin:30px;border-radius:8px;font-family:monospace;">렌더 실패: ${e.message}\n\n인터넷 연결을 확인하거나, VS Code Marp 확장을 사용하세요 (Ctrl+K V).</pre>`;
+    root.innerHTML = `<pre style="color:#fff;background:#222;padding:30px;margin:30px;border-radius:8px;font-family:monospace;white-space:pre-wrap;">렌더 실패: ${e.message}\n\n인터넷 연결을 확인하세요.</pre>`;
   }
   document.getElementById('fullscreen').onclick = (e) => {
     e.preventDefault();
