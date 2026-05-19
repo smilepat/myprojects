@@ -28,18 +28,67 @@ footer: "수능 1등급까지의 거리, 계량화하다"
 
 ## 1-A. 10년 종단 Lexile — 학년별 4 cohort 분기
 
-```mermaid
-xychart-beta
-    title "초3→고3 Lexile 4-cohort (목표·상위5%·평균·하위25%)"
-    x-axis ["초3","초4","초5","초6","중1","중2","중3","고1","고2","고3"]
-    y-axis "Lexile (L)" 0 --> 1300
-    line [300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
-    line [350, 450, 550, 650, 750, 850, 950, 1050, 1150, 1250]
-    line [250, 320, 400, 480, 550, 620, 700, 780, 850, 950]
-    line [150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
+```echarts h=500
+{
+  "title": { "text": "초3→고3 Lexile 4-cohort 분기", "subtext": "Y축: Lexile (L) · 수능 지문 1,100–1,300L 영역 강조", "left": "center", "top": 8 },
+  "legend": { "data": ["상위 5%", "목표 궤적 (수능 1200L)", "평균 학생", "하위 25%"], "bottom": 8, "icon": "roundRect" },
+  "grid": { "left": 64, "right": 32, "top": 76, "bottom": 64, "containLabel": true },
+  "xAxis": {
+    "type": "category",
+    "boundaryGap": false,
+    "data": ["초3","초4","초5","초6","중1","중2","중3","고1","고2","고3"],
+    "axisLabel": { "fontWeight": 600 }
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "Lexile (L)",
+    "min": 0, "max": 1300,
+    "splitLine": { "lineStyle": { "color": "#e2e8f0" } }
+  },
+  "series": [
+    {
+      "name": "상위 5%", "type": "line",
+      "data": [350, 450, 550, 650, 750, 850, 950, 1050, 1150, 1250],
+      "smooth": true, "symbol": "circle", "symbolSize": 6,
+      "lineStyle": { "width": 2.5, "color": "#1e40af" },
+      "itemStyle": { "color": "#1e40af" }
+    },
+    {
+      "name": "목표 궤적 (수능 1200L)", "type": "line",
+      "data": [300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],
+      "smooth": true, "symbol": "circle", "symbolSize": 7,
+      "lineStyle": { "width": 3, "color": "#2563eb" },
+      "itemStyle": { "color": "#2563eb" },
+      "areaStyle": { "color": "rgba(37, 99, 235, 0.12)" },
+      "markArea": {
+        "silent": true,
+        "itemStyle": { "color": "rgba(37, 99, 235, 0.08)" },
+        "label": { "show": true, "position": "insideTopRight", "color": "#1e40af", "fontSize": 11, "fontWeight": 600 },
+        "data": [[
+          { "yAxis": 1100, "name": "수능 지문 1,100–1,300L" },
+          { "yAxis": 1300 }
+        ]]
+      }
+    },
+    {
+      "name": "평균 학생", "type": "line",
+      "data": [250, 320, 400, 480, 550, 620, 700, 780, 850, 950],
+      "smooth": true, "symbol": "circle", "symbolSize": 6,
+      "lineStyle": { "width": 2.5, "color": "#f59e0b" },
+      "itemStyle": { "color": "#f59e0b" }
+    },
+    {
+      "name": "하위 25%", "type": "line",
+      "data": [150, 200, 250, 300, 350, 400, 450, 500, 550, 600],
+      "smooth": true, "symbol": "circle", "symbolSize": 6,
+      "lineStyle": { "width": 2.5, "color": "#ef4444" },
+      "itemStyle": { "color": "#ef4444" }
+    }
+  ]
+}
 ```
 
-위에서부터: 🔵 **상위 5%** / 🟦 **목표 궤적 (수능 1200L 도달)** / 🟧 **평균 학생** / 🔴 **하위 25%**.
+🟦 **목표 궤적**이 수능 1,200L 도달하나 **평균 학생은 고3에 950L**(약 250L 격차), **하위 25%는 600L**로 수능 지문 진입 불가.
 
 - **MetaMetrics 2023:** *"43% of Korean 12th graders were reading below 1000L"* (수능 지문 도달 불가)
 - **수능 지문:** 1,100–1,300L · **고3 평균:** ~950L → **고3 1년 동안 250–350L 격차** 잔존
@@ -1008,12 +1057,45 @@ xychart-beta
 
 ## 7-B. 단가 비교 — 인간 강사 대비 **100–180배** 저렴
 
-```mermaid
-xychart-beta
-    title "문항 1개 제작 단가 (원, 로그 스케일)"
-    x-axis ["AI 원가","Stage 2 생성","Stage 1 분석","검증·후처리","인간강사 (저)","인간강사 (고)"]
-    y-axis "log10(원)" 0 --> 4.5
-    bar [1.93, 1.70, 1.48, 0.70, 3.90, 4.18]
+```echarts h=480
+{
+  "title": { "text": "문항 1개 제작 단가 비교 (원, log 스케일)", "subtext": "AI 원가 85원 · 인간 강사 8,000–15,000원 → 약 100–180배 차이", "left": "center", "top": 8 },
+  "grid": { "left": 24, "right": 80, "top": 76, "bottom": 32, "containLabel": true },
+  "xAxis": {
+    "type": "log",
+    "name": "원 (log)",
+    "min": 1, "max": 20000,
+    "axisLabel": {
+      "formatter": "{value}원",
+      "fontWeight": 600
+    },
+    "splitLine": { "lineStyle": { "color": "#e2e8f0" } }
+  },
+  "yAxis": {
+    "type": "category",
+    "data": ["검증·후처리", "Stage 1 분석", "Stage 2 생성", "AI 원가 합계", "인간 강사 (저)", "인간 강사 (고)"],
+    "axisLabel": { "fontWeight": 600 },
+    "axisLine": { "show": false },
+    "axisTick": { "show": false }
+  },
+  "series": [{
+    "type": "bar",
+    "data": [
+      { "value": 5,     "itemStyle": { "color": "#dbeafe" } },
+      { "value": 30,    "itemStyle": { "color": "#93c5fd" } },
+      { "value": 50,    "itemStyle": { "color": "#3b82f6" } },
+      { "value": 85,    "itemStyle": { "color": "#2563eb" } },
+      { "value": 8000,  "itemStyle": { "color": "#fca5a5" } },
+      { "value": 15000, "itemStyle": { "color": "#ef4444" } }
+    ],
+    "label": {
+      "show": true, "position": "right",
+      "fontWeight": 600, "fontSize": 13,
+      "formatter": "{c}원"
+    },
+    "barWidth": "62%"
+  }]
+}
 ```
 
 | 비용 항목 | 단가 |
@@ -1061,12 +1143,46 @@ xychart-beta
 
 ## 7-D. 경쟁 포지셔닝 — 5축에서 우리만 풀스택
 
-```mermaid
-xychart-beta
-    title "5축 평가 (★ 0–3, 총점)"
-    x-axis ["인강(메가·EBSi)","학습지 앱","일반 AI 챗봇","ET-Craft"]
-    y-axis "5축 누적 ★" 0 --> 15
-    bar [3, 4, 3, 14]
+```echarts h=500
+{
+  "title": { "text": "경쟁 포지셔닝 5축 비교 (★ 0–3)", "subtext": "ET-Craft만 5축 풀스택", "left": "center", "top": 8 },
+  "legend": { "data": ["인강 (메가·EBSi)", "학습지 앱", "일반 AI 챗봇", "ET-Craft"], "bottom": 8 },
+  "radar": {
+    "indicator": [
+      { "name": "콘텐츠 자산",  "max": 3 },
+      { "name": "진단 깊이",    "max": 3 },
+      { "name": "생성 자동화",  "max": 3 },
+      { "name": "저작권 엔진",  "max": 3 },
+      { "name": "LMS 통합",     "max": 3 }
+    ],
+    "radius": "62%",
+    "center": ["50%", "54%"],
+    "splitArea": { "areaStyle": { "color": ["#fafbfc", "#ffffff"] } },
+    "axisName": { "color": "#0f172a", "fontWeight": 600 }
+  },
+  "series": [{
+    "type": "radar",
+    "emphasis": { "focus": "self" },
+    "data": [
+      { "name": "인강 (메가·EBSi)", "value": [3, 1, 0, 0, 0],
+        "lineStyle": { "width": 2, "color": "#94a3b8" },
+        "itemStyle": { "color": "#94a3b8" },
+        "areaStyle": { "color": "rgba(148, 163, 184, 0.10)" } },
+      { "name": "학습지 앱", "value": [2, 2, 0, 0, 0],
+        "lineStyle": { "width": 2, "color": "#f59e0b" },
+        "itemStyle": { "color": "#f59e0b" },
+        "areaStyle": { "color": "rgba(245, 158, 11, 0.10)" } },
+      { "name": "일반 AI 챗봇", "value": [1, 0, 2, 0, 0],
+        "lineStyle": { "width": 2, "color": "#8b5cf6" },
+        "itemStyle": { "color": "#8b5cf6" },
+        "areaStyle": { "color": "rgba(139, 92, 246, 0.10)" } },
+      { "name": "ET-Craft", "value": [2, 3, 3, 3, 3],
+        "lineStyle": { "width": 3, "color": "#2563eb" },
+        "itemStyle": { "color": "#2563eb" },
+        "areaStyle": { "color": "rgba(37, 99, 235, 0.22)" } }
+    ]
+  }]
+}
 ```
 
 | 플레이어 | 콘텐츠 자산 | 진단 깊이 | 생성 자동화 | 저작권 엔진 | LMS 통합 | 총점 |
@@ -1183,3 +1299,13 @@ flowchart LR
 - PDCA 추적: [docs/01-plan/features/slides-cohort-replacement.plan.md](docs/01-plan/features/slides-cohort-replacement.plan.md) §8 (Plan-B)
 
 **투자자 Q&A 응대 가이드:** "이 수치는 추정입니다 — 다만 ① 어떤 코호트로 ② 어떤 쿼리로 교체할지 ③ 어떤 임계값(n≥30)에서 신뢰할지가 모두 Plan §8에 명시되어 있고, 동일 시스템(`learnerMastery` API)이 운영 중입니다. 데이터 회사답게 *측정 방법론을 먼저 정의*하고 있습니다."
+
+## 🌐 정책·시장 컨텍스트 (외부 정합)
+
+Part 7(시장·비즈니스) 슬라이드의 외부 검증 가능한 정책·현장 신호. [PITCH_DECK.marp.md](PITCH_DECK.marp.md) Slide 11–12와 동일 출처.
+
+- **AI 디지털교과서 (AIDT)** — 2025년 영어·수학·정보 본격 도입 (초3·4, 중1, 고1) · 교육부 정책 · `aidt.keris.or.kr`
+- **경기도교육청 하이러닝** — 2025–2026 학교 제공 중 (교육청 플랫폼 통합 deployment 사례)
+- **KERIS–Samsung Solar School Project** — 아프리카 5개국 학교 배포 (온디바이스 임베디드 deployment 사례)
+
+> 이 신호들은 7-A TAM(B2G 17개 시·도) 및 7-E 마일스톤(2026 Q3 pilot · 2027 Q1 region)의 외부 정합 근거. **AI 디지털교과서 정책으로 학교당 1인 1기기 환경이 기 구축**되어 ET-Craft 도입 시 별도 인프라 비용 0.

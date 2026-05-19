@@ -217,10 +217,14 @@ body.loaded #loading { display: none; }
 }
 .reveal .slides section.lead h3,
 .reveal .slides section.layout-cover h3 {
-  font-size: 1.15em;
+  font-size: 1.3em;
   color: var(--color-text-muted);
   font-weight: 400;
-  margin-bottom: 1em;
+  line-height: 1.45;
+  margin-bottom: 1.2em;
+  max-width: 88%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .reveal .slides section.layout-cover strong { color: var(--color-primary-dark); }
 
@@ -264,7 +268,7 @@ body.loaded #loading { display: none; }
    No HTML wrapping required in markdown source. */
 .reveal .slides section.layout-2col {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   grid-auto-rows: min-content;
   column-gap: var(--space-lg);
   row-gap: var(--space-sm);
@@ -296,16 +300,20 @@ body.loaded #loading { display: none; }
   grid-column: 2;
 }
 .reveal .slides section.layout-2col table {
-  font-size: 0.62em;
+  font-size: 0.7em;
   max-width: 100%;
   margin: 0 0 var(--space-sm) 0;
+}
+.reveal .slides section.layout-2col table th,
+.reveal .slides section.layout-2col table td {
+  padding: 5px 10px;
 }
 .reveal .slides section.layout-2col blockquote {
   width: 100%;
   margin: 0;
-  font-size: 0.72em;
+  font-size: 0.78em;
 }
-.reveal .slides section.layout-2col p { font-size: 0.78em; }
+.reveal .slides section.layout-2col p { font-size: 0.82em; }
 
 /* ---------- Utility classes ---------- */
 .reveal .estimated {
