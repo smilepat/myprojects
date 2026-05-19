@@ -55,12 +55,14 @@ console.log('[1b/3] Rendering Mermaid blocks via mmdc (themed)...');
 const srcCopy = path.join(WORK, '.src.tmp.md');
 fs.writeFileSync(srcCopy, srcText, 'utf8');
 const MERMAID_CONFIG = path.join(WORK, 'mermaid-config.json');
+const PUPPETEER_CONFIG = path.join(WORK, 'puppeteer-config.json');
 const mmdcResult = spawnSync(
   'npx',
   ['--yes', '-p', '@mermaid-js/mermaid-cli', 'mmdc',
     '-i', srcCopy,
     '-o', RENDERED_MD,
     '-c', MERMAID_CONFIG,
+    '-p', PUPPETEER_CONFIG,
     '--backgroundColor', 'white'],
   { cwd: WORK, stdio: 'inherit', shell: true }
 );
