@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>LogicFlow Consortium Pitch (8장) — 슬라이드 뷰어</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #1a1a1a; min-height: 100vh; }
+  body { padding: 24px 0; }
+  #root section {
+    width: 1280px;
+    height: 720px;
+    margin: 0 auto 40px;
+    background: #000000;
+    color: #FFFFFF;
+    padding: 80px;
+    font-family: 'Pretendard', 'Pretendard Variable', 'SF Pro Display', -apple-system,
+                 BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    letter-spacing: -0.01em;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  #root section h1 { font-size: 64px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 8px; color: #FFFFFF; }
+  #root section h2 { font-size: 44px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 16px; color: #FFFFFF; }
+  #root section h3 { font-size: 30px; font-weight: 500; color: #8E8E93; margin: 0 0 16px; }
+  #root section p  { font-size: 30px; line-height: 1.5; margin: 0 0 16px; color: #FFFFFF; }
+  #root section ul, #root section ol { font-size: 30px; line-height: 1.6; padding-left: 28px; color: #FFFFFF; margin: 8px 0; }
+  #root section li { margin: 6px 0; }
+  #root section strong { font-weight: 700; color: #FFFFFF; }
+  #root section em { font-style: italic; }
+  #root section table { font-size: 24px; border-collapse: collapse; width: 100%; margin: 12px 0; }
+  #root section table th { font-weight: 600; padding: 10px 16px; border-bottom: 2px solid #8E8E93; text-align: left; color: #FFFFFF; }
+  #root section table td { padding: 8px 16px; border-bottom: 1px solid #2C2C2E; color: #FFFFFF; vertical-align: top; }
+  #root section .red { color: #FF3B30; }
+  #root section .muted { color: #8E8E93; font-size: 26px; line-height: 1.45; }
+  #root section .big { font-size: 120px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+
+  .toolbar {
+    position: fixed; top: 12px; right: 24px;
+    background: rgba(20,20,20,0.92);
+    color: #fff; padding: 10px 18px; border-radius: 8px;
+    font-family: -apple-system, system-ui, sans-serif; font-size: 13px;
+    z-index: 9999;
+  }
+  .toolbar a { color: #4ea3ff; text-decoration: none; margin-left: 14px; cursor: pointer; }
+  .toolbar a:hover { color: #7fbfff; }
+  #status { color: #aaa; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    #root section { margin: 0; page-break-after: always; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span id="status">슬라이드 로딩 중...</span>
+  <a id="fullscreen">전체화면</a>
+  <a id="print">PDF로 인쇄</a>
+</div>
+<div id="root"></div>
+<script type="text/markdown" id="md-source">
+---
+marp: true
+class: invert
+---
+
+<!-- _class: invert -->
+
+# 공교육 영어,
+# <span class="red">다시 설계합니다.</span>
+
+<br>
+
+## Apple 생태계 협업 제안
+### 한국 EFL EdTech 컨소시엄 결성 · 데이터 기반 교육격차 해소
+
+<br><br>
+
+<span class="muted">2026.05 · LogicFlow · eltkorea@gmail.com</span>
+
+---
+
+## 교육격차
+
+# 성취목표 도달 <span class="red">30%</span>.
+# 지역·소득 격차 <span class="red">최대 4등급</span>.
+
+<br>
+
+<span class="muted">10명 중 7명이 학습 시스템 밖에서 12년을 보낸다.<br>
+어디서, 누가, 왜 막혔는지 — 데이터는 없다.</span>
+
+---
+
+## 원인
+
+# 시험은 결과만 본다.
+# <span class="red">12년의 흔적</span>은
+# 본 적이 없다.
+
+<br>
+
+- **스냅샷 평가** — 그 순간만 측정, 사이의 흐름은 사라진다
+- **늦은 발견** — 학기말에 알면 이미 다음 단원
+- **같은 처방** — 30명 같은 교재, 다른 환자에 같은 약
+
+<br>
+
+<span class="muted">격차는 측정 안 했기 때문에 못 막는다.</span>
+
+---
+
+## 해결책
+
+# 초1부터 고3 수능까지,
+# 단 한 줄의 <span class="red">학습 궤적.</span>
+
+<br>
+
+- **Trajectory 관측** — 매 단원·매 문제·매 발음을 12년 누적 기록
+- **데이터 기반 약점 탐지** — 어디서 막혔는지 실시간 신호
+- **맞춤 콘텐츠·경험** — 그 학생에게 지금 필요한 것을, 그 시점에
+
+<br>
+
+<span class="muted">격차를 데이터로 본다 → 데이터로 메운다.</span>
+
+---
+
+## Apple 생태계에 콘텐츠 제공
+
+# 검증된 자산을
+# <span class="red">Apple iPad 위로.</span>
+
+<br>
+
+| 우리가 가져오는 자산 | 들어갈 Apple 트랙 |
+|----------------|----------------|
+| KERIS-Samsung Solar School · 아프리카 5개국 | AI 디지털교과서 (AIDT) — 2025 영어 도입 |
+| 경기도교육청 *하이러닝* · 2025–2026 | Apple School Manager · Classroom · Schoolwork |
+| 9,000 단어 · 565 수능 지문 · 12년 학습 로그 | Apple Intelligence — 온디바이스 발음 평가 |
+
+<br>
+
+<span class="muted">출처: 교육부 AI 디지털교과서 정책 · aidt.keris.or.kr</span>
+
+---
+
+## 컨소시엄 구성
+
+# 셋이 모이면,
+# <span class="red">격차가 메워진다.</span>
+
+<br>
+
+- **콘텐츠 파트너사 (귀사)** — 검증된 교재·문항·교사 네트워크·브랜드 신뢰
+- **LogicFlow (우리 팀)** — 진단 엔진·trajectory 코퍼스·온톨로지 그래프
+- **Apple** — 디바이스·OS·계정 인프라·글로벌 EduPartner 채널
+
+<br>
+
+<span class="muted">데이터 기반으로 함께 — 30%가 100%로 향한다.</span>
+
+---
+
+## 3가지 협업 제안
+
+# 함께 들이밀면
+# 협상력 <span class="red">N배.</span>
+
+<br>
+
+1. **콘텐츠 라이선스 협약** — 각사 교재·문항을 trajectory 엔진에 연결
+2. **공동 파일럿 운영** — 강원도+경기도 3개교, 6개월, 비용·성과 공동
+3. **Apple Korea 공동 제안** — 컨소시엄 명의 단일 제안서
+
+<br>
+
+<span class="muted">개별 사가 각자 들이밀면 협상력은 1/N. 함께 들이밀면 N배.</span>
+
+---
+
+<!-- _class: invert -->
+
+<br><br>
+
+# 이제 <span class="red">70%</span>도
+# 같은 출발선에 섭니다.
+
+<br>
+
+<span class="muted">5살 알파벳 한 단어에서, 고3 수능 한 답안까지 — 함께.</span>
+
+<br><br>
+
+**eltkorea@gmail.com** · github.com/smilepat
+</script>
+<script>
+  // Self-contained — zero CDN. Hardcoded CSS in <head>, simple renderer here.
+  function renderInline(t) {
+    t = t.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+    t = t.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
+    return t;
+  }
+  function renderMd(src) {
+    src = src.replace(/<!--[\s\S]*?-->/g, '');
+    src = src.replace(/((?:^[ \t]*\|.+\|[ \t]*\r?\n?){2,})/gm, function (block) {
+      var lines = block.replace(/\r?\n+$/, '').split(/\r?\n/);
+      if (lines.length < 2 || !/^[ \t]*\|[\s|:\-]+\|[ \t]*$/.test(lines[1])) return block;
+      var parse = function (l) { return l.trim().slice(1, -1).split('|').map(function (c) { return c.trim(); }); };
+      var head = parse(lines[0]);
+      var rows = lines.slice(2).map(parse);
+      var html = '<table><thead><tr>';
+      head.forEach(function (h) { html += '<th>' + renderInline(h) + '</th>'; });
+      html += '</tr></thead><tbody>';
+      rows.forEach(function (r) {
+        html += '<tr>';
+        r.forEach(function (c) { html += '<td>' + renderInline(c) + '</td>'; });
+        html += '</tr>';
+      });
+      return html + '</tbody></table>';
+    });
+    src = src.replace(/^(#{1,6})[ \t]+(.+)$/gm, function (_, h, t) {
+      return '<h' + h.length + '>' + renderInline(t) + '</h' + h.length + '>';
+    });
+    src = src.replace(/((?:^[ \t]*\d+\.[ \t]+.+(?:\r?\n|$))+)/gm, function (b) {
+      var items = b.trim().split(/\r?\n/).map(function (l) {
+        return '<li>' + renderInline(l.replace(/^[ \t]*\d+\.[ \t]+/, '')) + '</li>';
+      }).join('');
+      return '<ol>' + items + '</ol>';
+    });
+    src = src.replace(/((?:^[ \t]*-[ \t]+.+(?:\r?\n|$))+)/gm, function (b) {
+      var items = b.trim().split(/\r?\n/).map(function (l) {
+        return '<li>' + renderInline(l.replace(/^[ \t]*-[ \t]+/, '')) + '</li>';
+      }).join('');
+      return '<ul>' + items + '</ul>';
+    });
+    return src.split(/\r?\n\r?\n+/).map(function (b) {
+      b = b.trim();
+      if (!b) return '';
+      if (/^<(h\d|ul|ol|table|p|section|div|pre|blockquote)/i.test(b)) return b;
+      return '<p>' + renderInline(b) + '</p>';
+    }).join('\n');
+  }
+
+  (function () {
+    var status = document.getElementById('status');
+    var root = document.getElementById('root');
+    try {
+      var raw = document.getElementById('md-source').textContent;
+      var fm = raw.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+      var body = fm ? raw.slice(fm[0].length) : raw;
+      var parts = body.split(/\r?\n---\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+      parts.forEach(function (md) {
+        var section = document.createElement('section');
+        section.innerHTML = renderMd(md);
+        root.appendChild(section);
+      });
+      status.textContent = '슬라이드 ' + parts.length + '장 · 한 페이지씩 스크롤';
+    } catch (e) {
+      status.textContent = '렌더 오류';
+      root.innerHTML = '<pre style="color:#fff;background:#222;padding:30px;margin:30px;border-radius:8px;font-family:monospace;white-space:pre-wrap;">' + e.message + '</pre>';
+    }
+    document.getElementById('fullscreen').onclick = function (e) {
+      e.preventDefault();
+      document.documentElement.requestFullscreen().catch(function () {});
+    };
+    document.getElementById('print').onclick = function (e) {
+      e.preventDefault();
+      window.print();
+    };
+  })();
+</script>
+</body>
+</html>

@@ -10,6 +10,8 @@ slides_build/*
 !slides_build/README.md
 *.html
 !slides_build/landing.html
+!PITCH_DECK_VIEW.html
+!PITCH_DECK_8_VIEW.html
 
 # Tool state
 .bkit/
