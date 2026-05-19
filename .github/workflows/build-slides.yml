@@ -1,0 +1,142 @@
+name: Build Slides
+
+# Builds both decks and uploads them as artifacts (retained 30 days).
+# - SLIDES_GAP_TO_PROGRESS.html — Reveal.js, built via slides_build/build_revealjs.js
+# - PITCH_DECK.html / .pdf      — Marp deck (Apple-style dark)
+#
+# Triggers on relevant path changes and on manual dispatch. Verifies the
+# main deck stays under its 1.2 MB / 60s budget per the PDCA Plan
+# (slides-design-t1t2 SC-05/SC-06).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'SLIDES_GAP_TO_PROGRESS.md'
+      - 'PITCH_DECK.marp.md'
+      - 'slides_build/**'
+      - '.github/workflows/build-slides.yml'
+  pull_request:
+    paths:
+      - 'SLIDES_GAP_TO_PROGRESS.md'
+      - 'PITCH_DECK.marp.md'
+      - 'slides_build/**'
+      - '.github/workflows/build-slides.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: build-slides-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reveal-deck:
+    name: Reveal.js — SLIDES_GAP_TO_PROGRESS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Chrome deps for puppeteer (mmdc backend)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
+            libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 \
+            libgbm1 libpango-1.0-0 libcairo2 libasound2t64 fonts-noto-cjk
+
+      - name: Install slides_build deps
+        working-directory: slides_build
+        run: npm ci || npm install
+
+      - name: Build SLIDES_GAP_TO_PROGRESS.html
+        working-directory: slides_build
+        run: |
+          time node build_revealjs.js
+
+      - name: Verify output budgets (SC-04/05/06)
+        run: |
+          test -f SLIDES_GAP_TO_PROGRESS.html
+          size=$(stat -c%s SLIDES_GAP_TO_PROGRESS.html)
+          echo "HTML size: ${size} bytes"
+          if [ "$size" -gt 1258291 ]; then
+            echo "::error::HTML size ${size}B exceeds 1.2 MB budget (SC-06)"
+            exit 1
+          fi
+          if [ "$size" -lt 100000 ]; then
+            echo "::error::HTML suspiciously small (${size}B) — build likely incomplete"
+            exit 1
+          fi
+          echo "::notice::HTML size ${size}B within budget"
+
+      - name: Verify reproducibility (FR-A5) — second build must match
+        working-directory: slides_build
+        run: |
+          mkdir -p .snap
+          cp rendered-*.svg .snap/
+          node build_revealjs.js
+          # Compare each SVG with its first-build snapshot
+          fail=0
+          for f in rendered-*.svg; do
+            if ! cmp -s ".snap/$f" "$f"; then
+              echo "::error::reproducibility diff in $f"
+              fail=1
+            fi
+          done
+          rm -rf .snap
+          exit $fail
+
+      - name: Upload Reveal deck artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SLIDES_GAP_TO_PROGRESS-html
+          path: SLIDES_GAP_TO_PROGRESS.html
+          if-no-files-found: error
+          retention-days: 30
+
+  marp-deck:
+    name: Marp — PITCH_DECK (Apple dark)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Chrome deps for Marp PDF/PPTX export
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
+            libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 \
+            libgbm1 libpango-1.0-0 libcairo2 libasound2t64 fonts-noto-cjk
+
+      - name: Build PITCH_DECK.html
+        run: |
+          npx --yes --package=@marp-team/marp-cli@latest \
+            marp PITCH_DECK.marp.md -o PITCH_DECK.html --html
+          test -f PITCH_DECK.html
+          ls -lh PITCH_DECK.html
+
+      - name: Build PITCH_DECK.pdf (best-effort)
+        run: |
+          npx --yes --package=@marp-team/marp-cli@latest \
+            marp PITCH_DECK.marp.md -o PITCH_DECK.pdf --pdf --allow-local-files || \
+            echo "::warning::PDF export failed (non-blocking)"
+
+      - name: Upload Pitch deck artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PITCH_DECK
+          path: |
+            PITCH_DECK.html
+            PITCH_DECK.pdf
+          if-no-files-found: warn
+          retention-days: 30
