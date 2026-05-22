@@ -96,7 +96,7 @@ interface DiagnosticInput {
 ## 2. 매핑 테이블 (5D × 10 QuestionType)
 
 각 셀: 해당 QuestionType 정답에 그 차원이 기여하는 **가중치 (합계 = 1.0)**.
-초안은 keyVariables 분포 + 도메인 지식 기반 **휴리스틱**으로 산정. Week 8 베타 데이터로 calibration 예정 (가설 R1).
+초안은 keyVariables 분포 + 도메인 지식 기반 **휴리스틱**으로 산정. 베타 모집 불가 환경(2026-05-22 확인)에서는 Week 11 **합성 cross-check + 본인 도메인 retrospective**로 R1 가설 검증 — §3.1 참조.
 
 | QuestionType \ Dimension | D1_Form | D2_Meaning | D3_Context | D4_Network | D5_Usage | 합 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -133,9 +133,20 @@ $$
 
 ## 3. 미해결 이슈
 
-### 3.1 가중치 보정 (R1)
-- 현재 휴리스틱은 사용자 도메인 지식 기반. 베타 50명의 모의고사 영역별 점수와 본 매핑 기반 예측치의 Spearman 상관 ≥ 0.5 시 통과.
-- 미달 시: 베타 데이터로 ridge regression 학습 → 가중치 자동 보정. 이는 [csat-graphdb-318 #weight-calibration](https://github.com/smilepat/csat-graphdb-318/issues) 이슈와 연동.
+### 3.1 가중치 보정 (R1) — 2026-05-22 개정: 합성 검증으로 전환
+
+**구 계획**: 베타 50명 모의고사 점수와 Spearman ≥ 0.5. → **삭제** (베타 모집 불가).
+
+**신 계획 (2종 병행)**:
+
+1. **합성 cross-check (자동, 기계적)**: csat-graphdb-318 565문항 각각의 `keyVariables` 출현 빈도를 추출. 각 QuestionType의 keyVariables가 본 §2 가중치와 정성적 단조 대응하는지 측정:
+   - 예: `coherence_disruption`(연결성 파괴)이 많이 등장하는 흐름무관/문장삽입은 §2에서 D5_Usage 가중치 ≥ 0.15 — 일치.
+   - 예: `metaphor_density`가 핵심인 제목 추론은 D4_Network 가중치 ≥ 0.25 — 일치.
+   - 통과 기준: 10 QuestionType × 5D = 50셀 중 도메인 모순(예: discourse 변수 많은데 D5 가중치가 0.05) **0건** + Kendall tau ≥ 0.4 (variable density rank vs weight rank).
+
+2. **본인 retrospective 검증 (1인 정성)**: 본인이 풀어본 수능 기출 ≥ 30문항에서 본인의 정답/오답 패턴과 §2 가중치 기반 예상 정답률이 일치하는지 점검. 단순 비율 비교 — N 작아도 EFL 도메인 1인이라 모순 발견 가치 있음.
+
+**미달 시**: 1번에서 모순 발견 시 즉시 해당 QuestionType 행 재산정 (commit 1회). 2번에서 모순 발견 시 도메인 노트 추가 + Phase 2 calibration 항목으로 승격. [csat-graphdb-318#5](https://github.com/smilepat/csat-graphdb-318/issues/5) 연동.
 
 ### 3.2 D6_Cloze 처리 (R2 영향)
 - `level-test-pat` 에서 D6_Cloze 점수가 들어올 경우 D3_Context 에 합산(가중치 합 유지를 위해 D3 가중치 ×1.0, 들어온 D6 점수와 가중평균).
