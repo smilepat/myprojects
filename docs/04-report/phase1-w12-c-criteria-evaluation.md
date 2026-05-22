@@ -9,16 +9,17 @@
 ## 0. Executive Summary
 
 > **2026-05-22 update**: Playwright walkthrough 추가 ([report](../03-analysis/playwright-walkthrough-2026-05-22.md)). C1.2/C2.2/C2.3/C3.1/C3.3 functional PASS 추가 + Chart.js RadarController 버그 1건 발견·즉시 fix.
+> **2026-05-23 update**: vocabulary-db 데이터 마운트 (486 cards / 484 lemmas) + queue shuffle 다양성. **C4.2 FAIL → PASS** (Jaccard 25%) · C3.2 자동 검증 가능.
 
 | 카테고리 | 통과 | 비고 |
 |---|---|---|
 | **O1 진단 안정성** | 3/3 자동 PASS | C1.1 PASS, C1.2 functional PASS (의미 stability는 vocab-cat-test 연결 후), C1.3 PASS |
 | **O2 시각화 해석성** | 2/3 자동 PASS, 1 본인평가 대기 | C2.1 정성, C2.2 PASS, C2.3 **10/10 PASS** (Playwright spot-check) |
-| **O3 학습큐 동작** | 2/3 자동 PASS, 1 정성 | C3.1 PASS, C3.2 데이터 마운트 후, C3.3 functional PASS (10카드 완주) + ROI 정성 |
-| **O4 합성 검증** | **2/3 PASS, 1 FAIL** | C4.1 PASS (calibration), C4.2 FAIL (STUB scope), C4.3 trend 4주 필요 |
+| **O3 학습큐 동작** | **3/3 자동 PASS** + ROI 정성 | C3.1 PASS, C3.2 PASS (real data, IRT b/a), C3.3 functional PASS |
+| **O4 합성 검증** | **2/3 PASS** + C4.3 trend 필요 | C4.1 PASS, **C4.2 PASS v2** (Jaccard 25%, 484 lemmas), C4.3 trend 4주 필요 |
 
-**자동 평가 가능 항목**: **9 PASS · 1 FAIL · 2 미해당** (C3.2 데이터 마운트, C4.3 trend)
-**본인 정성 평가 잔여**: 3개 (C1.2 의미 있는 stability, C2.1 도메인 납득도, C3.3 학습 ROI)
+**자동 평가 가능 항목**: **11 PASS · 0 FAIL · 1 미해당** (C4.3 trend 4주만 잔여)
+**본인 정성 평가 잔여**: 2개 (C2.1 도메인 납득도, C3.3 학습 ROI 4세션)
 
 **발견된 버그 1건 (즉시 fix)**: Chart.js 4.x RadarController 미등록 (vocab-learn-pat 포팅 누락). [oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391).
 
@@ -79,8 +80,9 @@
 - **주의**: 본격 vitest 스위트 미작성 — Phase 1 후반 또는 P-1 진입 시 권장.
 
 #### C3.2 — 어휘 IRT b 분포 (theta ±0.4)
-- **결과**: ⏳ 본인 평가 대기 (또는 vocabulary-db 마운트 후 자동)
-- **방법**: STUB_POOL은 b -0.5 ~ +1.0 분포로 컨트롤됨 (lib/queue.ts cefrOffset). 실제 vocabulary-db 9183 어휘 분포는 마운트 후 측정.
+- **결과**: ✅ **PASS** (2026-05-23 vocabulary-db 마운트 후 자동 검증)
+- **방법**: lib/vocabulary-pool.ts (486 cards) 의 b/a 값은 vocabulary-db irt-5D-vocab-db-4opt-filtered.csv 원본 분포 보존. queue.ts buildQueue() 가 theta ±0.4 window로 필터링 후 closeness 정렬.
+- **결과**: C4.2 v2 동일 데이터셋에서 5 jittered diagnostics 모두 정상 10-card queue 생성 ([c4-2-diversity.md](./c4-2-diversity.md)).
 
 #### C3.3 — 본인 25분 세션 × 4회 (3/4 "다시 할 의향" 시 통과)
 - **결과**: ✅ **functional PASS** (10카드 완주), ROI 정성 평가 본인 대기 ⏳
@@ -98,14 +100,13 @@
 - **영향**: dimension-mapping.md §2 표 갱신, lib/ontology.ts 동기화, PRD R1 해소.
 
 #### C4.2 — 학습 큐 lemma overlap (Jaccard < 30%)
-- **결과**: ❌ **FAIL (STUB_POOL scope)**
-- **수치**: median Jaccard 100% (5회 jittered run 모두 동일 6 lemma)
-- **원인**: STUB_POOL 30 카드 / 15 unique lemma, 결정성 알고리즘 (sort by difficulty, no shuffle). 같은 weak QT → 같은 dimension → 같은 lemma.
-- **해석**: 룰엔진의 "약점 정조준" 동작은 의도대로지만, 다양성 메커니즘(shuffle within tie, item exposure rate)이 미구현.
-- **조치**:
-  - 단기 (Phase 1 잔여): vocabulary-db 마운트 후 재실행 (잠재 다양성 ~600배 증가).
-  - 장기 (Phase 2 P-1): exposure rate cap + tie-break shuffle 도입.
-- **결정**: 알려진 한계로 문서화. Phase 2 진입 차단 사유 아님 (스캐폴드 단계의 풀 크기 제약).
+- **결과**: ✅ **PASS v2** (2026-05-23)
+- **사이클**:
+  - v1 (STUB_POOL 30카드): Jaccard 100%, 6 lemmas → **FAIL** ([v1 보고서 in c4-2-diversity.md history](./c4-2-diversity.md))
+  - Act: vocabulary-db 데이터 마운트 + Fisher-Yates shuffle 도입 (P-1 §2.3 메커니즘 조기 적용)
+  - v2 (VOCAB_POOL 486 카드): Jaccard median **25.0%** (range 11.1~42.9%), 25 unique lemmas / 50 cards → **PASS**
+- **세부**: lib/vocabulary-pool.ts (auto-gen from vocabulary-db/irt-5D-vocab-db-4opt-filtered.csv) · lib/queue.ts shuffle 추가 · scripts/c4-2-diversity.mjs 갱신.
+- **영향**: Phase 2 P-1 진입 차단 요인 완전 해소.
 
 #### C4.3 — 차원 분산 trend-spotting (1-3명 누적)
 - **결과**: ⏸️ 미해당 (단발 실행 불가, 4주 trend 관찰 필요)
