@@ -10,6 +10,7 @@
 
 > **2026-05-22 update**: Playwright walkthrough 추가 ([report](../03-analysis/playwright-walkthrough-2026-05-22.md)). C1.2/C2.2/C2.3/C3.1/C3.3 functional PASS 추가 + Chart.js RadarController 버그 1건 발견·즉시 fix.
 > **2026-05-23 update**: vocabulary-db 데이터 마운트 (486 cards / 484 lemmas) + queue shuffle 다양성. **C4.2 FAIL → PASS** (Jaccard 25%) · C3.2 자동 검증 가능.
+> **2026-05-22 dogfooding-1**: 본인 실제 사용 30 응답 (각 QT 9/10 정답) → calibration pipeline + C4.1 safety net production 검증 ([report](../03-analysis/dogfooding-pass-1.md)). 자동 롤백 발동 (TYPE-흐름무관 D2 20% threshold 교차). C3.3 90% 정답률 실측.
 
 | 카테고리 | 통과 | 비고 |
 |---|---|---|
