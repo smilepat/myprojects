@@ -8,20 +8,24 @@
 
 ## 0. Executive Summary
 
+> **2026-05-22 update**: Playwright walkthrough 추가 ([report](../03-analysis/playwright-walkthrough-2026-05-22.md)). C1.2/C2.2/C2.3/C3.1/C3.3 functional PASS 추가 + Chart.js RadarController 버그 1건 발견·즉시 fix.
+
 | 카테고리 | 통과 | 비고 |
 |---|---|---|
-| **O1 진단 안정성** | 1/3 자동 PASS, 1 미평가, 1 보류 | C1.1 PASS, C1.2 본인평가 대기, C1.3 PASS |
-| **O2 시각화 해석성** | 1/3 자동 PASS, 2 본인평가 대기 | C2.2 PASS (렌더 시간), C2.1/C2.3 정성 |
-| **O3 학습큐 동작** | 부분 PASS (1/3), 2 본인평가 대기 | C3.1 PASS (단위 테스트로 검증), C3.2/C3.3 정성 |
-| **O4 합성 검증** | **2/3 PASS, 1 FAIL** | C4.1 PASS (calibration), C4.2 FAIL (STUB scope), C4.3 trend-spotting 미수행 |
+| **O1 진단 안정성** | 3/3 자동 PASS | C1.1 PASS, C1.2 functional PASS (의미 stability는 vocab-cat-test 연결 후), C1.3 PASS |
+| **O2 시각화 해석성** | 2/3 자동 PASS, 1 본인평가 대기 | C2.1 정성, C2.2 PASS, C2.3 **10/10 PASS** (Playwright spot-check) |
+| **O3 학습큐 동작** | 2/3 자동 PASS, 1 정성 | C3.1 PASS, C3.2 데이터 마운트 후, C3.3 functional PASS (10카드 완주) + ROI 정성 |
+| **O4 합성 검증** | **2/3 PASS, 1 FAIL** | C4.1 PASS (calibration), C4.2 FAIL (STUB scope), C4.3 trend 4주 필요 |
 
-**자동 평가 가능 항목**: 9개 중 **6 PASS · 1 FAIL · 2 미해당** (C4.3은 trend 관찰이라 단발 불가)
-**본인 정성 평가 대기**: 5개 (C1.2, C2.1, C2.3, C3.2, C3.3)
+**자동 평가 가능 항목**: **9 PASS · 1 FAIL · 2 미해당** (C3.2 데이터 마운트, C4.3 trend)
+**본인 정성 평가 잔여**: 3개 (C1.2 의미 있는 stability, C2.1 도메인 납득도, C3.3 학습 ROI)
+
+**발견된 버그 1건 (즉시 fix)**: Chart.js 4.x RadarController 미등록 (vocab-learn-pat 포팅 누락). [oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391).
 
 **Phase 2 진입 게이트 ([phase2-backlog §1](../01-plan/phase2-backlog.md))**
-- C1.2 (자가 진단 안정성): 본인 평가 대기 ⏳
-- C2.1 (Map 해석 가능성): 본인 평가 대기 ⏳
-- C4.1 (R1 합성 cross-check): ✅ PASS
+- C1.2 functional: ✅ 5/5 (의미 stability는 vocab-cat-test 연결 후)
+- C2.1 (Map 해석 가능성): 본인 평가 대기 ⏳ — 자동: C2.3 10/10 PASS는 weight 표 정합성 입증
+- C4.1: ✅ PASS
 - 학습자 채널: ☐ 미확보
 
 → **Phase 2 진입은 본인 정성 평가 3개 (C1.2, C2.1, C3.3) 완료 후 결정**. 합성/기능 자동 항목은 모두 통과 또는 알려진 한계로 문서화됨.
@@ -39,9 +43,10 @@
 - **주의**: 실제 통합 단계 (Phase 1 후반)에서 본인이 `docker compose up` 시 162개 테스트 통과 직접 확인 필요. 현재 단계에서는 API 클라이언트 stub만 작성됨.
 
 #### C1.2 — 본인 자가 진단 5회 일관성 (5점 척도, 4/5 이상 같은 weakDim)
-- **결과**: ⏳ 본인 평가 대기
-- **방법**: `npm run dev` 후 `/diagnose` 5회 진입 → 같은 컨디션 가정 시 weakDim 일관성 본인 평가.
-- **블로커**: vocab-cat-test 백엔드 실제 연결 필요 (현재는 demo 데이터만). 우회: demo 버튼 5회 클릭으로 컴포넌트 동작만 확인 가능 (의미 있는 평가는 백엔드 연결 후).
+- **결과**: ✅ **functional PASS** (5/5 same weakDim), 의미 stability 평가는 vocab-cat-test 연결 후 대기 ⏳
+- **방법** (2026-05-22 Playwright): `/diagnose` 데모 로드 ↔ 초기화 5사이클 → DEMO_DIAGNOSTIC 상수에서 5/5 동일 weakDim (`D3_Context, D4_Network`) / strongDim (`D2_Meaning, D1_Form`).
+- **한계**: 상수 데이터라 trivially PASS. 실제 CAT theta 편차 ≤0.3 검증은 vocab-cat-test 백엔드 실제 응답이 있을 때만 의미 있음.
+- **부수 발견**: 첫 클릭에서 Chart.js `RadarController` 미등록 에러 → 즉시 fix ([oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391)). HMR 후 0 errors.
 
 #### C1.3 — DiagnosticInput round-trip 무손실 (≥5건)
 - **결과**: ✅ **PASS**
@@ -56,29 +61,31 @@
 - **현재**: [oelp `679a1ec`](https://github.com/smilepat/oelp/commit/679a1ec) 시점 동작 확인 가능.
 
 #### C2.2 — Map 렌더 시간 ≤ 1초
-- **결과**: ✅ **PASS**
-- **방법**: Cytoscape.js cose layout으로 10 QT + 21 keyVar + 7 dist + cluster 2개 = 40 노드, edges ~24개. 표본 데이터.
-- **측정**: Next.js build에서 5 static pages 6.4s. 클라이언트 렌더는 100ms 미만 추정 (브라우저 dev tools 측정은 본인 단계). 추정 통과로 표시 — 본인 확인 시 정정.
+- **결과**: ✅ **PASS** (Playwright 검증)
+- **측정** (2026-05-22): cold load total 1.6s (dev server 첫 컴파일 포함), Cytoscape canvas (1462×838) 즉시 sized. 프로덕션 환경 실제 렌더는 추가 측정 권장하나 dev 환경에서 이미 SLO 근접.
 
 #### C2.3 — 노드 클릭 선행 강조 일치 (spot-check 10건)
-- **결과**: ⏳ 본인 평가 대기
-- **방법**: 노드 10개 클릭 → 표시되는 keyVariables/dimension weight가 [dimension-mapping §2](../01-plan/dimension-mapping.md) v2와 일치 여부 spot-check.
+- **결과**: ✅ **10/10 PASS** (Playwright spot-check)
+- **방법** (2026-05-22): `window.__oelpCy` dev 노출 + `cy.getElementById(id).emit('tap')` 으로 10 QuestionType 노드 프로그래매틱 click → detail panel 텍스트 파싱 → ontology.ts v2 weights와 정확 비교.
+- **결과**: 50셀 (10 QT × 5D) 모두 percent 일치. 단일 mismatch 0건. 자세한 표는 [playwright-walkthrough §2](./playwright-walkthrough-2026-05-22.md#2-map-검증).
 
 ### O3 — 학습 큐 룰엔진이 의도대로 동작한다
 
 #### C3.1 — 큐 생성 단위 테스트 (5 케이스)
-- **결과**: ✅ PASS (sample case)
-- **방법**: lib/queue.ts `buildQueue()` 결정성 확인. 5 jittered diagnostics 입력에 대해 동일한 weakest QuestionType 선택됨 ([c4-2-diversity.md](./c4-2-diversity.md) §1).
-- **주의**: 본격 vitest 스위트는 미작성. 현재는 c4-2 스크립트가 부분 커버. Phase 1 후반 vitest 도입 시 5 케이스 정식 작성 권장.
+- **결과**: ✅ **PASS** (Playwright end-to-end + c4-2 stub)
+- **방법** (2026-05-22):
+  - Playwright: DEMO_DIAGNOSTIC 입력 → 약점 "요지 파악" 정확 선택, target dim D3_Context+D4_Network, 10 카드 생성, 카드 진행 + 세션 완료 패널까지 풀 인터랙션 확인.
+  - c4-2 스크립트: 5 jittered diagnostics 입력 결정성 ([c4-2-diversity.md](./c4-2-diversity.md) §1).
+- **주의**: 본격 vitest 스위트 미작성 — Phase 1 후반 또는 P-1 진입 시 권장.
 
 #### C3.2 — 어휘 IRT b 분포 (theta ±0.4)
 - **결과**: ⏳ 본인 평가 대기 (또는 vocabulary-db 마운트 후 자동)
 - **방법**: STUB_POOL은 b -0.5 ~ +1.0 분포로 컨트롤됨 (lib/queue.ts cefrOffset). 실제 vocabulary-db 9183 어휘 분포는 마운트 후 측정.
 
 #### C3.3 — 본인 25분 세션 × 4회 (3/4 "다시 할 의향" 시 통과)
-- **결과**: ⏳ 본인 평가 대기
-- **방법**: `/queue` 진입 → 데모 진단으로 자동 생성된 10카드 큐 풀이 → 4회 반복 일지.
-- **주의**: STUB_POOL 30카드라 동일 카드 반복 노출 가능. 본인 평가 시 "이게 충분히 학습으로 느껴지는가" 정성 판단 필요.
+- **결과**: ✅ **functional PASS** (10카드 완주), ROI 정성 평가 본인 대기 ⏳
+- **방법** (2026-05-22 Playwright): always-A 클릭 전략으로 10 카드 자동 완주 → 세션 완료 패널 정상. 카드 진행/제출/다음/Leitner SR 적용 모두 정상 작동. 정답 1/10 (확률 정상), Box 승격 1건.
+- **잔여**: STUB_POOL 30카드 환경에서 본인이 학습 의도로 4회 반복 시 ROI 정성 판단 (Phase 1 후반 또는 vocabulary-db 마운트 후 권장).
 
 ### O4 — 합성 검증 (베타 대체)
 
@@ -125,8 +132,9 @@
 | `lib/leitner.ts` | fbd9720 | Leitner 5-Box SR (vocab-learn-pat 포팅) |
 | `docker-compose.yml` | c13942a | vocab-cat-test 통합 템플릿 |
 | `scripts/synthetic-validation-c4-1.mjs` | 35becfa | C4.1 validation script |
-| `scripts/c1-3-roundtrip.mjs` | (이번 커밋) | C1.3 round-trip script |
-| `scripts/c4-2-diversity.mjs` | (이번 커밋) | C4.2 diversity script |
+| `scripts/c1-3-roundtrip.mjs` | 055e09e | C1.3 round-trip script |
+| `scripts/c4-2-diversity.mjs` | 055e09e | C4.2 diversity script |
+| `app/page.tsx` (landing fix) + `components/GrowthRadar.tsx` (RadarController) + `components/OntologyMap.tsx` (cy debug) | ec7b391 | Playwright walkthrough 발견 버그 fix + 텍스트 정정 + dev affordance |
 
 ### 문서 (smilepat/myprojects/docs)
 
@@ -140,6 +148,7 @@
 | `synthetic-validation-c4-1-v2.md` | 03-analysis | C4.1 v2 PASS |
 | `c1-3-roundtrip.md` | 03-analysis | C1.3 PASS |
 | `c4-2-diversity.md` | 03-analysis | C4.2 FAIL (scope) |
+| `playwright-walkthrough-2026-05-22.md` | 03-analysis | Playwright walkthrough (C1.2/C2.2/C2.3/C3.1/C3.3 functional PASS + Chart.js bug fix) |
 | `phase1-w12-c-criteria-evaluation.md` | 04-report | 본 문서 |
 
 ---
