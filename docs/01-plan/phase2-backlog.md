@@ -18,30 +18,46 @@ Phase 1 종료 시점에 **무엇을 다음으로 할지 즉답할 수 있게** 
 
 ---
 
-## 1. Phase 2 진입 조건 (Entry Criteria)
+## 1. Phase 2 진입 조건 (Entry Criteria) — 2026-05-22 개정: 정성 게이트로 전환
+
+**개정 배경**: 베타 50명 모집 불가 확인 ([PRD §B-5](./prd-oelp-mvp-phase1.md#b-5-검증-기준-2026-05-22-개정-베타-모집-불가-반영)). 통계 KPI 게이트는 무의미하므로 **정성 + 합성** 게이트로 치환.
 
 Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
+
+| 항목 | 신 기준 (2026-05-22) | 미달 시 |
+|---|---|---|
+| C1.2 (자가 진단 안정성) | 5회 중 4회 이상 같은 weakDim | P-A1 최우선 |
+| C2.1 (Map 해석 가능성) | 본인 5점 척도 ≥ 4점 | P-A0 (가중치 재산정) |
+| C4.1 (R1 합성 cross-check) | Kendall tau ≥ 0.4, 도메인 모순 0건 | [csat-graphdb-318#5](https://github.com/smilepat/csat-graphdb-318/issues/5) 해결 Phase 2 1순위 |
+| 학습자 접근 채널 | (선택) 외부 학습자 ≥ 1명 가입 의향 확보 | Phase 2 신규 시장 항목(P-3/P-5)은 보류, 합성/단일 검증 가능 항목(P-1/P-2/P-7)만 진행 |
+
+**미달 항목이 2개 이상이면 Phase 2를 시작하지 않고 Phase 1.5 (안정화 4주) 운영** — 베타 환경 부재로 안정화 기간은 6주 → 4주로 단축.
+
+**원안 (DEPRECATED)**: theta P90/4주 향상/Spearman/retention 모두 N≥30 가정. 학습자 접근 채널 확보 시 즉시 부활 가능 (본 표 §1-archive 보존).
+
+<details>
+<summary>§1-archive (DEPRECATED 베타 가정 게이트)</summary>
 
 | 항목 | 기준 | 미달 시 |
 |---|---|---|
 | O1 KR1.1 | theta 편차 ≤ 0.3 (P90) | Phase 2 시작 보류, P-A1 최우선 |
-| O3 KR3.3 | 4주 후 theta 향상 ≥ +0.2 | Phase 2 시작 보류, P-A0(콘텐츠 효과성 재검증) |
-| R1 가설 | Spearman ≥ 0.5 | [csat-graphdb-318#5](https://github.com/smilepat/csat-graphdb-318/issues/5) 해결이 Phase 2 1순위로 승격 |
-| 베타 retention | 7일 ≥ 30% | Phase 2 보류, 페르소나 재정의 |
+| O3 KR3.3 | 4주 후 theta 향상 ≥ +0.2 | Phase 2 시작 보류, P-A0 |
+| R1 가설 | Spearman ≥ 0.5 | csat-graphdb-318#5 1순위 |
+| 베타 retention | 7일 ≥ 30% | 페르소나 재정의 |
 
-**미달 항목이 2개 이상이면 Phase 2를 시작하지 않고 Phase 1.5 (안정화 6주) 운영**.
+</details>
 
 ---
 
 ## 2. 백로그 (우선순위 동결, KPI-conditional reranking)
 
-### P-A0. (조건부) 콘텐츠 효과성 재검증 — `예상 효과 4주, 진입 조건 R3.3 미달 시`
-- 문제: 25분 세션 × 4주가 실제 theta를 못 올리면 룰엔진 문제가 아니라 콘텐츠 문제일 수 있다.
-- 액션: csat-text-master 50지문 + vocabulary-db 9183 단어의 **난이도 calibration 검증** (b 파라미터 vs 베타 실제 정답률).
+### P-A0. (조건부) 콘텐츠 효과성 재검증 — `4주, 진입 조건 C2.1 미달 시`
+- 문제: dimension-mapping 가중치 산정이 본인 도메인 평가에서 모순이 발견되면 콘텐츠 난이도 자체를 의심해야 한다.
+- 액션: csat-text-master 50지문 + vocabulary-db 9183 단어의 **합성 난이도 cross-check** — IRT b 파라미터와 본인이 풀어본 ≥30문항 retrospective 정답률의 단조성 검증.
 - 산출물: `docs/03-analysis/content-calibration-report.md` + b 파라미터 보정 PR.
 
-### P-A1. (조건부) 진단 신뢰도 강화 — `예상 효과 3주, 진입 조건 R1.1 미달 시`
-- 문제: 재진단 편차가 큼 → CAT 종료 조건(SE threshold) 또는 item pool 다양성 문제.
+### P-A1. (조건부) 진단 신뢰도 강화 — `3주, 진입 조건 C1.2 미달 시`
+- 문제: 본인 자가 진단 5회 중 weakDim 변동이 잦으면 CAT 종료 조건/item pool 다양성 문제.
 - 액션: SE threshold 강화 (0.30 → 0.25), item exposure rate 제한 도입.
 - 의존성: `vocab-cat-test` 백엔드 수정 (사용자 본인 레포라 PR 직진 가능).
 
@@ -49,20 +65,22 @@ Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
 - 문제: Phase 1 룰엔진은 "약점 1개 + IRT b 매칭"으로 단순. 학습 ROI 최적화 부족.
 - 액션:
   - Multi-armed bandit (Thompson sampling) for QuestionType 선택
-  - Item-Skill 가중치 행렬을 [`dimension-mapping.md`](./dimension-mapping.md) 휴리스틱 → 베타 데이터 ridge regression으로 학습
+  - Item-Skill 가중치 행렬을 [`dimension-mapping.md`](./dimension-mapping.md) 휴리스틱 → **외부 학습자 데이터 누적 후** ridge regression으로 학습 (학습자 채널 확보 시점에 활성화)
   - 추천 SE 표시 ("신뢰도: 낮음/중간/높음")
-- 의존성: [csat-graphdb-318#5](https://github.com/smilepat/csat-graphdb-318/issues/5) **완전 해결 필수**.
+- 의존성:
+  - [csat-graphdb-318#5](https://github.com/smilepat/csat-graphdb-318/issues/5) **완전 해결 필수**
+  - **외부 학습자 ≥ 5명 데이터 보유** (없으면 Thompson sampling 부분만 구현, 가중치 학습은 보류)
 - 산출물: `docs/02-design/recommendation-v2.md` + 통합 PR.
-- KPI 목표: O3 KR3.3 (theta 향상)을 +0.2 → +0.35로 상향.
+- 효과 목표 (정성): 본인 평가에서 추천된 학습 큐가 "랜덤보다 약점 정조준" 5점 척도 ≥ 4점.
 
 ### P-2. EBS-demo Content Generator 통합 — `6주`
-- 문제: 콘텐츠 풀 한계 — csat-text-master 50지문이 12주 베타에서 소진 가능 (R4).
+- 문제: 콘텐츠 풀 한계 — 학습자 채널 확보 후 사용량 증가 시 소진 위험 ([PRD R4](./prd-oelp-mvp-phase1.md#b-6-리스크--가설-검증) 재활성화 대비).
 - 액션:
   - `EBS-demo` (Next.js 16 + Firestore + criteria-engine)의 문항 생성 API를 OELP 학습 큐에 연결.
   - **생성 항목은 즉시 게재 금지** — validator (`EBS-demo`의 9개 validator 재사용) 통과한 항목만 풀에 추가.
-  - 생성된 항목의 IRT 파라미터는 cold-start로 b=0, a=1로 시작, 50회 응답 후 calibration.
+  - 생성된 항목의 IRT 파라미터는 cold-start로 b=0, a=1로 시작, **외부 학습자 50회 응답 누적 후** calibration.
 - 산출물: `docs/02-design/content-generation-pipeline.md`.
-- 리스크: LLM 생성 항목의 품질 일관성 — `EBS-demo` validator가 어떤 false positive/negative 율을 보이는지 베타 데이터로 측정 필요.
+- 리스크: LLM 생성 항목의 품질 일관성 — `EBS-demo` validator의 정확도는 본인 도메인 평가로 1차 측정 (sample 30문항), 외부 학습자 데이터는 2차.
 
 ### P-3. Phonics 단계 활성화 — `6주`
 - 문제: PRD 페르소나가 고2 1개로 좁혀져 있어 초/중등 시장 미커버.
@@ -70,7 +88,7 @@ Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
   - [`reading-roadmap`](https://github.com/smilepat/reading-roadmap) 아카이브 해제 + Stage 1 (Phonics Readers 20편) 실제 데이터화.
   - 새 페르소나 P1 정의: "초등 4-6학년 EFL 시작 학습자".
   - D1_Form 차원에 phoneme-grapheme 매핑 sub-dimension 추가 (D1_Form.phonics).
-- 의존성: P1 페르소나 인터뷰 5명 선행.
+- 의존성: P1 페르소나 인터뷰 1-3명 (지인 자녀 등 접근 가능 범위) 또는 EFL 교사 전문가 의견.
 - 산출물: `docs/02-design/phonics-integration.md` + 새 페르소나 PRD addendum.
 
 ### P-4. Mobile (PWA → React Native) — `8주`
@@ -78,7 +96,7 @@ Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
 - 액션:
   - 1차: PWA 최적화 (manifest, offline cache, push notification) — 2주.
   - 2차: React Native shell (Expo) + 웹뷰 하이브리드 — 6주.
-- 의존성: Phase 1 베타 데이터에서 모바일 접근율 ≥ 40% 확인 시에만 R/N 진행. 미만이면 PWA만.
+- 의존성: 본인 사용에서 모바일 우선순위가 있는지 + 향후 학습자 채널이 모바일 중심인지에 따라 결정. dogfooding만으로는 PWA로 충분, R/N은 외부 학습자 확보 후.
 - 산출물: 별도 레포 `smilepat/oelp-mobile` (또는 oelp 본 레포 monorepo).
 
 ### P-5. Teacher Dashboard — `8주`
@@ -87,7 +105,7 @@ Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
   - 교사용 별도 인증 role (`teacher` claim in Supabase JWT).
   - 학급(class) 엔티티 + 학생 매핑 + 학급 단위 KPI 대시보드.
   - 21 keyVariables 노출 (PRD §B-3.2 keyVariables는 학습자 UI 비공개 정책 유지, 교사에게만).
-- 의존성: Phase 1 베타 결과 데이터를 학원/교사 5명에게 시연 → 결제 의향 확보 후 진행.
+- 의존성: 학습자 접근 채널 확보가 **선행 조건**. dogfooding 환경에서는 B2B 시연 콘텐츠가 부족하므로 본 항목은 사실상 외부 학습자 확보 시점에 활성화.
 - 산출물: `docs/02-design/teacher-dashboard.md`.
 
 ### P-6. AI Tutor (Conversational) — `8주`
@@ -154,19 +172,21 @@ KPI 미달 시: 이 시퀀스 앞에 P-A0/A1를 4-6주 삽입 → 모든 일정 
 
 ---
 
-## 5. 자동 승격 룰 (Phase 1 종료 1주 전 적용)
+## 5. 자동 승격 룰 (2026-05-22 개정: 정성 게이트 기반)
 
-Week 11에 KPI 중간 측정 → 다음 분기 진입 조건:
+Week 11에 12개 C 기준 ([PRD §B-5](./prd-oelp-mvp-phase1.md#b-5-검증-기준-2026-05-22-개정-베타-모집-불가-반영)) 중간 평가 → 다음 분기 진입 조건:
 
 ```
-if R3.3 미달 → P-A0 1순위 승격, P-1 보류
-elif R1.1 미달 → P-A1 1순위 승격, P-1 보류
-elif retention < 30% → Phase 2 보류, 페르소나 재정의 워크숍 (1주)
-elif 모든 KR 통과 → 시퀀스 그대로 진행
-elif R1 (가중치 calibration) 미달 → P-1 보류, csat-graphdb-318#5 해결 우선
+if C2.1 (Map 해석 가능성) 5점척도 < 4 → P-A0 1순위 승격, P-1 보류
+elif C1.2 (자가 진단 안정성) 5/5 중 4 미만 → P-A1 1순위 승격, P-1 보류
+elif C4.1 (R1 합성 cross-check, Kendall tau < 0.4) → P-1 보류, csat-graphdb-318#5 해결 우선
+elif 학습자 채널 0명 → 시장 확장 항목 (P-3 Phonics, P-5 Teacher) 보류, 합성 검증 가능 항목만 (P-1/P-2/P-7) 진행
+elif 모든 C 기준 9/12 통과 → 시퀀스 그대로 진행
 ```
 
 승격 룰이 트리거되면 본 문서를 commit으로 갱신, PRD에 그 결과 반영.
+
+**원안 (DEPRECATED)** — 베타 KPI 기반 룰은 학습자 채널 확보 시 §1-archive와 함께 부활 가능하도록 보존 중.
 
 ---
 
