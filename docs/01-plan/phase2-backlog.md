@@ -117,11 +117,12 @@ Phase 1 종료 시점(Week 12) 다음을 충족해야 Phase 2 시작:
 - 의존성: Rate limit 정책 (Upstash) — `illustration-studio`의 패턴 재사용.
 - 리스크: LLM hallucination — 답변 후 학습자 thumbs feedback 수집 + 부정 비율 모니터링.
 
-### P-7. Neo4j 마이그레이션 평가 — `4주 (spike만)`
+### P-7. Neo4j 마이그레이션 평가 — `4주 (spike) ✅ COMPLETE`
 - 문제: Phase 1은 SQLite + 기존 graph store. P-1 (Recommendation v2)가 추천 정확도에서 단일 저장소 한계에 부딪힐 수 있음.
 - 액션: 4주 spike — Neo4j 도입 비용 (호스팅 $/월, 운영 복잡도, 마이그레이션 시간) vs 정확도 개선 효과 측정.
 - 결정 게이트: 정확도 개선 ≥ 10% AND 비용 ≤ $200/월일 때만 진행.
-- 산출물: `docs/03-analysis/neo4j-spike-report.md`.
+- 산출물: [03-analysis/p7-neo4j-spike-report.md](../03-analysis/p7-neo4j-spike-report.md) (commit `86fe69b`, 2026-05-23).
+- **결정**: **DEFER** — 현재 scale(38 노드)에서 비용 < 가치. 비용 게이트는 충족(Aura Free $0 / Community Edition $0)이나, 가치/필요성 부재. 재평가 트리거 4가지 (학습자 N≥1000 / Multi-hop 명시 요구 / csat-graphdb-318 결합 / LLM agent 그래프 질의).
 
 ### P-8. Adaptive Curriculum (학습 경로 자동 생성) — `Phase 3 후보`
 - 문제: 현재는 1세션 단위 추천. 8주~3개월 단위 학습 경로는 룰엔진 + LLM 결합 필요.
