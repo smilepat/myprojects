@@ -1228,6 +1228,49 @@ gantt
 
 ---
 
+<!-- _class: layout-chart-focus -->
+
+## 8. K-12 확장 — 수능을 정점으로 한 6-Layer ontology
+
+```mermaid
+graph TD
+    L0["Layer 0: Phonics<br/>P-01~P-05 (5)<br/>Pre-A1 · 0-250L"]
+    L1["Layer 1: 회화·어휘<br/>CV-01~CV-05 (5)<br/>A1 · 250-500L"]
+    L2["Layer 2: 초등 읽기<br/>ER-01~ER-05 (5)<br/>A1-A2 · 500-700L"]
+    L3["Layer 3: 중등 읽기<br/>MR-01~MR-06 (6)<br/>A2-B1 · 700-950L"]
+    L4["Layer 4: 고등 읽기<br/>HR-01~HR-06 (6)<br/>B1-B2 · 950-1200L"]
+    L5["Layer 5: CSAT ★<br/>A/B/C 12 skill<br/>B2-C1 · 1100-1300L"]
+    LD["Layer D — 메타·행동<br/>D-01~D-04 (4)<br/>L3~L5 cross-cutting"]
+
+    L0 --> L1 --> L2 --> L3 --> L4 --> L5
+    LD -.-> L3
+    LD -.-> L4
+    LD -.-> L5
+
+    style L5 fill:#1e40af,color:#ffffff,stroke:#1e3a8a,stroke-width:2px
+    style LD fill:#8b5cf6,color:#ffffff,stroke:#7c3aed
+    style L0 fill:#f1f5f9
+    style L1 fill:#fef3c7
+    style L2 fill:#fed7aa
+    style L3 fill:#dcfce7
+    style L4 fill:#dbeafe
+```
+
+**43 skill의 단일 좌표 vector** — 학습자 1명이 P-01부터 C-04까지 단일 trajectory · 학부모·교사·교육청이 *같은 좌표축*으로 의사결정.
+
+| 핵심 사실 | 값 |
+|---|---|
+| 전체 skill | **43** (vertical 39 + Layer D cross-cutting 4) |
+| 신규 콘텐츠 생성 | **~6,500** (기존 137,745 + 재사용 49,000 활용 후) |
+| Phase 0 즉시 시작 가능 | **1주 sprint** (신규 콘텐츠 0건, 매핑·로직만) |
+| 통합 PRD | [`smilepat/phonics2csat`](https://github.com/smilepat/phonics2csat) v2.0 |
+| AIDT(2025) 정합 | 초3·4 / 중1 / 고1 전 학년대 커버 |
+
+> 본 deck의 Layer 5 (CSAT 16 skill)가 더 큰 ontology의 *정점*. 7-E 마일스톤 Phase 4의 *Apple EEP K-12 trajectory 단일 SOT*가 본 ontology에 의해 실현.
+> 출처: [phonics2csat PRD v2.0](https://github.com/smilepat/phonics2csat/blob/main/docs/01-plan/features/k12-english-pipeline.prd.md), [Phase 0 Plan](https://github.com/smilepat/phonics2csat/blob/main/docs/01-plan/features/phase0-upstream-mapping.plan.md).
+
+---
+
 <!-- _class: lead -->
 
 # 한 줄 요약
