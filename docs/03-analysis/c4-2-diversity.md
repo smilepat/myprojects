@@ -1,19 +1,21 @@
 # C4.2 합성 검증 결과 — 학습 큐 다양성 (lemma overlap)
 
-> 실행: 2026-05-22T06:13:47.718Z · 출처: smilepat/oelp/scripts/c4-2-diversity.mjs
+> 실행: 2026-05-22T15:04:37.157Z · 출처: smilepat/oelp/scripts/c4-2-diversity.mjs
 > 기준: [PRD §B-5 C4.2](../01-plan/prd-oelp-mvp-phase1.md)
 
 ## 0. 종합 결과
 
-- **Pairwise Jaccard median**: 100.0% (목표 < 30.0%) → ❌ FAIL
-- Jaccard range: 100.0% ~ 100.0%
-- 5회 큐 누적 unique lemma: 6 / 50 (12.0%)
+- **Pairwise Jaccard median**: 25.0% (목표 < 30.0%) → ✅ PASS
+- Jaccard range: 11.1% ~ 42.9%
+- 5회 큐 누적 unique lemma: 25 / 50 (50.0%)
 
-**최종 판정**: FAIL — 실제 vocabulary-db (9,183 어휘) 마운트 후 재검증 권장
+**최종 판정**: PASS — VOCAB_POOL (vocabulary-db irt-5D-vocab-db-4opt-filtered.csv) 486 cards / 484 unique lemmas 사용.
 
-## ⚠️ Scope 한계
+## Pool 정보 (2026-05-23 update)
 
-본 검증은 `STUB_POOL` 30 카드 (15 lemma × 2 difficulty)에서 실행됨. 실제 vocabulary-db는 9,183 어휘이므로 다양성 잠재력이 612배 큼. 본 결과는 "룰엔진의 다양성 보장 메커니즘이 작동하는지"의 scaffold-level 확인이며, 실제 다양성 수치는 vocabulary-db 마운트 후 의미 있음.
+- 출처: smilepat/vocabulary-db/irt-5D-vocab-db-4opt-filtered.csv (8,363 단어 × 63K 문항)
+- 샘플링: `scripts/build-vocab-pool.mjs` 가 5D × 7 difficulty bands 균형 추출
+- 현재 풀: 486 cards, 484 unique lemmas
 
 ---
 
@@ -21,26 +23,26 @@
 
 | Run | theta | targetQT | targetDims | cards | unique lemmas |
 |---:|---:|---|---|---:|---:|
-| 0 | 0.10 | 요지 파악 | D3_Context, D4_Network | 10 | 6 |
-| 1 | 0.20 | 요지 파악 | D3_Context, D4_Network | 10 | 6 |
-| 2 | 0.30 | 요지 파악 | D3_Context, D4_Network | 10 | 6 |
-| 3 | 0.40 | 요지 파악 | D3_Context, D4_Network | 10 | 6 |
-| 4 | 0.50 | 요지 파악 | D3_Context, D4_Network | 10 | 6 |
+| 0 | 0.10 | 요지 파악 | D3_Context, D4_Network | 10 | 10 |
+| 1 | 0.20 | 요지 파악 | D3_Context, D4_Network | 10 | 10 |
+| 2 | 0.30 | 요지 파악 | D3_Context, D4_Network | 10 | 10 |
+| 3 | 0.40 | 요지 파악 | D3_Context, D4_Network | 10 | 10 |
+| 4 | 0.50 | 요지 파악 | D3_Context, D4_Network | 10 | 10 |
 
 ## 2. Pairwise Jaccard overlap
 
 | Run A | Run B | Jaccard |
 |---:|---:|---:|
-| 0 | 1 | 100.0% |
-| 0 | 2 | 100.0% |
-| 0 | 3 | 100.0% |
-| 0 | 4 | 100.0% |
-| 1 | 2 | 100.0% |
-| 1 | 3 | 100.0% |
-| 1 | 4 | 100.0% |
-| 2 | 3 | 100.0% |
-| 2 | 4 | 100.0% |
-| 3 | 4 | 100.0% |
+| 0 | 1 | 42.9% |
+| 0 | 2 | 25.0% |
+| 0 | 3 | 17.6% |
+| 0 | 4 | 11.1% |
+| 1 | 2 | 25.0% |
+| 1 | 3 | 17.6% |
+| 1 | 4 | 11.1% |
+| 2 | 3 | 42.9% |
+| 2 | 4 | 25.0% |
+| 3 | 4 | 42.9% |
 
 ## 3. 방법론
 
