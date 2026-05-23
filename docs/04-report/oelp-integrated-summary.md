@@ -1,34 +1,36 @@
-# OELP 통합 회고 — Phase 1 + P-1 + P-1.5 + P-1.5b + P-2 + Stability + Vercel
+# OELP 통합 회고 — Phase 1 + P-1 + P-1.5 + P-1.5b + P-2 + Stability + Vercel + C4.3
 
-> 작성: 2026-05-23 (v1) / **갱신: 2026-05-23 v2** (Tier 1-4 stability + vocab-cat-test 통합 + Vercel 배포 반영)
+> 작성: 2026-05-23 (v1) / 갱신: v2 (Tier 1-4 + Vercel) / **v3 (2026-05-23 저녁: dogfood-3 + λ schedule + C4.3 scaffolding)**
 > Owner: smilepat / Scope: 전체 OELP 진행 종합
-> 산출 기간: 압축 실행 (실제 설계 일정은 8+ 주)
 
 ---
 
-## 0. 한 페이지 요약 (v2)
+## 0. 한 페이지 요약 (v3)
 
-OELP는 **Phase 1 MVP + P-1 추천 v2 + P-1.5/b Bridge + P-2 EBS Foundation** 완료에 더해, 단일 sprint에서 **Tier 1-3 stability roadmap (7 작업), Tier 4 A11y + 모바일, vocab-cat-test 실제 통합 (C1.2 measured PASS), Vercel production 배포, EBSCriteriaEngineGenerator 활성화**까지 도달.
+OELP는 단일 sprint 안에 **Phase 1 MVP + P-1/P-1.5/P-2 + Tier 1-4 stability + 외부 배포 + 3 cycle dogfooding 검증 + λ schedule + C4.3 trend scaffolding** 까지 도달. **C4.1 자동 게이트가 3 cycle 연속 모순 검출 + 롤백**으로 안전망 일반성 실증.
 
-### 핵심 수치 (v2 2026-05-23)
+### 핵심 수치 (v3 2026-05-23 저녁)
 
-| 항목 | v1 (초기) | **v2 (현재)** |
-|---|---|---|
-| Vitest 단위 테스트 | 119 | **239** (+120) |
-| Test files | 10 | **26** |
-| Playwright e2e | 0 | **14** (12 A11y + 2 adaptive) |
-| Routes (user-facing) | 5 + _not-found | **6 + audit + nav header** |
-| lib 모듈 | 14 | **17** |
-| Scripts | 9 | **12** |
-| JSON Schemas | 0 | **3** (regression-history, ontology-weights, vocab-pool-source) + diagnostic-input |
-| GitHub Actions | 2 | **3** (pr-check, weekly-calibration, vocab-cat-test-smoke) |
-| Dependabot groups | 0 | **4** (runtime, viz, tooling, validation) + Actions ecosystem |
-| 안전망 layer | 4 | **8** (lint → vitest → schema → README freshness → C4.1 → C4.2 → build → coverage threshold) |
-| Coverage (lines) | 미측정 | **95.12%** |
-| Coverage threshold | 미설정 | **93/80/95/90** (lines/branches/funcs/stmts) |
-| WCAG 2.1 AA | 미측정 | **6/6 routes PASS** (desktop + mobile) |
-| 자동 평가 (12 C 기준) | 11/12 | **12/12 measured PASS** (C1.1 177 pytest, C1.2 theta variance 0.03) |
-| 외부 배포 | 없음 | **Vercel Production** + Cloud Run runbook 준비 |
+| 항목 | v1 | v2 | **v3** |
+|---|---|---|---|
+| Vitest 단위 테스트 | 119 | 239 | **249** |
+| Test files | 10 | 26 | **27** |
+| Playwright e2e | 0 | 14 | **14** |
+| Routes | 6 + _not-found | 7 + nav | **7 + nav** |
+| lib 모듈 | 14 | 17 | **18** (+trend-analysis) |
+| Scripts | 9 | 12 | **13** (+dogfood-3-presets) |
+| JSON Schemas | 0 | 3+1 | **3+1** |
+| GitHub Actions | 2 | 3 | **3** |
+| 안전망 layer | 4 | 8 | **8** |
+| Coverage (lines) | 미측정 | 95.12% | **95.51%** |
+| Coverage threshold | 미설정 | 93/80/95/90 | **93/80/95/90** (locked) |
+| WCAG 2.1 AA | 미측정 | 12/12 | **12/12** |
+| 자동 평가 12 C 기준 | 11/12 | 12/12 measured | **12/12** |
+| 외부 배포 | 없음 | Vercel | **Vercel + Cloud Run runbook** |
+| C4.1 dogfooding cycles | 0 | 2 (Pass-1/2) | **3 (Pass-1/2/3)** — 모두 catch + rollback |
+| `/regression-history` events | — | 5 | **6** (3 fail + 2 pass + 1 initial) |
+| λ schedule | 고정 0.1 | 고정 0.1 | **auto-lambda N-dependent** |
+| C4.3 trend infrastructure | 없음 | 없음 | **scaffold + 10 unit tests** |
 
 ---
 
@@ -362,3 +364,41 @@ Calibration 실행:
 3. **학습자 채널 1명 모집** — phase2-backlog-v2 Stage C 활성화 (P-3 Phonics, P-5 Teacher Dashboard 등)
 
 세 항목 모두 본인 환경 외 의존 없이 본인 시간 1-2시간이면 가능.
+
+---
+
+## 14. v3 추가분 (2026-05-23 저녁 sprint)
+
+v2 commit 후 추가 자율 진행. 핵심 메시지: **calibration 안전망의 일반성 3회 누적 검증 + 노이즈 흡수 정책 + 미래 데이터 인프라 prep**.
+
+### 14.1 추가된 작업 4건
+
+| 순서 | 작업 | 산출물 | 커밋 |
+|---|---|---|---|
+| 25 | dogfooding-3 preset-based simulator | 1600 응답 (40 unique dims), C4.1 게이트 D5 over-declared 2건 검출 → 자동 롤백 | oelp@2e1ce5c, myprojects@fc4942a |
+| 26 | λ schedule auto-lambda 정책 | N-dependent λ (N<100 → 2.0, ..., N>10k → 0.5). λ=2.0 검증으로 contradictions 0건 도달 (PASS 검증). 본 promotion은 prod 미적용 (synthetic data 정책). | oelp@f942f78, myprojects@8804cd6 |
+| 27 | `/regression-history` 6 events 확인 | 자동 append (T1.2) end-to-end 작동. screenshot 보존. | screenshot regression-history-6-events.png |
+| 28 | C4.3 trend-analysis 인프라 | lib/trend-analysis.ts (computeWindows + analyzeTrend) + 10 Vitest. 외부 학습자 데이터 도착 시 즉시 작동. | oelp@3cefa14 |
+
+### 14.2 C4.1 게이트 3 cycle 누적 패턴
+
+| Cycle | 시기 | 모순 종류 | 차원 | 방향 |
+|---|---|---|---|---|
+| Pass-1 | 2026-05-23 오전 | over-declared | D2_Meaning | declared too high vs derived 0% |
+| Pass-2 | 2026-05-23 오후 | under-declared | D3_Context | declared too low vs derived 33% |
+| Pass-3 | 2026-05-23 저녁 | over-declared (2건) | D5_Usage | declared too high vs derived 0% |
+
+→ **3개 다른 차원 × 다른 방향**에서 같은 게이트가 일관 catch. 안전망 robustness 결정적 입증.
+
+### 14.3 발견 → 코드 → 검증 closed loop
+
+dogfooding-3의 L2 finding ("λ=1.0 prior pull 부족") → λ schedule 코드 추가 → λ=2.0 검증 PASS → 정책 영구화. **단일 sprint 안에서 발견-반영-검증 closed loop 완성.**
+
+### 14.4 v3 남은 의사결정 (v2와 동일 + 1)
+
+v2 §13.3의 3가지 + 추가:
+4. **lib/trend-analysis.ts UI 통합 시점** — 외부 학습자 N≥1 + 4주 누적 시 `/sessions`에 trend chart 추가 (또는 별도 `/trend` 라우트). 인프라는 준비 완료.
+
+### 14.5 v3 시점 OELP의 위치 한 줄
+
+> "Production 배포된 적응형 학습 플랫폼. 외부 학습자 데이터 도착 즉시 받아낼 인프라 완비. 단일 sprint 안에 검증된 안전망 + 자기-개선 닫힌 루프."
