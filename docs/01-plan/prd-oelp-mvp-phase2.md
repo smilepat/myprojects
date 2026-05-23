@@ -112,6 +112,13 @@ Phase 1이 "혼자서도 작동하는 시스템 + 안전망 인프라"였다면,
 - 본인 환경에선 4명도 어려울 수 있음
 - 미달 시: simulator 데이터 점진 제거 시점 추가 forecasting + λ 재조정
 
+### R5 (낮음, 추가 2026-05-24): exploration policy의 long-run 임계 한계
+- 발견: `maxSamplesToConsider=20` 고정값으로 N>200에서 balance 악화 (0.095 → 0.030).
+  cold QTs가 cap에 도달하면 exploration 자동 중단 → warm QTs가 모든 후속 samples 흡수.
+- 분석: [exploration-policy-long-run-analysis.md](../03-analysis/exploration-policy-long-run-analysis.md)
+- 검증: 외부 학습자 N=200 누적 시 balance < 0.05인지 실측 확인.
+- 미달 시: `findExplorationTarget`에 adaptive threshold (mean × 0.3) 적용.
+
 ### R3 (낮음, 정정 2026-05-23): D5_Usage 게이트 catch는 의도된 안전망 동작
 - 3 cycle 모두 D5에서 over-declared 모순 검출 — **그러나 정량 분석 후 simulator 결함 아님**.
 - 정정 발견 ([d5-bias-root-cause-analysis.md](../03-analysis/d5-bias-root-cause-analysis.md)):
