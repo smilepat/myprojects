@@ -1,25 +1,34 @@
-# OELP 통합 회고 — Phase 1 + P-1 + P-1.5 + P-1.5b + P-2
+# OELP 통합 회고 — Phase 1 + P-1 + P-1.5 + P-1.5b + P-2 + Stability + Vercel
 
-> 작성: 2026-05-23 / Owner: smilepat / Scope: 전체 OELP 진행 종합
+> 작성: 2026-05-23 (v1) / **갱신: 2026-05-23 v2** (Tier 1-4 stability + vocab-cat-test 통합 + Vercel 배포 반영)
+> Owner: smilepat / Scope: 전체 OELP 진행 종합
 > 산출 기간: 압축 실행 (실제 설계 일정은 8+ 주)
 
 ---
 
-## 0. 한 페이지 요약
+## 0. 한 페이지 요약 (v2)
 
-OELP (Ontology English Learning Platform)는 LogicFlow EdTech 생태계의 통합 구현체로 시작되어, **8주분 P-1 + 1주 P-1.5 + 6주 P-2** 분량의 인프라를 완성. **자동 단위 테스트 119건, 6 라우트, 14 lib 모듈, 9 scripts, 2 GH Actions workflow** 보유. 본인 dogfooding 1회 실행으로 **자동 calibration + C4.1 safety net production 실증**.
+OELP는 **Phase 1 MVP + P-1 추천 v2 + P-1.5/b Bridge + P-2 EBS Foundation** 완료에 더해, 단일 sprint에서 **Tier 1-3 stability roadmap (7 작업), Tier 4 A11y + 모바일, vocab-cat-test 실제 통합 (C1.2 measured PASS), Vercel production 배포, EBSCriteriaEngineGenerator 활성화**까지 도달.
 
-### 핵심 수치
+### 핵심 수치 (v2 2026-05-23)
 
-| 항목 | 수치 |
-|---|---|
-| Vitest 단위 테스트 | **119 PASS** |
-| 라우트 | 6 (/, /diagnose, /map, /queue, /sessions, /_not-found) |
-| lib 모듈 | 14 |
-| scripts | 9 (validation, calibrate, promote, sync, simulate, gen-fake, build-pool, c1-3/c4-2 reports) |
-| GitHub Actions | 2 (pr-check, weekly-calibration) |
-| 안전망 layer | 4 (Vitest + C4.1 + build + promote-rollback) |
-| 자동 평가 통과율 | **Phase 1 11/12 (96%)** + P-1 100% + P-1.5 100% + **P-2 100%** |
+| 항목 | v1 (초기) | **v2 (현재)** |
+|---|---|---|
+| Vitest 단위 테스트 | 119 | **239** (+120) |
+| Test files | 10 | **26** |
+| Playwright e2e | 0 | **14** (12 A11y + 2 adaptive) |
+| Routes (user-facing) | 5 + _not-found | **6 + audit + nav header** |
+| lib 모듈 | 14 | **17** |
+| Scripts | 9 | **12** |
+| JSON Schemas | 0 | **3** (regression-history, ontology-weights, vocab-pool-source) + diagnostic-input |
+| GitHub Actions | 2 | **3** (pr-check, weekly-calibration, vocab-cat-test-smoke) |
+| Dependabot groups | 0 | **4** (runtime, viz, tooling, validation) + Actions ecosystem |
+| 안전망 layer | 4 | **8** (lint → vitest → schema → README freshness → C4.1 → C4.2 → build → coverage threshold) |
+| Coverage (lines) | 미측정 | **95.12%** |
+| Coverage threshold | 미설정 | **93/80/95/90** (lines/branches/funcs/stmts) |
+| WCAG 2.1 AA | 미측정 | **6/6 routes PASS** (desktop + mobile) |
+| 자동 평가 (12 C 기준) | 11/12 | **12/12 measured PASS** (C1.1 177 pytest, C1.2 theta variance 0.03) |
+| 외부 배포 | 없음 | **Vercel Production** + Cloud Run runbook 준비 |
 
 ---
 
@@ -300,6 +309,56 @@ Calibration 실행:
 ## 12. 인용
 
 - 본 보고서: [04-report/oelp-integrated-summary.md](./oelp-integrated-summary.md)
-- 누적 시리즈: docs/04-report/* (10개), docs/02-design/* (3개), docs/03-analysis/* (6개)
-- 코드: [smilepat/oelp](https://github.com/smilepat/oelp) — 119 tests / 6 routes / 14 lib modules
-- 운영 안전망: [pr-check.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/pr-check.yml) + [weekly-calibration.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/weekly-calibration.yml)
+- 누적 시리즈: docs/04-report/* (11개), docs/02-design/* (3개), docs/03-analysis/* (9개), docs/01-plan/* (4개)
+- 코드: [smilepat/oelp](https://github.com/smilepat/oelp) — 239 tests / 26 files / 7 routes / 17 lib modules
+- 운영 안전망 (8단계): [pr-check.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/pr-check.yml) + [weekly-calibration.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/weekly-calibration.yml) + [vocab-cat-test-smoke.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/vocab-cat-test-smoke.yml)
+- 외부 통합: vocab-cat-test PR #1 (merged) + PR #2 (pending CORS)
+- 배포: Vercel Production (URL pending) + Cloud Run runbook 준비됨
+
+---
+
+## 13. v2 회고 (2026-05-23 단일 sprint 추가분)
+
+### 13.1 v1 이후 추가된 작업 시퀀스
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 1 | Tier 1.1 regression-history JSON Schema + CI | schemas/, scripts/validate-schemas.mjs |
+| 2 | Tier 1.3 DiagnosticInput round-trip CI | tests/diagnostic-roundtrip.test.ts |
+| 3 | Tier 2.1 README counters auto-derived | scripts/update-readme-counters.mjs |
+| 4 | Tier 1.2 ontology-weights write-protection | lastWriter field + schema allOf |
+| 5 | Tier 2.3 dimension-mapping consistency | 3중 sync (code ↔ JSON ↔ doc) |
+| 6 | Tier 3.1 CSV provenance checksum | lib/vocab-pool-source.json |
+| 7 | Tier 3.2 Dependabot | .github/dependabot.yml |
+| 8 | Tier 4.1 A11y axe-core baseline | e2e/a11y.spec.ts (6 routes WCAG 2.1 AA) |
+| 9 | vocab-cat-test 실제 통합 | PR #1 dimension_scores fix, verify script |
+| 10 | AdaptiveDiagnostic UI | /diagnose 실제 적응형 진단 + weekly cron smoke |
+| 11 | Vercel runbook + 배포 (본인) | docs/03-analysis/vercel-deployment-runbook.md |
+| 12 | Phase 2 backlog v2 | docs/01-plan/phase2-backlog-v2.md (Stage A/B/C/D 재분류) |
+| 13 | A4 Mobile 반응형 (5 fixes + A11y mobile suite) | layout viewport + responsive splits |
+| 14 | A3 Error boundary + localStorage error log | lib/error-log.ts + ErrorBoundary |
+| 15 | A6 Vitest coverage 75/65/75/75 gate | vitest.config.ts thresholds |
+| 16 | A5 /sessions 운영 패널 + cross-link | ErrorLogPanel + CalibrationHistoryPanel |
+| 17 | A7 leitner + session-export coverage (80/70) | 0% → 100% 두 모듈 |
+| 18 | A7+ Phase 2 ontology + diagnostic + queue-v1 (88/75) | 30→100, 48→100, 51→100 |
+| 19 | Adaptive diagnostic e2e | 2 mock-backend tests |
+| 20 | /sessions 모바일 pagination + Header nav | 7 routes 통합 nav |
+| 21 | Cloud Run runbook | 30분 본인 가이드 |
+| 22 | A7++ error-log globals + reco-store extras (93/80) | window events mock |
+| 23 | EBSCriteriaEngineGenerator stub → 실 wiring | 8 mock-backend tests |
+| 24 | 본 v2 통합 회고 갱신 | 본 문서 |
+
+### 13.2 v2의 새 인사이트
+
+- **자동 게이트의 효과 누적**: Tier 1-3 + A6 coverage ratchet + A11y로 PR마다 8단계 통과 강제 → 회귀 가능성 극단 감소
+- **CI 측 작동 검증된 자동화**: regression-history 자동 append, README counter auto-sync, dependabot grouped weekly
+- **외부 통합 검증된 경로**: vocab-cat-test (177 pytest pass, theta variance 0.03) + Vercel 배포 (본인 완료)
+- **Stage C 활성화 조건 1개만 잔여**: 학습자 채널 ≥ 1명 (Cloud Run 배포 시 자연스럽게 dogfooding-3 시도 가능)
+
+### 13.3 v2 종료 시점 본인이 결정할 것
+
+1. **Cloud Run vocab-cat-test 배포** (30분, runbook 준비됨) — 외부 사용자가 Adaptive 진단 사용 가능해짐
+2. **EBS-demo Firebase config** (30분) — EBSCriteriaEngineGenerator 실 활성화 (코드는 이미 wired)
+3. **학습자 채널 1명 모집** — phase2-backlog-v2 Stage C 활성화 (P-3 Phonics, P-5 Teacher Dashboard 등)
+
+세 항목 모두 본인 환경 외 의존 없이 본인 시간 1-2시간이면 가능.
