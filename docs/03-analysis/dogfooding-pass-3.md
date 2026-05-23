@@ -183,5 +183,47 @@ contradictions = 2  ✗ (> 0)
 
 ---
 
-## 8. 변경 이력
+## 8. λ schedule 도입 (L2 후속, 2026-05-23 동일 sprint)
+
+### 8.1 동기
+§4 L2 finding: "1600 응답에서도 λ=1.0 prior pull이 noise를 충분히 흡수 못함". 검증 가설: 더 큰 λ → contradiction 제거.
+
+### 8.2 실험
+동일 1600 응답 데이터에 λ=2.0 적용:
+
+```bash
+node scripts/calibrate.mjs --responses data/dogfood-3-presets-1600.json --lambda 2.0 --min 100 ...
+```
+
+### 8.3 결과 (λ=2.0)
+- TYPE-심경 D5: 10% → **20%** (vs 28% with λ=1.0)
+- TYPE-제목 D5: 10% → **19%** (vs 27% with λ=1.0)
+- TYPE-순서배열, TYPE-요지 모두 prior에 가까워짐
+- **tau = 0.50** (λ=1.0 시 0.60)
+- **contradictions = 0** (λ=1.0 시 2)
+- **C4.1 게이트 PASS** ✅
+
+→ **가설 검증**: 더 큰 λ가 noise를 더 흡수, contradictions 0건 도달.
+단, tau가 0.60 → 0.50으로 감소 (prior에 가까워질수록 약간의 ranking divergence).
+
+### 8.4 auto-lambda 정책 추가 (scripts/calibrate.mjs)
+```
+N < 100     → λ=2.0  (heavy prior — tiny data)
+100-500     → λ=1.5
+500-2000    → λ=1.0  (previous default, matches dogfood-3)
+2000-10000  → λ=0.7
+> 10000     → λ=0.5  (light prior — large data)
+```
+
+사용: `--auto-lambda` 플래그 추가. 명시적 `--lambda` 없을 때 자동.
+
+### 8.5 본 promotion은 prod 미적용
+λ=2.0 결과는 PASS이지만 **synthetic simulator 데이터로 prod weights 갱신은 부적절** — git revert로 `lib/ontology-weights.json` v2 복원. 실제 prod calibration은 외부 학습자 데이터에서만 진행.
+
+이 결정은 [phase2-backlog-v2.md](../01-plan/phase2-backlog-v2.md) §K1-K5 KPI 원칙에 부합 — K5 (외부 학습자 ≥ 1명) 충족 후만 prod weight ratchet.
+
+---
+
+## 9. 변경 이력
 - 2026-05-23: dogfooding-3 실행 — preset α/β/γ/δ × 40 learners × 4 sessions → 1600 응답 → C4.1 게이트 D5 over-declared 2건 검출 → 자동 롤백
+- 2026-05-23 (동일 sprint): λ=2.0 검증으로 contradictions 0건 달성 + auto-lambda 정책 코드 추가 (smilepat/oelp scripts/calibrate.mjs)
