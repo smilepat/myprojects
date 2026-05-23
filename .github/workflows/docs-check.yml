@@ -1,0 +1,26 @@
+name: Docs Check
+
+# PR마다 docs INDEX.md 의 자동 생성 결과가 commit된 버전과 일치하는지 검증.
+# 새 docs 추가 / 제목 변경 / Status 변경 시 build-docs-index.mjs 재실행 강제.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify docs/INDEX.md is up-to-date
+        run: node scripts/build-docs-index.mjs --check
