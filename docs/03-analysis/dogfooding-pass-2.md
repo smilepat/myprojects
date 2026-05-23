@@ -134,6 +134,14 @@ Failure report: out/promote-weights-fail.json
   - (c) varied diagnostic JSON을 외부 파일/URL로 받는 흐름이 더 자연스러움
 - **권장 액션**: `/diagnose` 페이지 상단에 "varied diagnostic 4종 미리보기" 카드 추가, paste 박스를 첫 화면에 노출
 
+#### L4 후속 (resolved 2026-05-23, smilepat/oelp@3660208)
+- `lib/diagnostic-presets.ts` 추가: 4개 preset (α D3/D4, β D1/D5, γ D2, δ cold-start) 영구 코드화
+- `/diagnose` 페이지: preset 카드를 primary CTA로 승격, demo 버튼은 secondary로 강등
+- 1-click 활성화 → paste 박스 미사용 시에도 varied diagnostic 사용 강제
+- Vitest 5건 추가 (schema, uniqueness, lookup, weak<strong ranking, score range), 119→124
+- Playwright 확인: α 클릭 → 활성 진단 "Demo Student" → "preset-α" 정상 전환
+- → **dogfooding-3 진행 시 rank-1 X 재발 가능성 사실상 0**
+
 ---
 
 ## 5. 산출물
