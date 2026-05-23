@@ -402,3 +402,78 @@ v2 §13.3의 3가지 + 추가:
 ### 14.5 v3 시점 OELP의 위치 한 줄
 
 > "Production 배포된 적응형 학습 플랫폼. 외부 학습자 데이터 도착 즉시 받아낼 인프라 완비. 단일 sprint 안에 검증된 안전망 + 자기-개선 닫힌 루프."
+
+---
+
+## 15. v4 추가분 (2026-05-24 sprint — Phase 2 prep 마무리)
+
+v3 commit 후 외부 학습자 도착 시 즉시 작동 인프라 완성에 집중. 본인 결단 대기 없이 자율 진행.
+
+### 15.1 새 작업 시퀀스 29-40
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 29 | exploration target chip (/queue) | amber chip + tooltip |
+| 30 | PosteriorBalancePanel | live localStorage, balance + state label |
+| 31 | dogfood-3-presets-1600 simulator | seed 기반 reproducible |
+| 32 | dogfood-4 exploration verification | starved 6→0, balance 0→0.05 |
+| 33 | dogfood-5 adaptive policy verification | balance 0→0.095 |
+| 34 | long-run analysis (200/500 sessions) | R5 발견 (balance 0.030 악화) |
+| 35 | Phase 2 PRD 정식화 + R5 등록 | 4 OKRs + K1-K10 KPI + 12주 마일스톤 |
+| 36 | OELP/myprojects CLAUDE.md 정비 | 작업 컨티뉴이티 기반 |
+| 37 | stability roadmap v2 | Tier 5-6 모니터링 정책 |
+| 38 | docs/INDEX.md auto-gen + CI gate | 42 docs grouped |
+| 39 | OELP cross-link checker (CI 10th gate) | smilepat/* /blob/ URL 검증 |
+| 40 | analytics-events 정식화 + wire | TypeScript types + logEvent at /diagnose /queue /map |
+| 41 | adaptive threshold prep (off by default) | R5 fix 코드 wired, off |
+| 42 | computeBalanceSummary pure helper + 9 Vitest | UI 회귀 보호 |
+
+### 15.2 4 closed-loops (v1 → v4 누적)
+
+1. **Tier 1-3 stability** — data contract 깨짐 → schemas + write-protection + auto-sync
+2. **λ schedule** — dogfood-3 L2 noise leak → auto-lambda N-dependent
+3. **Exploration policy** — Thompson cold-branch → findExplorationTarget + shouldExplore
+4. **Adaptive threshold** — long-run cap fail → adaptive=true ratio policy (off, R5)
+
+→ "발견 → 코드 → 검증 → 정책" 패턴이 4번 반복 = **시스템이 self-improving learning loop 가지고 있음** 입증.
+
+### 15.3 v4 시점 수치 종합
+
+| 항목 | v1 | v2 | v3 | **v4** |
+|---|---|---|---|---|
+| Vitest tests | 119 | 239 | 249 | **305** |
+| Test files | 10 | 26 | 27 | **32** |
+| Playwright e2e | 0 | 14 | 14 | **14** |
+| lib 모듈 | 14 | 17 | 18 | **20** |
+| Scripts (oelp) | 9 | 12 | 13 | **17** |
+| Components | 3 | 6 | 8 | **9** |
+| Coverage lines | — | 95.12% | 95.51% | **96.13%** |
+| CI gates | 4 | 8 | 8 | **10** |
+| myprojects docs | 22 | 27 | 30 | **42** |
+| dogfooding cycles | 0 | 2 | 4 | **5** |
+| External Vercel deploy | none | Production | Production | Production |
+| Closed-loop iterations | 0 | 1 | 3 | **4** |
+
+### 15.4 Stage C 활성화 시 자동 작동 (Claude 자율 완료 항목 정리)
+
+외부 학습자 1명 도착 + Supabase config 시점에 다음 자동 작동:
+
+1. **vocab-cat-test 진단 흐름** → AdaptiveDiagnostic UI + 5D 매핑 + DiagnosticInput 영속화
+2. **Adaptive exploration** → /queue에서 shouldExplore(balance) 정책 자동 적용
+3. **TrendPanel** → 4 sessions 누적 시 live 분석 (placeholder 자동 해제)
+4. **PosteriorBalancePanel** → balance 변화 실시간 표시, R5 long-run flag 자동 감지
+5. **analytics-events** → logEvent localStorage queue 누적 (Supabase POST는 별도 PR)
+6. **calibration cycle** → /sessions calibration JSON export → calibrate.mjs --auto-lambda → C4.1 게이트 → regression-history auto-append + audit UI 반영
+7. **C4.3 trend infra** → external learners 4주 누적 시 자동 활성
+
+### 15.5 v4 종료 시점 본인 결단 잔여 (v3와 동일)
+
+1. ☐ Cloud Run vocab-cat-test 배포 (30분)
+2. ☐ EBS-demo Firebase config (30분)
+3. ☐ 학습자 채널 1명 모집
+
+→ **본인 시간 30-60분 + 1명 모집 노력 = Phase 2 Stage C 본격 활성화.**
+
+### 15.6 v4 시점 OELP의 위치 한 줄 정의
+
+> "Phase 2 Stage A (Claude 자율) 모든 인프라 완성. 외부 학습자 1명 도착 + Supabase config 만으로 6 단계 자동 작동 시스템."
