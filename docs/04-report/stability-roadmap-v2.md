@@ -50,7 +50,7 @@ PR 발생 →
 |---|---|---|---|---|
 | T5.1 | vocab-cat-test Cloud Run 배포 | 30분 | runbook 준비됨, 미실행 | weekly smoke cron이 실행 시점 자동 감지 |
 | T5.2 | EBS-demo Firebase config | 30분 | 코드 wired, env 미설정 | `defaultGeneratorChain()` 자동 fallback (LocalPool), config 시 즉시 활성 |
-| T5.3 | vocab-cat-test PR #2 merge | instant | pending review | merge 시 ALLOWED_ORIGINS 기본값에 OELP dev ports 추가 → 본인 환경에서 env 지정 불필요 |
+| T5.3 | vocab-cat-test PR #2 merge | instant | ✅ **MERGED 2026-05-23** | ALLOWED_ORIGINS 기본값에 OELP dev ports 자동 포함 → env 지정 불필요 |
 | T5.4 | Vercel custom domain (선택) | 30분 | 기본 vercel.app URL 사용 중 | DNS 변경 시 Vercel이 자동 SSL |
 
 ### 2.1 자동 모니터링 정책

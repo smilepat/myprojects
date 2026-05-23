@@ -314,7 +314,7 @@ Calibration 실행:
 - 누적 시리즈: docs/04-report/* (11개), docs/02-design/* (3개), docs/03-analysis/* (9개), docs/01-plan/* (4개)
 - 코드: [smilepat/oelp](https://github.com/smilepat/oelp) — 239 tests / 26 files / 7 routes / 17 lib modules
 - 운영 안전망 (8단계): [pr-check.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/pr-check.yml) + [weekly-calibration.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/weekly-calibration.yml) + [vocab-cat-test-smoke.yml](https://github.com/smilepat/oelp/blob/main/.github/workflows/vocab-cat-test-smoke.yml)
-- 외부 통합: vocab-cat-test PR #1 (merged) + PR #2 (pending CORS)
+- 외부 통합: vocab-cat-test PR #1 (merged) + PR #2 (**merged** — CORS dev ports default)
 - 배포: Vercel Production (URL pending) + Cloud Run runbook 준비됨
 
 ---
