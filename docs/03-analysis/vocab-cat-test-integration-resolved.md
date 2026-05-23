@@ -1,11 +1,34 @@
-# vocab-cat-test 통합 Blocker 보고서
+# vocab-cat-test 통합 — RESOLVED
 
-> 실행: 2026-05-22 / 시도: smilepat/oelp F1 진단 백엔드 실제 연결
+> 최초 보고: 2026-05-22 (blocker 상태)
+> 해소 완료: **2026-05-23** (Docker 우회 — Python venv 직접 실행)
 > 기준: [PRD §B-9 W3-5 잔여](../01-plan/prd-oelp-mvp-phase1.md) + [W12 평가 C1.1/C1.2](../04-report/phase1-w12-c-criteria-evaluation.md)
 
 ---
 
-## 0. 결론
+## 0. 결론 (개정 2026-05-23)
+
+✅ **vocab-cat-test 실제 통합 완료.** Docker 미설치 환경에서 Python 3.14 venv 직접 실행 경로로 우회. C1.2 measured PASS.
+
+### 핵심 수치
+
+| 측정 | 결과 | 기준 |
+|---|---|---|
+| pytest 회귀 | **177 passed** | 162 약속 초과 |
+| theta variance (5 runs, always-correct) | **0.03** | ≤ 0.3 (10배 마진) |
+| C1.2 measured stability | **PASS** | functional → measured 승격 |
+| 적응형 CAT 종료 | convergence | max 40 items |
+| 5D dimensionScores | D1-D5 모두 반환 | DiagnosticInput contract |
+| T1.3 schema validation | PASS | OELP /diagnose paste-import 호환 |
+
+### 부수 산출물
+
+1. **vocab-cat-test PR #1** — `get_results` endpoint가 `dimension_scores` 응답에서 누락 (1줄 fix). https://github.com/smilepat/vocab-cat-test/pull/1
+2. **smilepat/oelp@cd0acc5** — verify-vocab-cat-test.mjs를 multi-step CAT 흐름에 맞추고 5D 차원 이름 매핑 추가 (semantic→D2, contextual→D3, form→D1, relational→D4, pragmatic→D5)
+
+---
+
+## 0-original. 원본 결론 (2026-05-22, deprecated)
 
 **vocab-cat-test 실제 통합은 환경 의존성으로 dogfooding 환경에서 차단됨.** Phase 1 잔여 작업으로 분리, Phase 1.5 안정화 또는 본인 환경 정비 후 재시도.
 
