@@ -14,15 +14,17 @@
 
 ```
 docs/
-├── 01-plan/          # PRD + dimension-mapping + analytics-events + phase2-backlog (4 files)
-├── 02-design/        # P-1 / P-1.5 Bridge / P-2 Foundation 설계 (3 files)
-├── 03-analysis/      # C4.1 v1/v2, C1.3, C4.2, Playwright walkthrough, dogfooding-1/2/3,
-│                     # vocab-cat-test integration (blocker→resolved + Cloud Run runbook),
-│                     # vercel-deployment runbook, p7-neo4j-spike (9 files)
-└── 04-report/        # W12 평가, P-1 W1-W8 reports, P-1 final, P-1.5/P-1.5b,
-                      # stability-roadmap-tier-1-3-complete,
-                      # oelp-integrated-summary v3 (11 files)
+├── INDEX.md          # auto-generated docs index (run: scripts/build-docs-index.mjs)
+├── 01-plan/          # PRD (Phase 1 + 2) + dimension-mapping + analytics-events + 백로그 (6 files)
+├── 02-design/        # P-1 v2/W9 / P-1.5 Bridge / P-2 Foundation (4 files)
+├── 03-analysis/      # C4.1, dogfooding 4 cycles, vocab-cat-test runbooks (resolved + Cloud Run),
+│                     # vercel-deployment, p7-neo4j-spike, d5-bias-root-cause,
+│                     # stage-c-activation-sim, exploration-policy-long-run (17 files)
+└── 04-report/        # W12 평가, P-1 W1-W8, stability v1/v2,
+                      # oelp-integrated-summary v3, Phase 2 chunk-end template (14 files)
 ```
+
+전체 색인: [`docs/INDEX.md`](./docs/INDEX.md). CI 검증: `scripts/build-docs-index.mjs --check` (.github/workflows/docs-check.yml).
 
 ## 3. 자주 갱신되는 문서 (drift 주의)
 
@@ -37,17 +39,22 @@ docs/
 
 `smilepat/oelp` 의 tests/dimension-mapping-consistency.test.ts 안에 `DIM_MAPPING_SNAPSHOT` 상수가 본 레포 `docs/01-plan/dimension-mapping.md §1.2` 표의 동결 복사본. 본 문서 변경 시 OELP 측 snapshot도 같은 PR에서 갱신 — 단, 본 레포는 OELP CI에서 직접 fetch 불가하므로 **수동 동기화 약속**이다.
 
-## 5. dogfooding cycle 누적 (2026-05-23)
+## 5. dogfooding cycle 누적 (2026-05-24 기준)
 
-세 cycle 모두 C4.1 게이트가 다른 종류의 모순을 일관 catch + 자동 롤백:
+5 cycle: C4.1 게이트 3건 + sampling 2건. 모두 다른 종류 모순 또는 다른 측정 축:
 
-| Cycle | 모순 차원 | 방향 | report |
-|---|---|---|---|
-| Pass-1 | D2_Meaning | over-declared | `docs/03-analysis/dogfooding-pass-1.md` |
-| Pass-2 | D3_Context | under-declared | `docs/03-analysis/dogfooding-pass-2.md` |
-| Pass-3 | D5_Usage | over-declared (2건) | `docs/03-analysis/dogfooding-pass-3.md` |
+| Cycle | 종류 | 차원/축 | 결과 | report |
+|---|---|---|---|---|
+| Pass-1 | C4.1 | D2_Meaning | over-declared → rollback | `dogfooding-pass-1.md` |
+| Pass-2 | C4.1 | D3_Context | under-declared → rollback | `dogfooding-pass-2.md` |
+| Pass-3 | C4.1 | D5_Usage | over-declared (2건) → rollback | `dogfooding-pass-3.md` |
+| Pass-4 | sampling | exploration target | starved 6→0, balance 0→0.05 | `dogfooding-pass-4.md` |
+| Pass-5 | sampling | adaptive frequency | balance 0→0.095 (50 sess), → 0.030 (500 sess) | + [`exploration-policy-long-run-analysis.md`](./docs/03-analysis/exploration-policy-long-run-analysis.md) |
 
-OELP `/regression-history` 페이지에서 시각화. 총 6 events (3 pass + 3 fail).
+OELP `/regression-history` 페이지에서 6 events 시각화 (3 pass + 3 fail).
+
+### D5 모순 정정 (2026-05-23)
+초기 가설 "simulator D5 모델 약함"은 정량 검증으로 부정. 진짜 원인: 7개 QT의 D5 derived = 0 인데 prior declared ≈ 0.10 borderline → **게이트의 의도된 sensitivity 동작**. Phase 2 PRD §5 R3 정정.
 
 ## 6. Phase 2 백로그 두 버전 공존
 
