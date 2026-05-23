@@ -112,11 +112,14 @@ Phase 1이 "혼자서도 작동하는 시스템 + 안전망 인프라"였다면,
 - 본인 환경에선 4명도 어려울 수 있음
 - 미달 시: simulator 데이터 점진 제거 시점 추가 forecasting + λ 재조정
 
-### R3 (중간): simulator D5_Usage 구조적 bias
-- 3 cycle 모두 D5에서 over-declared 모순 검출
-- 가설: simulator's bias term 모델이 D5 차원을 과도하게 가중
-- 검증: 외부 실측 데이터 도착 시 D5 정답률과 simulator 비교
-- 미달 시: simulator 코드 수정 + dogfood-3 재실행
+### R3 (낮음, 정정 2026-05-23): D5_Usage 게이트 catch는 의도된 안전망 동작
+- 3 cycle 모두 D5에서 over-declared 모순 검출 — **그러나 정량 분석 후 simulator 결함 아님**.
+- 정정 발견 ([d5-bias-root-cause-analysis.md](../03-analysis/d5-bias-root-cause-analysis.md)):
+  - 7개 QT에서 D5 derived = 0 (keyVariable mapping상 D5 단서 없음)
+  - prior declared D5 ≈ 0.10 (안전 영역, borderline)
+  - ridge 노이즈가 D5를 살짝 올리면 즉시 `declared ≥ 0.2 AND derived = 0` 트리거
+- **결론**: 게이트가 의도대로 작동. simulator/weights 변경 불필요.
+- 후속 트리거: 외부 학습자 데이터에서 D5 신호가 실측 시 keyVariable mapping 재검토.
 
 ### R4 (낮음): EBS-demo Firebase config 실패
 - 가설: 본인 30분 후 config 가능 (코드는 이미 wired)
