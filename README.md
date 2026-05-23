@@ -54,6 +54,34 @@
 
 ---
 
+---
+
+## 📚 본 레포 (Docs Hub)
+
+**smilepat/myprojects** 는 LogicFlow 생태계의 **중앙 docs 저장소**. 47+ 코드 레포는 각자 README + CLAUDE.md만 두고, 다음 통합 문서는 본 레포에 집중:
+
+| 폴더 | 내용 | 문서 수 |
+|---|---|---:|
+| [`docs/01-plan/`](./docs/01-plan/) | PRD (Phase 1/2) + dimension-mapping + analytics-events + 백로그 | 6 |
+| [`docs/02-design/`](./docs/02-design/) | Phase 별 설계 (P-1 v2/W9 / P-1.5 Bridge / P-2 Foundation) | 4 |
+| [`docs/03-analysis/`](./docs/03-analysis/) | C4.1 검증 / dogfooding 4 cycles / runbook (Vercel, Cloud Run) / D5 root cause | 17 |
+| [`docs/04-report/`](./docs/04-report/) | W별 보고서 + 종합 회고 v3 + stability roadmap v2 | 14 |
+
+→ 전체 색인: [`docs/INDEX.md`](./docs/INDEX.md) (auto-generated, `scripts/build-docs-index.mjs --check` CI gate).
+
+[`CLAUDE.md`](./CLAUDE.md) — 본 레포 Claude Code 작업 가이드.
+
+### 🎯 통합 플랫폼: smilepat/oelp
+
+[OELP (Ontology English Learning Platform)](https://github.com/smilepat/oelp) 는 본 docs 가 다루는 구현체:
+- Next.js 16 + Vercel Production deployed
+- **282 Vitest tests · 14 Playwright e2e · 9-stage CI gate · 96% line coverage**
+- 통합 자산: vocabulary-db + csat-graphdb-318 + vocab-cat-test + vocab-learn-pat
+- C4.1 도메인 모순 자동 게이트 (3 cycles 누적 검증, 모두 catch + rollback)
+- Phase 2 P-1 W9 exploration policy + adaptive frequency 통합 완료
+
+---
+
 ## 🛠️ 표준 기술 스택
 
 ```
