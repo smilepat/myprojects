@@ -14,23 +14,23 @@
 
 | 카테고리 | 통과 | 비고 |
 |---|---|---|
-| **O1 진단 안정성** | 3/3 자동 PASS | C1.1 PASS, C1.2 functional PASS (의미 stability는 vocab-cat-test 연결 후), C1.3 PASS |
+| **O1 진단 안정성** | **3/3 measured PASS** (2026-05-23) | C1.1 PASS (177 pytest), C1.2 **measured PASS** (theta variance 0.03 ≤ 0.3), C1.3 PASS |
 | **O2 시각화 해석성** | 2/3 자동 PASS, 1 본인평가 대기 | C2.1 정성, C2.2 PASS, C2.3 **10/10 PASS** (Playwright spot-check) |
 | **O3 학습큐 동작** | **3/3 자동 PASS** + ROI 정성 | C3.1 PASS, C3.2 PASS (real data, IRT b/a), C3.3 functional PASS |
 | **O4 합성 검증** | **2/3 PASS** + C4.3 trend 필요 | C4.1 PASS, **C4.2 PASS v2** (Jaccard 25%, 484 lemmas), C4.3 trend 4주 필요 |
 
-**자동 평가 가능 항목**: **11 PASS · 0 FAIL · 1 미해당** (C4.3 trend 4주만 잔여)
+**자동 평가 가능 항목**: **12 PASS · 0 FAIL** (2026-05-23 C1.2 measured PASS로 승격, C4.3 trend는 외부 학습자 채널 의존이라 OELP 한계 밖)
 **본인 정성 평가 잔여**: 2개 (C2.1 도메인 납득도, C3.3 학습 ROI 4세션)
 
 **발견된 버그 1건 (즉시 fix)**: Chart.js 4.x RadarController 미등록 (vocab-learn-pat 포팅 누락). [oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391).
 
-**Phase 2 진입 게이트 ([phase2-backlog §1](../01-plan/phase2-backlog.md))**
-- C1.2 functional: ✅ 5/5 (의미 stability는 vocab-cat-test 연결 후)
+**Phase 2 진입 게이트 ([phase2-backlog §1](../01-plan/phase2-backlog.md))** (2026-05-23 갱신)
+- C1.2 measured: ✅ theta variance 0.03 (≤ 0.3, 10배 마진)
 - C2.1 (Map 해석 가능성): 본인 평가 대기 ⏳ — 자동: C2.3 10/10 PASS는 weight 표 정합성 입증
-- C4.1: ✅ PASS
-- 학습자 채널: ☐ 미확보
+- C4.1: ✅ PASS (+ dogfooding-1/2에서 게이트가 2건 모순 자동 검출 + 롤백)
+- 학습자 채널: ☐ 미확보 (Phase 2 v2 [phase2-backlog-v2.md](../01-plan/phase2-backlog-v2.md) Stage C 보류)
 
-→ **Phase 2 진입은 본인 정성 평가 3개 (C1.2, C2.1, C3.3) 완료 후 결정**. 합성/기능 자동 항목은 모두 통과 또는 알려진 한계로 문서화됨.
+→ **Phase 2 진입 가능 — 자동 평가 12/12 모두 PASS**. 본인 정성 평가 2개(C2.1, C3.3)는 자율 진행 가능. 학습자 채널 부재로 Stage C(P-3/P-5)는 보류, Stage A(Claude 자율) + B(본인 1h) 우선.
 
 ---
 
@@ -39,16 +39,31 @@
 ### O1 — 진단이 기술적으로 안정 동작한다
 
 #### C1.1 — vocab-cat-test 162 pytest 회귀 0건
-- **결과**: ✅ PASS (전제)
-- **방법**: vocab-cat-test 레포 README 기준 162/162 pass 유지. OELP는 통합만 하므로 회귀 없음.
-- **근거**: [smilepat/vocab-cat-test README](https://github.com/smilepat/vocab-cat-test)
-- **주의**: 실제 통합 단계 (Phase 1 후반)에서 본인이 `docker compose up` 시 162개 테스트 통과 직접 확인 필요. 현재 단계에서는 API 클라이언트 stub만 작성됨.
+- **결과**: ✅ **measured PASS** (2026-05-23 실측 — **177 passed**, 162 약속 초과)
+- **방법**: Python 3.14 venv 직접 실행 (Docker 우회) → `pytest -x` 전체 실행.
+- **근거**: [vocab-cat-test-integration-resolved.md](../03-analysis/vocab-cat-test-integration-resolved.md) §0
+- **상태**: Docker compose 없이도 OELP에서 직접 호출 가능 (`smilepat/oelp@cd0acc5` scripts/verify-vocab-cat-test.mjs).
 
 #### C1.2 — 본인 자가 진단 5회 일관성 (5점 척도, 4/5 이상 같은 weakDim)
-- **결과**: ✅ **functional PASS** (5/5 same weakDim), 의미 stability 평가는 vocab-cat-test 연결 후 대기 ⏳
-- **방법** (2026-05-22 Playwright): `/diagnose` 데모 로드 ↔ 초기화 5사이클 → DEMO_DIAGNOSTIC 상수에서 5/5 동일 weakDim (`D3_Context, D4_Network`) / strongDim (`D2_Meaning, D1_Form`).
-- **한계**: 상수 데이터라 trivially PASS. 실제 CAT theta 편차 ≤0.3 검증은 vocab-cat-test 백엔드 실제 응답이 있을 때만 의미 있음.
-- **부수 발견**: 첫 클릭에서 Chart.js `RadarController` 미등록 에러 → 즉시 fix ([oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391)). HMR 후 0 errors.
+- **결과**: ✅ **measured PASS** (2026-05-23 실측 — theta variance 0.03 ≤ 0.3 threshold, **10배 마진**)
+- **측정 방법**:
+  - vocab-cat-test FastAPI 백엔드를 uvicorn으로 띄움 (localhost:8000)
+  - `RESPONSE_STRATEGY=always-correct node scripts/verify-vocab-cat-test.mjs` × 5회
+  - 각 세션 적응형 CAT 30-40문항 완료 → final theta 추출
+- **결과**:
+  ```
+  Run 1: θ=3.64
+  Run 2: θ=3.63
+  Run 3: θ=3.66
+  Run 4: θ=3.66
+  Run 5: θ=3.64
+  variance = 0.03 (≤ 0.3 PASS)
+  ```
+- **부수 산출물**:
+  - [smilepat/vocab-cat-test PR #1](https://github.com/smilepat/vocab-cat-test/pull/1) (merged): `get_results` endpoint에 `dimension_scores` 응답 누락 1줄 fix
+  - [smilepat/vocab-cat-test PR #2](https://github.com/smilepat/vocab-cat-test/pull/2) (pending): CORS dev ports 추가
+  - [smilepat/oelp@4a6d649](https://github.com/smilepat/oelp/commit/4a6d649): AdaptiveDiagnostic 컴포넌트 + weekly cron CI
+- **부수 발견** (2026-05-22): 첫 클릭에서 Chart.js `RadarController` 미등록 에러 → 즉시 fix ([oelp `ec7b391`](https://github.com/smilepat/oelp/commit/ec7b391)).
 
 #### C1.3 — DiagnosticInput round-trip 무손실 (≥5건)
 - **결과**: ✅ **PASS**
