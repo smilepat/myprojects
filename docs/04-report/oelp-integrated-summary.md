@@ -973,3 +973,87 @@ D1_Form은 severity="warn" + 옵션 A' PR 권장 메시지
 ### 21.6 v14 시점 OELP의 위치 한 줄 정의
 
 > "D1_Form structural defect가 PRD R6 → 시뮬 → 도구 → 실 UI → /map indicator까지 6 층위에서 일관 표현. 본인 옵션 A' PR risk-free 5중 안전성 완비 (PRD 정식 등록 추가). 학습자 모집만 남음."
+
+---
+
+## 22. v15 추가분 (2026-05-25 — 미래 PR 안전 가이드 + 운영 모니터링 도구)
+
+### 22.1 새 작업 시퀀스 95-98
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 95 | **dogfood-11 weight sensitivity** | 5 dim 각각 +0.15 boost 시뮬 → 미래 가중치 조정 PR 안전 가이드 |
+| 96 | **QueuePlateauNotice** (`/queue` 8번째 surface) | 큐가 D1 targeting + 학습자 plateau confirmed 시 경고 + 옵션 A' PR 권장 |
+| 97 | **bundle-size-audit.mjs** | Next.js 16 Turbopack production bundle 측정 도구 (현 1.58MB, threshold 3MB 47% 마진) |
+| 98 | 본 v15 회고 (§22) | 미래 PR 안전 가이드 + 운영 도구 누적 |
+
+### 22.2 dogfood-11 정량 결과 (5 dim sensitivity)
+
+각 dim에 대해 도메인 합치 QT에서 +0.15 boost 시뮬:
+
+```
+dim          QT          avg gap   side  verdict
+D1_Form      제목         +70.2%p    4    MAJOR (옵션 A' systemic)
+D2_Meaning   심경         +3.8%p     0    SAFE (효과 미미)
+D3_Context   요지          0%p       0    SAFE (이미 dominant, 천장)
+D4_Network   제목         +1.8%p     0    SAFE (효과 미미)
+D5_Usage     순서배열      +5.2%p     0    SAFE (효과 미미)
+```
+
+**핵심 finding**:
+- D1만 MAJOR — 옵션 A' 정당화 (systemic defect 해결)
+- D3는 이미 dominant 천장 효과 → boost 무의미
+- D2/D4/D5는 SAFE but 효과 미미 → 도메인 검토 후만 변경
+
+**미래 가치**: 다른 dim에 대한 가중치 조정 PR이 등장하면 본 script 결과를 baseline으로 사용. MAJOR verdict 발견 시 옵션 A' 같은 4 파일 동시 PR 필수.
+
+### 22.3 학습자 도착 시 자동 활성 chain 8 surfaces (v15 확장)
+
+기존 7 (v14) + QueuePlateauNotice (v15):
+1. TrendPanel — accuracy + 5D trend
+2. PosteriorBalancePanel — Beta posterior + balance
+3. AnalyticsQueuePanel — 11 이벤트 분포
+4. AdaptiveDiagnosticStats — θ history + KR1.1/1.2
+5. CalibrationEventSync — audit log mirror
+6. PlateauWarningPanel — D1 plateau 자동 confirm
+7. /map D1 indicator — derived 0% 알림
+8. **QueuePlateauNotice (v15)** — 큐가 D1 targeting + plateau confirmed 시 경고
+
+학습자가 OELP 어디서든 D1 plateau context 자동 surface — diagnose 후 → map 탐색 시 → 학습 큐 시작 전 → sessions 누적 분석.
+
+### 22.4 운영 모니터링 도구 누적 (v15)
+
+| 도구 | 측정 항목 | 현 상태 |
+|---|---|---|
+| `check-dim-coverage.mjs` (v11) | keyVariable 매핑 갭 | D1_Form MISSING (정상 baseline) |
+| `simulate-option-a-prime.mjs` (v12) | 옵션 A' PR 사전 검증 | tau 0.5 PASS |
+| `dogfood-9 matrix` (v11) | 5×5 plateau scan | D1 5/5 = 0% |
+| `dogfood-10 matrix` (v13) | 옵션 A' 효과 사전 측정 | SAFE verdict |
+| `dogfood-11 sensitivity` (v15 신설) | 5 dim weight sensitivity | D1만 MAJOR |
+| `bundle-size-audit.mjs` (v15 신설) | Production bundle size | 1.58MB / 3MB |
+
+→ 자율 작업의 **운영 모니터링 인프라가 완비**됨. 학습자 데이터 도착 시 자동 활성 + 미래 PR 사전 검증 + 배포 사이즈 회귀 모두 자동.
+
+### 22.5 v15 시점 수치 종합
+
+| 항목 | v13 | v14 | **v15** |
+|---|---|---|---|
+| Vitest tests | 371 | 371 | 371 |
+| Scripts (oelp) | 25 | 25 | **27** (dogfood-11 + bundle-audit) |
+| Components | 13 | 13 | 13 |
+| Coverage lines | 98.26% | 98.26% | 98.26% |
+| CI gates | 12 | 12 | 12 |
+| 학습자 자동 surface | 6 | 7 | **8** (QueuePlateauNotice) |
+| 운영 모니터링 도구 | 4 | 4 | **6** (dogfood-11 + bundle-audit) |
+| myprojects docs | 52 | 53 | **54** (본 §22) |
+
+### 22.6 v15 시점 본인 결단 잔여 (v14와 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일, 설계 완료)
+3. ⚠️ **D1_Form 옵션 A' PR (1일, 5중 안전성)** — 변화 없음, 추가 모니터링 도구 완비
+4. ☐ 외부 학습자 1명 모집
+
+### 22.7 v15 시점 OELP의 위치 한 줄 정의
+
+> "옵션 A' PR을 위한 5중 안전성 + 운영 모니터링 6 도구 + 학습자 도착 시 자동 활성 8 surfaces 완비. 미래 가중치 조정 PR도 dogfood-11 sensitivity로 안전 사전 검증 가능. 학습자 모집만 남음."
