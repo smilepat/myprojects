@@ -142,6 +142,54 @@ D1_Form 전용 미니 학습 컴포넌트 도입 (예: 단어 철자 dictation, 
 
 ---
 
+## 6.5 다중 archetype 검증 (v9 sprint 추가)
+
+dogfood-8에 `--archetype all` 옵션을 추가해서 5개 archetype 모두 동일 시드(17)로 12주 시뮬:
+
+```
+archetype   base_D1  final_D1  D1 gap closed   plateau
+weak-D2     60       60.0      0%              week 5 on D1_Form
+weak-D3     60       60.0      0%              week 2 on D1_Form
+weak-D4     60       60.0      0%              week 5 on D1_Form
+balanced    55       55.0      0%              week 2 on D1_Form
+strong      75       75.0      0%              week 2 on D1_Form
+```
+
+**모든 5 archetype에서 D1_Form 0% gap closed**. archetype-independent **structural defect** 확정.
+
+## 6.6 옵션 A 정량 검증 (v9 sprint 추가)
+
+dogfood-8에 `--d1-boost {single,form-pair,all}` 옵션 추가. 동일 시드(17), 12주, 모든 archetype:
+
+| Option | D1_Form 가중치 변경 | 모든 archetype 평균 D1 gap closed |
+|---|---|---|
+| Baseline | 0.05 (10 QT 모두) | **0%** (완전 plateau) |
+| **A1 single** | TYPE-제목만 0.20 | **66-70%** ✅ |
+| A2 form-pair | TYPE-제목 + 흐름무관 0.20 | 65-68% (A1과 차이 없음) |
+| A3 all | 모든 10 QT 0.20 | 94-100% (과도) |
+
+**핵심 finding**:
+- **단일 QT (TYPE-제목)만 boost해도 plateau 완전 해소** 가능
+- A2가 A1과 차이 없는 이유: exploration policy로 TYPE-제목이 어차피 자주 선택됨
+- A3는 과도 — 다른 dim 학습이 약화될 수 있음 (D3/D4가 80% → 70%대로 감소)
+
+### 6.7 권장 — 옵션 A1로 결정
+
+**도메인 합치성**: TYPE-제목 (제목 추론)은 단어 형태에 집중하는 과제 — 제목 후보 단어의 form/POS 식별이 핵심. D1_Form 가중치 상향이 EFL 직관과 일치.
+
+**최소 변경**: weight matrix에서 1행 1열만 수정 (`lib/ontology-weights.json` 의 `"TYPE-제목": { "D1_Form": 0.20, ... }`). C4.1 게이트가 도메인 모순 자동 검증 — 통과 시 안전.
+
+**구현 PR plan**:
+1. `lib/ontology-weights.json` TYPE-제목 1행 변경 (D1=0.20, 다른 dim renormalize)
+2. C4.1 게이트 실행: `node scripts/synthetic-validation-c4-1.mjs` → contradictions 검증
+3. PASS 시 promote-weights.mjs로 적용. FAIL 시 자동 롤백.
+4. 새 dogfood-8 baseline (production weight) 재실행 → plateau 해소 확인.
+5. Stage C 외부 학습자 데이터 도착 시 3-4주 누적으로 실 검증.
+
+**Risk**: TYPE-제목 weight 변경 시 추천 엔진이 제목 QT를 D1 약점 학습자에게 더 자주 선택할 수 있음 — 정상적 효과지만 일관성 확인 필요.
+
+---
+
 ## 7. 한계
 
 1. **시뮬레이션 모델 단순화**: 실제 학습 곡선은 power-law보다 복잡 (개인 차, 망각, 응답 시간 등)
