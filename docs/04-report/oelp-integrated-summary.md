@@ -1057,3 +1057,75 @@ D5_Usage     순서배열      +5.2%p     0    SAFE (효과 미미)
 ### 22.7 v15 시점 OELP의 위치 한 줄 정의
 
 > "옵션 A' PR을 위한 5중 안전성 + 운영 모니터링 6 도구 + 학습자 도착 시 자동 활성 8 surfaces 완비. 미래 가중치 조정 PR도 dogfood-11 sensitivity로 안전 사전 검증 가능. 학습자 모집만 남음."
+
+---
+
+## 23. v16 추가분 (2026-05-25 — 학습 모델 정밀화 + CI 도구 확장)
+
+### 23.1 새 작업 시퀀스 99-102
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 99 | **dogfood-12 forgetting curve** | Ebbinghaus 망각 모델 추가 24주 sim, D1 negative gap finding |
+| 100 | **scripts/c4-3-trend-cli.mjs** | lib/trend-analysis 래퍼 CLI (CI/cron 사용 가능) |
+| 101 | session memory v15-v16 저장 | 운영 도구 패턴 누적 |
+| 102 | 본 v16 회고 (§23) | 학습 모델 정밀화 + 시간 차원 정당화 |
+
+### 23.2 D1 시간 차원 정당화 (dogfood-12 새 finding)
+
+기존 시뮬 (dogfood-8~11): 가정 "학습된 dim은 영구 유지"
+v16 추가: Ebbinghaus forgetting curve (decay 0.97/session post-grace, floor base × 0.7)
+
+24주 결과 (seed=17):
+
+| dim | dogfood-8 (기존) | **dogfood-12 (forgetting 추가)** |
+|---|---:|---:|
+| D1_Form | 0% (plateau) | **-72% (negative gap)** |
+| D2_Meaning | 92% | 99% (forgetting 회복 정상) |
+| D3_Context | 100% | 102% |
+| D4_Network | 87% | 102% |
+| D5_Usage | 76% | 92% |
+
+→ **D1은 시간 갈수록 더 약해짐** (학습 없음 + forgetting 누적):
+- 시간 무시: 단순 plateau (정체)
+- 시간 포함: negative gap (적극적 악화)
+
+옵션 A' PR 정당화 강화 — 단순 "더 강해지지 않음"이 아니라 "시간 갈수록 더 약해짐".
+
+### 23.3 운영 도구 누적 8 (v15 → v16)
+
+| 도구 | 신설 시점 | 측정 항목 |
+|---|---|---|
+| check-dim-coverage | v11 | keyVariable 매핑 갭 |
+| simulate-option-a-prime | v12 | 옵션 A' PR 사전 검증 |
+| dogfood-9 matrix | v11 | 5×5 plateau scan |
+| dogfood-10 matrix | v13 | 옵션 A' 효과 사전 측정 |
+| dogfood-11 sensitivity | v15 | 5 dim weight sensitivity |
+| bundle-size-audit | v15 | Production bundle size |
+| **dogfood-12 forgetting** | v16 | 24주 forgetting 시나리오 |
+| **c4-3-trend-cli** | v16 | CI/cron trend analysis |
+
+### 23.4 v16 시점 수치 종합
+
+| 항목 | v15 | **v16** |
+|---|---|---|
+| Vitest tests | 371 | 371 |
+| Scripts (oelp) | 27 | **29** (+2: dogfood-12, c4-3-trend-cli) |
+| Components | 13 | 13 |
+| CI gates | 12 | 12 |
+| 학습자 자동 surface | 8 | 8 |
+| 운영 모니터링 도구 | 6 | **8** |
+| myprojects docs | 54 | **55** (본 §23) |
+
+### 23.5 v16 시점 본인 결단 잔여 (v14-v15와 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일)
+3. ⚠️ **D1 옵션 A' PR (1일, 5중 안전성 + 시간 차원 정당화 강화)** — v16에서 forgetting 시나리오로 정당화 더 강력
+4. ☐ 외부 학습자 1명 모집
+
+옵션 A' PR risk-free + 시간 차원에서도 정당화 — 본인이 더 자신감 있게 진행 가능.
+
+### 23.6 v16 시점 OELP의 위치 한 줄 정의
+
+> "학습 모델에 forgetting curve 추가해서 D1 시간 차원 정당화 (negative gap). 운영 모니터링 도구 8개로 미래 PR 안전 가이드 + 실시간 trend 분석 가능. 학습자 모집만 남음."
