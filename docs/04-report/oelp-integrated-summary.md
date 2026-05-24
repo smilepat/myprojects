@@ -1129,3 +1129,74 @@ v16 추가: Ebbinghaus forgetting curve (decay 0.97/session post-grace, floor ba
 ### 23.6 v16 시점 OELP의 위치 한 줄 정의
 
 > "학습 모델에 forgetting curve 추가해서 D1 시간 차원 정당화 (negative gap). 운영 모니터링 도구 8개로 미래 PR 안전 가이드 + 실시간 trend 분석 가능. 학습자 모집만 남음."
+
+---
+
+## 24. v17 추가분 (2026-05-25 — forgetting + 옵션 A' 결합 + CLI sentinel)
+
+### 24.1 새 작업 시퀀스 103-106
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 103 | **dogfood-12 정식 보고서** ([dogfooding-12-forgetting-curve-d1-negative-gap.md](../03-analysis/dogfooding-12-forgetting-curve-d1-negative-gap.md)) | D1 시간 차원 정당화 문서화 |
+| 104 | **dogfood-13 forgetting + 옵션 A' 결합 sim** | weak-D1/D2/D3 archetype에서 D1 +113~160%p 회복, side effect 0 |
+| 105 | c4-3-trend-cli contract test (8 sentinel) | CLI ↔ lib drift 자동 보호 |
+| 106 | 본 v17 회고 (§24) | 시간 차원 옵션 A' 정당화 완성 |
+
+### 24.2 dogfood-13 결정적 결과
+
+| archetype | D1 baseline (forgetting) | D1 옵션 A' (forgetting + boost) | delta |
+|---|---:|---:|---:|
+| weak-D1 | -18% | **95%** | +113%p |
+| weak-D2 | -72% | **88%** | +160%p |
+| weak-D3 | -72% | **85%** | +157%p |
+
+- Side effects (other dim Δ > 5%p): **0건**
+- Verdict: **SAFE**
+
+→ 옵션 A' PR이 **forgetting 환경에서도 D1 회복 + 다른 dim 안전**.
+
+### 24.3 D1_Form 시간 차원 정당화 진화 정리
+
+| 시뮬 | 모델 | D1 결과 |
+|---|---|---|
+| dogfood-8~11 (기존) | 학습 곡선만 | 0% plateau (정체) |
+| dogfood-12 (v16) | + forgetting curve | -72% negative gap (적극 악화) |
+| **dogfood-13 (v17)** | forgetting + 옵션 A' | **+85~95% 회복** (안전) |
+
+→ 옵션 A' PR 정당화 3 단계 완성:
+1. 단순 plateau (시간 무시) — 어떤 시점에서도 정체
+2. Negative gap (시간 포함) — **시간 갈수록 악화**
+3. 옵션 A' + 시간 (해결책) — **회복 + 안전**
+
+### 24.4 c4-3-trend-cli sentinel test 가치
+
+CLI는 lib/trend-analysis.ts 로직을 JS로 재구현 (ESM-CJS interop 회피). 두 구현 drift 위험을 8 contract tests로 자동 보호:
+- T3 sentinel: D1_Form slope === 0 (현 production state 일치)
+- 옵션 A' PR 후 D1 slope > 0 으로 flip되면 T3 자동 fail → 관련 문서/CLI/lib 동기화 reminder
+
+### 24.5 v17 시점 수치 종합
+
+| 항목 | v16 | **v17** |
+|---|---|---|
+| Vitest tests | 371 | **379** (+8 c4-3-CLI sentinel) |
+| Test files | 39 | **40** |
+| Scripts (oelp) | 29 | **30** (dogfood-13) |
+| Components | 13 | 13 |
+| CI gates | 12 | 12 |
+| 학습자 자동 surface | 8 | 8 |
+| 운영 모니터링 도구 | 8 | 8 |
+| myprojects docs | 55 | **56** (dogfood-12 보고서) |
+
+### 24.6 v17 시점 본인 결단 잔여 (v14-v16과 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일)
+3. ⚠️ **D1 옵션 A' PR (1일, 5중 안전성 + 시간 차원 정당화 3 단계 완성)**
+4. ☐ 외부 학습자 1명 모집
+
+옵션 A' PR risk-free + 시간 차원 정당화 **3 단계 완성** (plateau / negative gap / 회복). 본인이 자신감 있게 진행 가능.
+
+### 24.7 v17 시점 OELP의 위치 한 줄 정의
+
+> "옵션 A' PR 시간 차원 정당화 3 단계 (plateau → negative gap → 회복) 완성. dogfood-13에서 옵션 A' + forgetting 결합 시 D1 +113~160%p 회복, side effect 0 정량 입증. 학습자 모집만 남음."
