@@ -128,9 +128,29 @@ Phase 1이 "혼자서도 작동하는 시스템 + 안전망 인프라"였다면,
 - **결론**: 게이트가 의도대로 작동. simulator/weights 변경 불필요.
 - 후속 트리거: 외부 학습자 데이터에서 D5 신호가 실측 시 keyVariable mapping 재검토.
 
-### R4 (낮음): EBS-demo Firebase config 실패
-- 가설: 본인 30분 후 config 가능 (코드는 이미 wired)
-- 미달 시: EBSCriteriaEngineGenerator는 LocalPoolGenerator fallback으로 계속 작동 (영향 작음)
+### R4 (낮음, 정정 2026-05-24): EBS-demo Firebase config는 사실 stub
+- 가설 (구): 본인 30분 후 config 가능 (코드는 이미 wired)
+- 정정 ([ebs-demo-integration-gap.md](../03-analysis/ebs-demo-integration-gap.md)):
+  - EBS-demo는 이미 17일 전부터 Firebase 정상 작동 — config은 문제 없음
+  - 실제 갭은 **contract mismatch** (OELP vs EBS endpoint 입력/출력 다름) + **인증 보호** + **도메인 mismatch** (vocab card vs passage 기반)
+- 미달 시: LocalPoolGenerator fallback 계속 (영향 작음)
+- 후속: 옵션 α adapter PR 1-2일 ([설계](../02-design/ebs-oelp-vocab-adapter-design.md)), Stage C N=10+ 도달 후 추진
+
+### R6 (중간, 추가 2026-05-24): D1_Form structural defect — 어떤 학습 큐도 D1 강화 못 시킴
+- 발견 ([dogfooding-8-learning-curve-d1-plateau.md](../03-analysis/dogfooding-8-learning-curve-d1-plateau.md)):
+  - `lib/kv-dim-mapping.ts`의 21 keyVariables가 모두 D2-D5만 매핑 → D1_Form 매핑 0개
+  - `lib/ontology-weights.json`의 D1 weight가 모든 10 QT에서 0.05 고정 (학습 임계 0.15 미달)
+  - 5 archetype × 12주 시뮬 모두에서 D1 gap closed = 0% ([dogfooding-9-dim-plateau-matrix.md](../03-analysis/dogfooding-9-dim-plateau-matrix.md))
+- 안전망 동작: C4.1 게이트가 weight 단독 boost (옵션 A1)를 자동 거부 — "선언만 있고 keyVariables에 근거 없음"
+- 진짜 해결책 ([d1-plateau-option-a-prime.md](../02-design/d1-plateau-option-a-prime.md)):
+  - **옵션 A'**: 4 파일 동시 PR (dimension-mapping + kv-dim-mapping + ontology + ontology-weights). morphological_complexity / orthographic_irregularity / word_length_distribution 3 신규 keyVariables + TYPE-제목 weight 0.20 동시 변경
+- 사전 검증 도구 4중 안전성 (자율 완성):
+  1. `scripts/simulate-option-a-prime.mjs` — in-memory tau/contradictions 예측 → PASS
+  2. `scripts/dogfood-10-option-a-prime-matrix.mjs` — D1 +66-81%p, D3 dominant -3%p → **SAFE verdict**
+  3. `components/PlateauWarningPanel.tsx` (`/sessions`) — 학습자 4주+ 누적 시 자동 confirm/refute
+  4. `scripts/check-dim-coverage.mjs` (CI gate 12) — MISSING → OK 자동 flip post-PR
+- 실 검증 (Stage C 진입 후): 외부 학습자 1명 + 4주 누적 데이터로 시뮬 vs 실측 일치성 검증
+- 미달 시: PlateauWarningPanel이 실 데이터에서 D1 plateau를 confirm 안 하면 시뮬 모델 재검토. 학습 곡선 power-law approx → 실제는 forgetting curve 등 복잡한 패턴일 수도
 
 ---
 
