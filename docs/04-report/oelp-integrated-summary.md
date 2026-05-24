@@ -550,3 +550,109 @@ README §10 명목 Stage A 항목 vs 실제:
 ### 16.6 v5 시점 OELP의 위치 한 줄 정의
 
 > "Phase 2 Stage A Claude-자율 백로그 모두 소진. 모든 11 analytics 이벤트 자동 누적, 모든 운영 위젯이 데이터 도착 즉시 활성. 본인 결단 3건만 남은 상태."
+
+---
+
+## 17. v6-v8 추가분 (2026-05-24 오후 sprint — Stage B 진입)
+
+v5 commit 후 자율 진행 후속 + **smilepat 위임으로 Cloud Run 배포 실행**.
+
+### 17.1 새 작업 시퀀스 51-60
+
+| 순서 | 작업 | 산출물 | 커밋 |
+|---|---|---|---|
+| 51 | mock-vocab-cat-test 컨트랙트 테스트 | 7 endpoints 자동 검증 (API drift 감지) | oelp@60dd2bf |
+| 52 | dogfood-7 multi-learner cohort sim | N=1/5/10/30/50 forecast + Stage C 진입 가이드 | oelp@5d7ee1b |
+| 53 | content-generator coverage push | 89→96% lines, +3 tests (chain final + window expansion) | oelp@247e9bd |
+| 54 | dogfood-7 cohort forecast 정식 보고서 | 6 seed 교차 검증 + Stage C N별 운영 권장 | myprojects@4786689 |
+| 55 | dogfood-7 `--exploration on` variant | N=10 baseline 4-6/10 → exploration **10/10** 모든 seed | oelp@eb54337, myprojects@489faa3 |
+| 56 | CalibrationEventSync (regression-history → analytics queue) | 마지막 미연결 calibration.attempted 이벤트 mirror | oelp@94cda88 |
+| 57 | session memory save (v4-v7 자율 패턴) | local memory project_oelp_v4_v7_pattern.md | local |
+| 58 | **Cloud Run 배포 (Stage B-1)** | gcr.io/gen-lang-client-0081580267/vocab-cat-api → asia-northeast3 → vocab-cat-api-452237528328.asia-northeast3.run.app. ALLOWED_ORIGINS oelp-phi.vercel.app + localhost. end-to-end 7/7 PASS | smilepat 위임 + Claude 실행 |
+| 59 | Vercel env `NEXT_PUBLIC_VOCAB_CAT_TEST_URL` Production+Development 연결 | redeploy oelp-c4nxux4lb → alias oelp-phi.vercel.app. /diagnose fallback panel 해제 확인 | oelp@812b101 |
+| 60 | cloud-run-smoke CI job 추가 | Sunday 03:00 UTC 자동 + workflow_dispatch. Cloud Run /health probe + verify-vocab-cat-test.mjs → 배포 revision 회귀 자동 감지 | oelp@91f9b68 |
+
+### 17.2 본인 결단 3건 진행 변화
+
+| 항목 | v5 종료 | v8 종료 |
+|---|---|---|
+| Cloud Run vocab-cat-test 배포 | ☐ | **✅ 완료** |
+| EBS-demo Firebase config | ☐ | ⚠️ 재정의 필요 (§17.4 참조) |
+| 외부 학습자 1명 모집 | ☐ | ☐ (변화 없음) |
+
+### 17.3 Cloud Run 배포 — 30분 runbook 실제 검증
+
+myprojects `vocab-cat-test-cloudrun-runbook.md`를 따라 실제 30분 안에 완료:
+
+```
+00:00 Pre-flight (gcloud --version + 인증 확인)
+00:05 GCP API 활성화 (run + cloudbuild + containerregistry)
+00:06 gcloud builds submit → 약 5분 (vocab-cat-test Dockerfile build)
+00:11 gcloud run deploy (1Gi/1cpu, ALLOWED_ORIGINS custom delimiter ^|^)
+00:18 Service URL 확보 → /health probe (vocab_count=9183, healthy)
+00:19 verify-vocab-cat-test.mjs end-to-end → 7/7 PASS (θ=2.33, 40 items)
+00:24 vercel env add NEXT_PUBLIC_VOCAB_CAT_TEST_URL Production + Development
+00:27 vercel deploy --prod --yes → oelp-c4nxux4lb aliased to oelp-phi.vercel.app
+00:29 Production /diagnose 검증 → "실제 적응형 진단" 활성 (fallback panel 해제)
+00:30 완료
+```
+
+**디버깅 fix 1건**: gcloud `--set-env-vars` 콤마 escape 이슈 → `^|^KEY=v1,v2,v3` custom delimiter 사용.
+
+### 17.4 EBS-demo Firebase config — 자율 시도 결과 재정의
+
+옵션 B를 자율 시도하면서 발견:
+
+EBS-demo는 이미 17일 전부터 Firebase 환경변수 모두 설정되어 정상 작동. **OELP가 EBS를 호출하기만 하면 끝**으로 인식했으나, 실제로는:
+
+1. **Contract mismatch**: EBS `/api/generate`는 `{grade, passageText, topic, itemCount}` 받고, OELP `EBSCriteriaEngineGenerator`는 `{qtId, targetDimensions, difficultyRange, count}` 전송. 변환 어댑터 레이어 필요.
+2. **인증 보호**: EBS `/api/generate`는 외부 호출 시 403 (admin/internal only). OELP→EBS 통신을 위한 token 발급 또는 dedicated public endpoint 추가 필요.
+3. **도메인 mismatch**: EBS는 **passage 기반 문항 생성** (수능형 지문 → 변형 문항). OELP는 **vocab card 기반** (단어 + 4지선다 의미 추론). EBS가 OELP용 contract를 출력하려면 별도 endpoint 필요.
+
+→ "코드는 wired, Firebase config만 본인 잔여"라는 README 기존 표기는 **사실 stub 수준**. 실제 통합은:
+- (a) EBS에 `/api/oelp-generate` adapter endpoint 추가 (passage → vocab card 변환)
+- (b) 또는 OELP의 `EBSCriteriaEngineGenerator`에 EBS contract 변환 client 작성
+- (c) 인증 token 발급 + Vercel env에 등록
+
+**옵션 B는 더 이상 30분 자율 작업이 아니라 별도 PR 1-2일 작업** — Stage B 항목에서 분리해서 별도 backlog로 이전 권장.
+
+### 17.5 v8 시점 수치 종합
+
+| 항목 | v1 | v2 | v3 | v4 | v5 | **v8** |
+|---|---|---|---|---|---|---|
+| Vitest tests | 119 | 239 | 249 | 305 | 319 | **342** |
+| Test files | 10 | 26 | 27 | 32 | 34 | **36** |
+| Playwright e2e | 0 | 14 | 14 | 14 | 14 | **14** |
+| lib 모듈 | 14 | 17 | 18 | 20 | 20 | **20** |
+| Scripts (oelp) | 9 | 12 | 13 | 17 | 18 | **20** |
+| Components | 3 | 6 | 8 | 9 | 11 | **12** |
+| Coverage lines | — | 95.12% | 95.51% | 96.13% | ~95% | **97.79%** |
+| CI gates | 4 | 8 | 8 | 10 | 10 | **11** (cloud-run-smoke 신설) |
+| myprojects docs | 22 | 27 | 30 | 42 | 43 | **46** |
+| dogfooding cycles | 0 | 2 | 4 | 5 | 5 | **5** |
+| Closed-loop iterations | 0 | 1 | 3 | 4 | 5 | **6** |
+| Analytics events wired (auto) | 0 | 0 | 0 | 8/11 | 11/11 | **11/11** |
+| Production backend | none | none | none | none | none | **Cloud Run + Vercel** |
+
+### 17.6 6번째 closed-loop iteration 확정
+
+§16.2 (v5)에서 "후보" 였던 6번째 closed-loop이 v8에서 empirical로 확정:
+
+```
+발견: dogfood-7 baseline N=50 cohort에서 QT 커버리지 6-8/10 (10/10 불가능)
+코드: shouldExplore + adaptive threshold (이미 v4 wired, default off → on 검증)
+검증: dogfood-7 --exploration on → 모든 6 seed × 3 N에서 10/10 (min 10 응답/QT)
+정책: exploration policy는 cohort calibration의 사실상 전제조건. Stage C 진입 시 default 활성 권장.
+```
+
+### 17.7 v8 종료 시점 본인 결단 잔여 (재정의)
+
+1. ✅ Cloud Run vocab-cat-test 배포 (완료)
+2. ⚠️ ~~EBS-demo Firebase config~~ → **EBS adapter PR (1-2일 작업)** 로 재분류
+3. ☐ 외부 학습자 1명 모집
+
+본인 결단으로 즉시 가능한 30분 작업은 **남지 않음**. EBS adapter는 코드 변경 + 보안 결정 포함 별도 PR. 학습자 모집은 본인 채널 확보 노력.
+
+### 17.8 v8 시점 OELP의 위치 한 줄 정의
+
+> "Cloud Run + Vercel 양쪽 Production 정상 작동. 외부 학습자 1명만 도착하면 즉시 실 IRT 적응형 진단 → 약점 시각화 → 학습 큐 → 6번째 closed-loop calibration cycle까지 풀 chain 작동. 본인 결단 잔여는 학습자 채널 확보뿐."
