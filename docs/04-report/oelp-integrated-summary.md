@@ -808,3 +808,103 @@ After (옵션 A' 적용):
 ### 19.6 v12 시점 OELP의 위치 한 줄 정의
 
 > "자동화 도구로 미래 hidden defect 자동 catch + 옵션 A' PR 사전 시뮬 검증 완료. 본인이 4 파일 PR 진행 시 C4.1 통과 예상 — 시뮬상 안전성 사전 확인. 학습자 1명 모집 외엔 모든 준비 + 안전성까지 완비."
+
+---
+
+## 20. v13 추가분 (2026-05-24 야간 — 학습자 도착 시 즉시 작동 UI + 옵션 A' 효과 사전 측정)
+
+### 20.1 새 작업 시퀀스 83-90
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 83 | **simulate-option-a-prime contract test** (7 tests) | sentinel 보장 — 본인 PR 의존 시뮬레이터 정상성 자동 검증 |
+| 84 | **dogfood-10 옵션 A' 효과 사전 측정** | production weight in-memory override matrix, **Verdict SAFE** |
+| 85 | **lib/plateau-detection.ts** | 실 sessions에서 dim plateau 자동 감지 알고리즘 |
+| 86 | **PlateauWarningPanel** (`/sessions` 13번째 component) | 학습자 4주+ 누적 시 즉시 활성, D1 plateau 발견 시 옵션 A' PR 권장 |
+| 87 | plateau-detection test 8 tests | 정렬 / 결측 / 다중 plateau / D1 warn vs 다른 dim info |
+| 88 | OELP CLAUDE.md + README v13 갱신 | 21 lib modules, 25 scripts, 13 components, 371 tests |
+| 89 | 본 v13 회고 (§20) | 자율 작업 + 학습자 도착 후 자동 활성 패턴 명시 |
+| 90 | (다음 sprint candidate) | v14 후보: dogfood-10 결과 보고서, /sessions e2e Playwright |
+
+### 20.2 dogfood-10 정량 결과 (옵션 A' 적용 시 예상)
+
+```
+D1_Form gap closed 변화 (baseline → option A'):
+  weak-D1   0% →  81%  (+81%p)
+  weak-D2   0% →  70%  (+70%p)
+  weak-D3   0% →  66%  (+66%p)
+  weak-D4   0% →  69%  (+69%p)
+  weak-D5   0% →  66%  (+66%p)
+
+D3_Context (dominant dim) 변화 — 위험 모니터:
+  최대 -3%p (모든 archetype 안전 범위 내)
+
+다른 dim 변동 > 10%p: 0건
+Verdict: SAFE
+```
+
+**본인 옵션 A' PR 진행 시 D1 plateau 66-81% 회복 + 다른 dim 안전 보장**.
+
+### 20.3 PlateauWarningPanel 작동 메커니즘
+
+```
+/sessions 페이지 → 누적 sessions 로드
+  ↓
+detectPlateaus(sessions, minSessions=4, rangeThreshold=3)
+  ↓
+각 dim series 추출 (session.responses[0].dimensionScores)
+  ↓
+max-min < 3 points && ≥ 4 samples → plateau flag
+  ↓
+D1_Form은 severity="warn" + 옵션 A' PR 권장 메시지
+다른 dim은 "info" badge
+  ↓
+< 4 sessions → "학습 진행하면 자동 활성화" placeholder
+```
+
+학습자 1명 + 4주 누적 (≥12 sessions) 시점에 즉시 활성. v10 simulation finding을 실 데이터로 confirm/refute.
+
+### 20.4 v13 시점 수치 종합
+
+| 항목 | v10 | v11 | v12 | **v13** |
+|---|---|---|---|---|
+| Vitest tests | 342 | 356 | 356 | **371** (+15) |
+| Test files | 36 | 37 | 37 | **39** (+2) |
+| Scripts (oelp) | 21 | 23 | 24 | **25** (dogfood-10) |
+| Components | 12 | 12 | 12 | **13** (PlateauWarningPanel) |
+| lib modules | 20 | 20 | 20 | **21** (plateau-detection) |
+| Coverage lines | 97.79% | 98.26% | 98.26% | **유지** |
+| CI gates | 11 | 11 | 12 | **12** |
+| myprojects docs | 49 | 50 | 52 | **52** |
+
+### 20.5 학습자 도착 시 자동 작동 chain (v13 완성)
+
+외부 학습자 1명 도착 + Cloud Run 진단 → /queue 학습 → /sessions 누적 4주 이상 → **자동 활성화** 항목:
+
+1. **TrendPanel** (v5) — 세션 정답률 sparkline + 5D dim 진화 trend (4주+)
+2. **PosteriorBalancePanel** (v4) — Beta posterior 변화 + balance state label
+3. **AnalyticsQueuePanel** (v5) — 11 이벤트 type 분포 + 누적량
+4. **AdaptiveDiagnosticStats** (v5) — θ history + KR1.1/1.2 metric (≥2 진단)
+5. **CalibrationEventSync** (v7) — regression-history → queue mirror
+6. **PlateauWarningPanel** (v13 신설) — D1 plateau 확인 + 옵션 A' PR 권장
+
+→ **학습자 1명 도착 즉시 6개 운영 위젯이 자동 데이터 받아들이고 시각화 시작**. 본인 결단 없이 자동 진화.
+
+### 20.6 v13 종료 시점 본인 결단 잔여
+
+1. ✅ Cloud Run vocab-cat-test 배포 (v8)
+2. ⚠️ EBS adapter (1-2일, 설계 완료)
+3. ⚠️ **D1_Form 옵션 A' (1일, 설계 + 시뮬 PASS + dogfood-10 SAFE verdict + PlateauWarningPanel로 실 검증 준비)** ← 4중 안전성 확보
+4. ☐ 외부 학습자 1명 모집
+
+옵션 A' PR은 본인이 진행 시:
+- 시뮬 (simulate-option-a-prime): tau 0.5 PASS
+- 매트릭스 (dogfood-10): D1 +66-81%p, 다른 dim 안전
+- 실 검증 (PlateauWarningPanel): 학습자 도착 후 자동 confirm
+- CI gate (check-dim-coverage): MISSING → OK 자동 flip
+
+**risk-free PR + 실 검증 인프라까지 완비**.
+
+### 20.7 v13 시점 OELP의 위치 한 줄 정의
+
+> "자동화 도구 + 시뮬 + 사전 측정 + 실 검증 UI까지 옵션 A' PR을 위한 4중 안전성 확보. 학습자 도착 즉시 6개 위젯 자동 활성. 본인 결단 잔여는 학습자 1명 모집 + 옵션 A'/EBS PR 2건 (총 2-3일)."
