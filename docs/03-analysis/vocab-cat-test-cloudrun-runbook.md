@@ -185,4 +185,14 @@ https://console.cloud.google.com/run/detail/asia-northeast3/vocab-cat-api/metric
 ## 10. 변경 이력
 
 - 2026-05-23 작성: Cloud Run + OELP env var 연결 30분 runbook (Claude)
-- 본인 실행 완료 시 본 문서 끝에 "Resolved 2026-05-XX, Cloud Run URL=..." 추가
+- **2026-05-24 Resolved**: Cloud Run 배포 + Vercel env var 연결 완료 (smilepat 위임, Claude 실행)
+  - Cloud Run URL: `https://vocab-cat-api-452237528328.asia-northeast3.run.app`
+  - GCP project: `gen-lang-client-0081580267`
+  - Region: `asia-northeast3` (Seoul)
+  - Memory: 1Gi, CPU: 1, allow-unauthenticated
+  - ALLOWED_ORIGINS: `https://oelp-phi.vercel.app,http://localhost:3000,http://localhost:3001`
+  - End-to-end verify: 7/7 PASS (vocab_count=9183, θ=2.33, SE=0.33, 40 items adaptive CAT)
+  - Vercel env `NEXT_PUBLIC_VOCAB_CAT_TEST_URL` added (Production + Development)
+  - Vercel redeploy `oelp-c4nxux4lb` aliased to `oelp-phi.vercel.app`
+  - Production /diagnose: fallback panel 해제 확인 ("실제 적응형 진단" 활성)
+  - 빌드/배포 디버깅 fix: `--set-env-vars "^|^KEY=v1,v2,v3"` (콤마 escape용 custom delimiter)
