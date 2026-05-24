@@ -908,3 +908,68 @@ D1_Form은 severity="warn" + 옵션 A' PR 권장 메시지
 ### 20.7 v13 시점 OELP의 위치 한 줄 정의
 
 > "자동화 도구 + 시뮬 + 사전 측정 + 실 검증 UI까지 옵션 A' PR을 위한 4중 안전성 확보. 학습자 도착 즉시 6개 위젯 자동 활성. 본인 결단 잔여는 학습자 1명 모집 + 옵션 A'/EBS PR 2건 (총 2-3일)."
+
+---
+
+## 21. v14 추가분 (2026-05-25 — PRD 정식 등록 + /map UI D1 indicator)
+
+### 21.1 새 작업 시퀀스 91-94
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 91 | **Phase 2 PRD R6 정식 등록** | D1_Form structural defect를 R6로 추가 (중간 severity), R4 EBS-demo 정정 |
+| 92 | **/map UI D1 indicator** | 선택된 QT의 derived D1 = 0% 시 옵션 A' PR 권장 메시지 자동 표시 |
+| 93 | session memory v12-v14 통합 저장 | 4중 안전성 + 디버깅 메모 + 학습자 chain 7 widgets |
+| 94 | 본 v14 회고 (§21) | PRD ↔ 코드 ↔ UI 정합성 완성 |
+
+### 21.2 학습자 도착 시 자동 활성 chain (v14 확장: 7 surfaces)
+
+기존 6 widgets (v13 §20.5) + /map indicator (v14):
+
+1. TrendPanel — accuracy sparkline + 5D dim 진화
+2. PosteriorBalancePanel — Beta posterior + balance
+3. AnalyticsQueuePanel — 11 이벤트 분포
+4. AdaptiveDiagnosticStats — θ history + KR1.1/1.2
+5. CalibrationEventSync — audit log mirror
+6. PlateauWarningPanel — D1 plateau 자동 confirm/refute
+7. **/map D1 indicator (v14)** — QT 선택 시 derived 0% 알림
+
+학습자가 OELP 어느 페이지를 봐도 D1 plateau context가 자동으로 surface됨.
+
+### 21.3 PRD ↔ 코드 ↔ UI 정합성 (v14 완성)
+
+| 층위 | 표현 | v 시점 |
+|---|---|---|
+| PRD | R6 D1_Form structural defect | v14 |
+| 시뮬 | dogfood-9 matrix + dogfood-10 sim | v11, v13 |
+| 도구 | check-dim-coverage + simulate-option-a-prime | v11, v12 |
+| 실 데이터 UI | PlateauWarningPanel | v13 |
+| 학습자 탐색 UI | /map D1 indicator | v14 |
+| 설계 | d1-plateau-option-a-prime.md | v10 |
+
+→ 단일 finding (D1 plateau)이 PRD부터 사용자 UI까지 6 층위에서 일관 표현. 자율 작업의 정합성 maturity 달성.
+
+### 21.4 v14 시점 수치 종합
+
+| 항목 | v13 | **v14** |
+|---|---|---|
+| Vitest tests | 371 | 371 |
+| Scripts (oelp) | 25 | 25 |
+| Components | 13 | 13 |
+| Coverage lines | 98.26% | 98.26% |
+| CI gates | 12 | 12 |
+| myprojects docs | 52 | **53** (본 §21 + PRD R6) |
+| Phase 2 PRD risks | R1-R5 | **R1-R6** (D1 plateau 정식 등록) |
+
+### 21.5 v14 시점 본인 결단 잔여 (v13과 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일, 설계 완료)
+3. ⚠️ **D1_Form 옵션 A' PR (1일, 5중 안전성 — 시뮬/매트릭스/실 UI/CI gate/+ PRD 정식 등록)**
+4. ☐ 외부 학습자 1명 모집
+
+본인 결단 변화 없음. v14는 표현/정합성 강화 sprint.
+
+### 21.6 v14 시점 OELP의 위치 한 줄 정의
+
+> "D1_Form structural defect가 PRD R6 → 시뮬 → 도구 → 실 UI → /map indicator까지 6 층위에서 일관 표현. 본인 옵션 A' PR risk-free 5중 안전성 완비 (PRD 정식 등록 추가). 학습자 모집만 남음."
