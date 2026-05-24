@@ -124,8 +124,51 @@ balance ≥ 0.5 → primary만
 ```
 
 → cohort 내 어떤 학습자도 weakness가 아닌 QT를 강제로 노출.
-이론적으로 N=10에서도 풀 QT 커버 가능. (v7 sprint dogfood-7
-exploration variant로 정량 검증 예정)
+
+### 4.1 정량 검증 (dogfood-7 `--exploration on`)
+
+같은 6 seed × 같은 cohort 구성, exploration on/off 비교:
+
+```
+=== baseline (exploration OFF) ===
+seed=  7  N=10:5/10  N=30:8/10  N=50:8/10
+seed= 11  N=10:4/10  N=30:5/10  N=50:6/10
+seed= 23  N=10:5/10  N=30:7/10  N=50:8/10
+seed= 42  N=10:6/10  N=30:7/10  N=50:7/10
+seed=100  N=10:5/10  N=30:7/10  N=50:7/10
+seed=200  N=10:4/10  N=30:6/10  N=50:7/10
+
+=== exploration ON (cohort-level balance, 매 4번째 세션) ===
+seed=  7  N=10:10/10 N=30:10/10 N=50:10/10
+seed= 11  N=10:10/10 N=30:10/10 N=50:10/10
+seed= 23  N=10:10/10 N=30:10/10 N=50:10/10
+seed= 42  N=10:10/10 N=30:10/10 N=50:10/10
+seed=100  N=10:10/10 N=30:10/10 N=50:10/10
+seed=200  N=10:10/10 N=30:10/10 N=50:10/10
+```
+
+**모든 seed × N에서 10/10 QT 커버 달성.** N=10 cohort에서 QT별 응답 분포
+(seed=11, exploration on):
+
+```
+TYPE-문장삽입 350 (primary weakest, 가장 흔한 weak archetype 약점)
+TYPE-제목     210
+TYPE-순서배열 120
+TYPE-목적      20 (exploration으로 도달)
+TYPE-심경      20
+TYPE-주장      20
+TYPE-요지      20
+TYPE-빈칸추론  20
+TYPE-주제      10
+TYPE-흐름무관  10
+```
+
+min 10 / max 350 / mean 80. **모든 QT가 ≥ 10 응답 확보** → calibration
+ridge input으로 사용 가능. 미커버 QT 없음.
+
+→ exploration policy는 단순한 "재미 옵션"이 아니라 **cohort-level
+calibration의 사실상 전제조건**. 6번째 closed-loop 후보:
+"forecast → empirical 검증 → policy 영구화" 패턴.
 
 ---
 
