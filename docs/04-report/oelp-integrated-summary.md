@@ -656,3 +656,81 @@ EBS-demo는 이미 17일 전부터 Firebase 환경변수 모두 설정되어 정
 ### 17.8 v8 시점 OELP의 위치 한 줄 정의
 
 > "Cloud Run + Vercel 양쪽 Production 정상 작동. 외부 학습자 1명만 도착하면 즉시 실 IRT 적응형 진단 → 약점 시각화 → 학습 큐 → 6번째 closed-loop calibration cycle까지 풀 chain 작동. 본인 결단 잔여는 학습자 채널 확보뿐."
+
+---
+
+## 18. v9-v10 추가분 (2026-05-24 야간 sprint — D1_Form structural defect 발견)
+
+### 18.1 새 작업 시퀀스 61-72
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 61 | dogfood-8 단일 학습자 종방향 시뮬 | weak-D2 12주, D2 30→76 정상, **D1_Form 60→60 plateau** 발견 |
+| 62 | EBS adapter 설계 (옵션 α) | 1-2일 PR plan, Day 1/2 분해, 인수 기준 |
+| 63 | dogfood-8 --archetype all 확장 | 5 archetype 모두 D1 0% gap closed 확정 (archetype-independent) |
+| 64 | dogfood-8 --d1-boost {single,form-pair,all} | 옵션 A 3가지 정량 비교 (66%/65%/97%) |
+| 65 | D1 plateau 분석 §6.5/6.6/6.7 업데이트 | 옵션 A1 권장 + PR plan 명시 |
+| 66 | OELP CLAUDE.md v8 + README v9 갱신 | 누적 상태 21 scripts/12 components |
+| 67 | **옵션 A1 실제 weight 변경 + C4.1 게이트** | **FAIL — "TYPE-제목 D1 선언 20%이지만 keyVariables에 근거 없음"** |
+| 68 | weight revert (production 보존) | git checkout, 안전 정책 준수 |
+| 69 | 옵션 A' 정식 설계 ([d1-plateau-option-a-prime.md](../02-design/d1-plateau-option-a-prime.md)) | 4 파일 동시 PR — keyVariables 신규 3개 + weight boost |
+| 70 | weak-D1 archetype 추가 (base D1=30) | 즉시 plateau (week 2), A1로 81% 회복, A3로 D5_Usage 새 weakest 발견 |
+| 71 | session memory v8 → v10 갱신 | Cloud Run 운영 패턴 + 디버깅 메모 4종 |
+| 72 | 본 v10 회고 (§18) | 7번째 closed-loop 진짜 모양 정립 |
+
+### 18.2 7번째 closed-loop iteration 진짜 모양
+
+v9 시점에는 **D1 weight 단독 boost** 가설로 출발했으나 v10 실측에서 거부됨. 7번째 closed-loop의 정확한 정의:
+
+> **D1_Form plateau는 keyVariables + weights 양쪽 동시 업데이트 필요**.
+> C4.1 게이트가 "선언만 있고 근거 없는 가중치"를 자동 차단 → 안전망 정상 작동.
+> 진짜 해결책 = keyVariables 매핑 보강 + weight 재조정 + dogfood-8 재검증 4-step PR.
+
+→ 단순 정책 변경이 아니라 **다층 데이터 모델 변경** (ontology + weights + 도메인 mapping). 5분 PR이 아니라 1일 작업이지만 안전성 확보.
+
+### 18.3 dogfood-8 weak-D1 안전성 finding
+
+가장 극단적 weak-D1 학습자 (base D1=30) 시뮬:
+
+| Option | final D1 | new weakest dim |
+|---|---:|---|
+| Baseline | 30 (0%) | D1 (즉시 plateau) |
+| A1 (single QT) | 70 (81%) | D1 (장기 plateau로 지연) |
+| A3 (all QT) | 79 (98%) | **D5_Usage (D1 회복했으나 D5 약화)** |
+
+→ A3는 "D1 완전 회복"처럼 보였으나 다른 dim 학습을 약화시키는 trade-off 존재. **옵션 A1이 가장 안전한 절충점** 재확인.
+
+### 18.4 v10 시점 수치 종합
+
+| 항목 | v8 | **v10** |
+|---|---|---|
+| Vitest tests | 342 | 342 (변동 없음) |
+| Test files | 36 | 36 |
+| Scripts (oelp) | 20 | **21** (dogfood-8 multi-mode 확장 — 같은 파일) |
+| Components | 12 | 12 |
+| Coverage lines | 97.79% | 97.79% |
+| myprojects docs | 47 | **49** (D1 plateau analysis + option A' design) |
+| Closed-loop iterations | 6 확정 | **6 확정 + 7번째 PR-ready** |
+| Production backend | Cloud Run + Vercel | (변동 없음) |
+
+### 18.5 안전망 검증 (C4.1 게이트의 가치)
+
+본 v10 sprint는 **C4.1 게이트의 실제 가치를 정량 입증**:
+- 시뮬에서 옵션 A1이 학습 plateau 해결 → 자율 PR 가능해 보임
+- 그러나 실제 weight 변경 + C4.1 실행 → **FAIL with "도메인 증거 없음"**
+- → 안전망이 정상 작동, 자율 작업에 도메인 검증 강제
+
+만약 C4.1 게이트가 없었다면 옵션 A1이 production에 적용되어 도메인 모순 누적 가능. **"Synthetic simulator data로 production weight update 절대 불가" 정책**과 동일한 안전 원칙.
+
+### 18.6 v10 종료 시점 본인 결단 잔여
+
+1. ✅ Cloud Run vocab-cat-test 배포 (완료)
+2. ⚠️ ~~EBS-demo Firebase config~~ → 별도 PR 1-2일 ([설계 완료](../02-design/ebs-oelp-vocab-adapter-design.md))
+3. ⚠️ **D1_Form plateau 옵션 A' PR** → 1일 작업 ([설계 완료](../02-design/d1-plateau-option-a-prime.md))
+4. ☐ **외부 학습자 1명 모집** (변화 없음)
+
+설계 완료 PR 2건 (옵션 α / 옵션 A') = 본인 결단 후 2일 분량 backlog.
+
+### 18.7 v10 시점 OELP의 위치 한 줄 정의
+
+> "Cloud Run + Vercel Production 활성, 6 closed-loops 확정 + 7번째 PR-ready 설계 완료. C4.1 게이트가 자율 작업을 안전하게 차단하는 안전망 가치 정량 입증. 본인 결단 시 2일 분량 PR 2건 즉시 시작 가능. 학습자 1명 모집 외엔 모든 준비 완료."
