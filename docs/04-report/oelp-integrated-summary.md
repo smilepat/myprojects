@@ -1200,3 +1200,85 @@ CLI는 lib/trend-analysis.ts 로직을 JS로 재구현 (ESM-CJS interop 회피).
 ### 24.7 v17 시점 OELP의 위치 한 줄 정의
 
 > "옵션 A' PR 시간 차원 정당화 3 단계 (plateau → negative gap → 회복) 완성. dogfood-13에서 옵션 A' + forgetting 결합 시 D1 +113~160%p 회복, side effect 0 정량 입증. 학습자 모집만 남음."
+
+---
+
+## 25. v18 추가분 (2026-05-25 — 컨텍스트 정비 + 학습자 시나리오 + production 모니터링)
+
+### 25.1 새 작업 시퀀스 107-110
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 107 | **AGENTS.md 갱신** | OELP 자율 작업 컨텍스트 9 절 (안전 정책 + 본인 결단 + 5 카테고리 + 8 surfaces + 8 도구) |
+| 108 | **dogfood-14 spike pattern** | 휴학 후 복귀 sim — 모든 dim negative gap finding |
+| 109 | **web-vitals-audit.mjs** | Production HTTP 응답 측정 (TTFB / size / compression) |
+| 110 | 본 v18 회고 (§25) | 컨텍스트 정비 + 운영 모니터링 9 도구 |
+
+### 25.2 dogfood-14 학습자 retention 결정적 finding
+
+8주 휴학 × 2 후 24 active sessions만으로는 forgetting 회복 불가:
+
+```
+dim          continuous (72s)   spike (24s)   delta
+D1_Form          -72%              -72%         0%p (floor hit)
+D2_Meaning        99%              -18%       -117%p
+D3_Context       102%              -55%       -157%p
+D4_Network        99%              -90%       -189%p
+D5_Usage          93%              -66%       -159%p
+```
+
+→ **학습 패턴 중요성 > weight 최적화**. 휴학 8주 × 2 후에는 모든 dim이 base 아래로 떨어짐. Stage C 운영 핵심은 **학습자 모집보다 retention**.
+
+새 PR이나 정책 후보 (Phase 2 R7 잠재):
+- 휴학 → 복귀 시 D 우선순위 자동 조정
+- spaced repetition (Leitner SR) 강화로 forgetting 완화
+- 휴학 후 복귀 시 baseline 진단 재실행 권장
+
+### 25.3 web-vitals-audit baseline
+
+Production OELP 운영 정상성 자동 측정:
+- 6/6 routes status 200
+- 평균 TTFB 651ms (1 route cold start 1112ms 외 모두 < 1000ms)
+- 평균 page size 20.5KB
+- All routes gzip/br compressed
+
+→ 미래 페이지 추가/리팩토링 시 회귀 자동 감지. 정상 운영 baseline.
+
+### 25.4 v18 시점 운영 모니터링 도구 9
+
+| 도구 | 신설 | 용도 |
+|---|---|---|
+| check-dim-coverage | v11 | keyVariable 매핑 갭 |
+| simulate-option-a-prime | v12 | 옵션 A' PR 사전 검증 |
+| dogfood-9 matrix | v11 | 5×5 plateau scan |
+| dogfood-10 matrix | v13 | 옵션 A' 효과 사전 측정 |
+| dogfood-11 sensitivity | v15 | 5 dim weight sensitivity |
+| bundle-size-audit | v15 | Production bundle size |
+| dogfood-12 forgetting | v16 | 24주 forgetting 시나리오 |
+| c4-3-trend-cli | v16 | CI/cron trend analysis |
+| **web-vitals-audit** | v18 | Production HTTP 응답 모니터링 |
+
+### 25.5 v18 시점 수치 종합
+
+| 항목 | v17 | **v18** |
+|---|---|---|
+| Vitest tests | 379 | 379 |
+| Scripts (oelp) | 30 | **32** (+2: dogfood-14, web-vitals-audit) |
+| Components | 13 | 13 |
+| CI gates | 12 | 12 |
+| 학습자 자동 surface | 8 | 8 |
+| 운영 모니터링 도구 | 8 | **9** |
+| myprojects docs | 56 | **57** (본 §25) |
+
+### 25.6 v18 시점 본인 결단 잔여 (v14~v17과 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일)
+3. ⚠️ **D1 옵션 A' PR (1일, 5중 안전성 + 3단계 정당화)**
+4. ☐ 외부 학습자 1명 모집
+
+v18에서 새 finding: 학습자 retention이 모집보다 더 어려운 challenge. Stage C 진입 후 휴학/복귀 cycle 모니터링 필수.
+
+### 25.7 v18 시점 OELP의 위치 한 줄 정의
+
+> "AGENTS.md로 다음 세션 onboarding 컨텍스트 완성 + dogfood-14에서 학습자 retention의 중요성 정량 입증 + web-vitals-audit로 production 운영 baseline 확보. 운영 모니터링 도구 9개. 학습자 모집 + retention이 다음 과제."
