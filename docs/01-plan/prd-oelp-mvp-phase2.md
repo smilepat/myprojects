@@ -152,6 +152,24 @@ Phase 1이 "혼자서도 작동하는 시스템 + 안전망 인프라"였다면,
 - 실 검증 (Stage C 진입 후): 외부 학습자 1명 + 4주 누적 데이터로 시뮬 vs 실측 일치성 검증
 - 미달 시: PlateauWarningPanel이 실 데이터에서 D1 plateau를 confirm 안 하면 시뮬 모델 재검토. 학습 곡선 power-law approx → 실제는 forgetting curve 등 복잡한 패턴일 수도
 
+### R7 (높음, 추가 2026-05-25): 학습자 retention 손실 — 모집보다 더 어려운 challenge
+- 발견 ([dogfood-14 결과](../03-analysis/), 즉시 보고서 작성 예정):
+  - 24주 sim 비교: continuous (3 sessions/week × 24 = 72 sessions) vs spike (4w active + 8w break × 2 = 24 sessions)
+  - Continuous에서 D2-D5 모두 92-102% gap closed (정상 학습)
+  - **Spike에서 모든 dim negative gap**: D2 -18%, D3 -55%, D4 -90%, D5 -66%
+  - 24 active sessions만으론 8w 휴학 × 2 forgetting 누적 회복 불가
+- 정량: 학습자가 4w 휴학 시 모든 dim 평균 -75%p 손실 (D1 외)
+- 운영 영향: Stage C **학습자 1명 모집 < retention 유지** 가 핵심
+- 후속 정책 후보 (시뮬 검증 필요):
+  - 휴학 → 복귀 시 baseline 진단 재실행 권장 (PlateauWarningPanel과 연동)
+  - Leitner SR (lib/leitner.ts)과 dim-level forgetting 통합 — item별 spaced repetition
+  - 휴학 알림 기능 (학습자가 3주 이상 비활성 시 push 알림)
+  - 복귀 학습자용 "recovery cycle" 가중치 동적 조정
+- 측정 가능 지표 (v19 RetentionDashboard 후속):
+  - 학습자별 비활성 기간 분포
+  - 휴학 후 복귀 시 첫 진단 score 변화
+  - 복귀 후 N주 누적해야 휴학 전 수준 회복 가능한지
+
 ---
 
 ## 6. 단계별 마일스톤 (12주)
