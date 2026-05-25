@@ -26,6 +26,7 @@ slides_build/pdf/
 | `myprojects/SKILL_MAP_SLIDE_BRIEF.pdf` | [SKILL_MAP_SLIDE_BRIEF.md](../../SKILL_MAP_SLIDE_BRIEF.md) — "수능 문항은 단일 능력이 아니라 여러 역량의 결합" |
 | `myprojects/SLIDES_GAP_TO_PROGRESS.pdf` | [SLIDES_GAP_TO_PROGRESS.md](../../SLIDES_GAP_TO_PROGRESS.md) — 학교 내신 vs 수능 역량 갭 |
 | `myprojects/landing.pdf` | [slides_build/landing.html](../landing.html) — 슬라이드 인덱스 페이지 |
+| `myprojects/LECTURE_CSAT_SKILL_MAP.pdf` | [LECTURE_CSAT_SKILL_MAP.marp.md](../../LECTURE_CSAT_SKILL_MAP.marp.md) — "수능영어와 교육과정의 괴리 · 데이터와 바이브 코딩으로 해결책을 찾다" (EdTech 경영자 강의, 30장, 45–55분) |
 
 ## external/apple (smilepat/apple, PRIVATE)
 
