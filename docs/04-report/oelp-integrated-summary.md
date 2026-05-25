@@ -1282,3 +1282,106 @@ v18에서 새 finding: 학습자 retention이 모집보다 더 어려운 challen
 ### 25.7 v18 시점 OELP의 위치 한 줄 정의
 
 > "AGENTS.md로 다음 세션 onboarding 컨텍스트 완성 + dogfood-14에서 학습자 retention의 중요성 정량 입증 + web-vitals-audit로 production 운영 baseline 확보. 운영 모니터링 도구 9개. 학습자 모집 + retention이 다음 과제."
+
+---
+
+## 26. v19 추가분 (2026-05-25 — retention finding 정식화 + UI 적용)
+
+### 26.1 새 작업 시퀀스 111-114
+
+| 순서 | 작업 | 산출물 |
+|---|---|---|
+| 111 | **Phase 2 PRD R7 추가** | 학습자 retention risk 정식 등록 (높음) |
+| 112 | **dogfood-15 spike variants** | 1w/2w/4w/8w/cycle 비교 → **반복 cycle만 치명적** finding |
+| 113 | **RetentionDashboard + lib/retention-analysis.ts** | /sessions 9번째 surface + 8 contract tests |
+| 114 | 본 v19 회고 (§26) | retention 6 층위 정합성 |
+
+### 26.2 dogfood-15 정밀화 결과
+
+dogfood-14 (v18)에서 단일 시나리오 (cycle = -57.3%) 만 확인. v19 dogfood-15는 휴학 길이별 정량 분석:
+
+```
+scenario      sessions   avg gap (D2-D5)
+continuous       72        98.3%
+break-1w         69        96.8%
+break-2w         66        96.3%
+break-4w         60        95.8%
+break-8w         48        94.5%  ← 8w 단일 휴학도 안전
+cycle            24       -57.3%  ← 반복 cycle만 치명적
+```
+
+→ **단일 휴학은 8w까지도 안전**. 진짜 위험은 **반복 cycle (≥ 2번 휴학)**.
+
+운영 정책 정밀화:
+- 첫 휴학은 정상 (걱정 X)
+- 복귀 후 다시 이탈 시 즉시 알림 + 진단 재실행 권장
+- 이탈 cycle ≥ 2회 학습자 = retention 위험군
+
+### 26.3 RetentionDashboard 자동 분류
+
+```typescript
+analyzeRetention(sessions) → risk: "safe" | "single-break" | "repeated-cycle"
+```
+
+분류 기준:
+- `safe`: 모든 gap < 3주
+- `single-break`: 1번의 ≥ 3주 gap (안전, v18 8w 회복)
+- `repeated-cycle`: ≥ 2번의 ≥ 3주 gap (위험군, v18 cycle -57.3%)
+
+현재 비활성 ≥ 3주도 gap으로 counts → 알림 가능.
+
+### 26.4 학습자 도착 시 자동 활성 chain — 9 surfaces
+
+기존 8 (v15까지) + RetentionDashboard (v19):
+1. TrendPanel (v5)
+2. PosteriorBalancePanel (v4)
+3. AnalyticsQueuePanel (v5)
+4. AdaptiveDiagnosticStats (v5)
+5. CalibrationEventSync (v7)
+6. PlateauWarningPanel (v13)
+7. /map D1 indicator (v14)
+8. QueuePlateauNotice (v15)
+9. **RetentionDashboard (v19)** — 휴학 cycle 자동 감지
+
+### 26.5 retention finding 6 층위 정합성 (v19 완성)
+
+| 층위 | 표현 | v 시점 |
+|---|---|---|
+| 발견 | dogfood-14 (모든 dim negative gap) | v18 |
+| 정밀화 | dogfood-15 (반복 cycle만 위험) | v19 |
+| PRD risk | R7 학습자 retention | v19 |
+| 도구 lib | lib/retention-analysis.ts | v19 |
+| 운영 UI | RetentionDashboard (9번째 surface) | v19 |
+| 운영 정책 | "단일 휴학 OK / 반복 cycle 위험군 알림" | v19 |
+
+D1 plateau finding의 6 층위 정합성과 동일한 maturity 달성.
+
+### 26.6 v19 시점 수치 종합
+
+| 항목 | v18 | **v19** |
+|---|---|---|
+| Vitest tests | 379 | **387** (+8 retention) |
+| Test files | 40 | **41** |
+| Scripts (oelp) | 32 | **33** (dogfood-15) |
+| Components | 13 | **14** (RetentionDashboard) |
+| lib modules | 21 | **22** (retention-analysis.ts) |
+| CI gates | 12 | 12 |
+| 학습자 자동 surface | 8 | **9** |
+| 운영 모니터링 도구 | 9 | 9 |
+| myprojects docs | 57 | **57** (PRD R7 추가, doc count 동일) |
+| **PRD risks** | R1-R6 | **R1-R7** |
+
+### 26.7 v19 시점 본인 결단 잔여 (v18과 동일)
+
+1. ✅ Cloud Run 배포
+2. ⚠️ EBS adapter PR (1-2일)
+3. ⚠️ **D1 옵션 A' PR (1일, 5중 안전성 + 3단계 정량 정당화)**
+4. ☐ 외부 학습자 1명 모집 + **retention 유지** (v19 RetentionDashboard 자동 감지)
+
+새로운 정량 인사이트:
+- 모집 후 1명 학습자가 단발성 휴학해도 8w까지 안전 (RetentionDashboard `safe` 또는 `single-break`)
+- 반복 이탈 시 RetentionDashboard `repeated-cycle` 자동 표시 → 즉시 정책 발동 가능
+
+### 26.8 v19 시점 OELP의 위치 한 줄 정의
+
+> "학습자 retention finding이 시뮬 → PRD → lib → UI까지 6 층위 정합 표현 완성. dogfood-15에서 단일 휴학(안전) vs 반복 cycle(치명) 임계 명확화. RetentionDashboard로 학습자 도착 시 즉시 휴학 cycle 자동 분류."
