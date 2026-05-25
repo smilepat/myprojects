@@ -9,6 +9,8 @@ slides_build/*
 !slides_build/package.json
 !slides_build/README.md
 !slides_build/skill_map.svg
+!slides_build/pdf/
+!slides_build/pdf/**
 *.html
 !slides_build/landing.html
 !PITCH_DECK_VIEW.html
