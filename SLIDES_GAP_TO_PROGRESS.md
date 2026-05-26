@@ -1232,28 +1232,152 @@ gantt
 
 ## 8. K-12 확장 — 수능을 정점으로 한 6-Layer ontology
 
-```mermaid
-graph TD
-    L0["Layer 0: Phonics<br/>P-01~P-05 (5)<br/>Pre-A1 · 0-250L"]
-    L1["Layer 1: 회화·어휘<br/>CV-01~CV-05 (5)<br/>A1 · 250-500L"]
-    L2["Layer 2: 초등 읽기<br/>ER-01~ER-05 (5)<br/>A1-A2 · 500-700L"]
-    L3["Layer 3: 중등 읽기<br/>MR-01~MR-06 (6)<br/>A2-B1 · 700-950L"]
-    L4["Layer 4: 고등 읽기<br/>HR-01~HR-06 (6)<br/>B1-B2 · 950-1200L"]
-    L5["Layer 5: CSAT ★<br/>A/B/C 12 skill<br/>B2-C1 · 1100-1300L"]
-    LD["Layer D — 메타·행동<br/>D-01~D-04 (4)<br/>L3~L5 cross-cutting"]
-
-    L0 --> L1 --> L2 --> L3 --> L4 --> L5
-    LD -.-> L3
-    LD -.-> L4
-    LD -.-> L5
-
-    style L5 fill:#1e40af,color:#ffffff,stroke:#1e3a8a,stroke-width:2px
-    style LD fill:#8b5cf6,color:#ffffff,stroke:#7c3aed
-    style L0 fill:#f1f5f9
-    style L1 fill:#fef3c7
-    style L2 fill:#fed7aa
-    style L3 fill:#dcfce7
-    style L4 fill:#dbeafe
+```echarts w=1200 h=680
+{
+  "title": { "text": "43-Skill Ontology DAG — 수능을 정점으로 한 K-12 단일 좌표계", "subtext": "Vertical 39 (Layer 0→5) + Cross-cutting Layer D 4 · 실선=선수관계 · 점선=Layer D 메타", "left": "center", "top": 4 },
+  "legend": { "data": [
+    {"name": "L0 Phonics (5)"},
+    {"name": "L1 Conv·Vocab (5)"},
+    {"name": "L2 Elem Read (5)"},
+    {"name": "L3 Mid Read (6)"},
+    {"name": "L4 High Read (6)"},
+    {"name": "L5 CSAT ★ (12)"},
+    {"name": "Layer D 메타·행동 (4)"}
+  ], "bottom": 8, "icon": "circle", "itemGap": 14 },
+  "tooltip": { "trigger": "item", "formatter": "{b}" },
+  "series": [{
+    "type": "graph",
+    "layout": "none",
+    "roam": false,
+    "draggable": false,
+    "symbol": "circle",
+    "symbolSize": 30,
+    "edgeSymbol": ["none", "arrow"],
+    "edgeSymbolSize": 6,
+    "label": { "show": true, "position": "inside", "fontSize": 9, "fontWeight": 600, "color": "#fff" },
+    "lineStyle": { "color": "#94a3b8", "width": 1, "opacity": 0.5, "curveness": 0.05 },
+    "emphasis": { "focus": "adjacency", "lineStyle": { "width": 2 } },
+    "categories": [
+      {"name": "L0 Phonics (5)",        "itemStyle": {"color": "#64748b"}},
+      {"name": "L1 Conv·Vocab (5)",     "itemStyle": {"color": "#f59e0b"}},
+      {"name": "L2 Elem Read (5)",      "itemStyle": {"color": "#fb923c"}},
+      {"name": "L3 Mid Read (6)",       "itemStyle": {"color": "#10b981"}},
+      {"name": "L4 High Read (6)",      "itemStyle": {"color": "#2563eb"}},
+      {"name": "L5 CSAT ★ (12)",        "itemStyle": {"color": "#1e40af"}},
+      {"name": "Layer D 메타·행동 (4)", "itemStyle": {"color": "#8b5cf6"}}
+    ],
+    "data": [
+      {"name": "A-01", "category": 5, "x": 460, "y": 70,  "symbolSize": 36, "tooltip": {"formatter": "A-01 어휘 의미 변별 (L5 CSAT)"}},
+      {"name": "A-02", "category": 5, "x": 560, "y": 70,  "symbolSize": 36, "tooltip": {"formatter": "A-02 구문 분석 (L5 CSAT)"}},
+      {"name": "A-03", "category": 5, "x": 660, "y": 70,  "symbolSize": 36, "tooltip": {"formatter": "A-03 절 경계 (L5 CSAT)"}},
+      {"name": "A-04", "category": 5, "x": 760, "y": 70,  "symbolSize": 36, "tooltip": {"formatter": "A-04 수식어 연결 (L5 CSAT)"}},
+      {"name": "B-01", "category": 5, "x": 460, "y": 140, "symbolSize": 36, "tooltip": {"formatter": "B-01 지시 추적 (L5 CSAT)"}},
+      {"name": "B-02", "category": 5, "x": 560, "y": 140, "symbolSize": 36, "tooltip": {"formatter": "B-02 논리 전환 (L5 CSAT)"}},
+      {"name": "B-03", "category": 5, "x": 660, "y": 140, "symbolSize": 36, "tooltip": {"formatter": "B-03 패러프레이즈 (L5 CSAT)"}},
+      {"name": "B-04", "category": 5, "x": 760, "y": 140, "symbolSize": 36, "tooltip": {"formatter": "B-04 어휘 연쇄 (L5 CSAT)"}},
+      {"name": "C-01", "category": 5, "x": 460, "y": 210, "symbolSize": 38, "tooltip": {"formatter": "C-01 주제 도출 ★ (L5 CSAT)"}},
+      {"name": "C-02", "category": 5, "x": 560, "y": 210, "symbolSize": 38, "tooltip": {"formatter": "C-02 암묵적 추론 (L5 CSAT)"}},
+      {"name": "C-03", "category": 5, "x": 660, "y": 210, "symbolSize": 38, "tooltip": {"formatter": "C-03 필자 의도 (L5 CSAT)"}},
+      {"name": "C-04", "category": 5, "x": 760, "y": 210, "symbolSize": 38, "tooltip": {"formatter": "C-04 논증 구조 (L5 CSAT)"}},
+      {"name": "HR-01", "category": 4, "x": 300, "y": 310, "tooltip": {"formatter": "HR-01 학술 어휘 AWL (L4)"}},
+      {"name": "HR-02", "category": 4, "x": 410, "y": 310, "tooltip": {"formatter": "HR-02 긴 문장 분석 (L4)"}},
+      {"name": "HR-03", "category": 4, "x": 520, "y": 310, "tooltip": {"formatter": "HR-03 담화 표지 (L4)"}},
+      {"name": "HR-04", "category": 4, "x": 630, "y": 310, "tooltip": {"formatter": "HR-04 단락 간 관계 (L4)"}},
+      {"name": "HR-05", "category": 4, "x": 740, "y": 310, "tooltip": {"formatter": "HR-05 함축 의미 (L4)"}},
+      {"name": "HR-06", "category": 4, "x": 850, "y": 310, "tooltip": {"formatter": "HR-06 글의 구조 (L4)"}},
+      {"name": "MR-01", "category": 3, "x": 300, "y": 400, "tooltip": {"formatter": "MR-01 복합문 분석 (L3)"}},
+      {"name": "MR-02", "category": 3, "x": 410, "y": 400, "tooltip": {"formatter": "MR-02 부사절 의미 (L3)"}},
+      {"name": "MR-03", "category": 3, "x": 520, "y": 400, "tooltip": {"formatter": "MR-03 명시 대명사 지시 (L3)"}},
+      {"name": "MR-04", "category": 3, "x": 630, "y": 400, "tooltip": {"formatter": "MR-04 단락 주제 (L3)"}},
+      {"name": "MR-05", "category": 3, "x": 740, "y": 400, "tooltip": {"formatter": "MR-05 단순 추론 (L3)"}},
+      {"name": "MR-06", "category": 3, "x": 850, "y": 400, "tooltip": {"formatter": "MR-06 어휘 맥락 추론 (L3)"}},
+      {"name": "ER-01", "category": 2, "x": 330, "y": 480, "tooltip": {"formatter": "ER-01 짧은 문장 이해 (L2)"}},
+      {"name": "ER-02", "category": 2, "x": 460, "y": 480, "tooltip": {"formatter": "ER-02 NP·VP 인식 (L2)"}},
+      {"name": "ER-03", "category": 2, "x": 590, "y": 480, "tooltip": {"formatter": "ER-03 기본 시제 (L2)"}},
+      {"name": "ER-04", "category": 2, "x": 720, "y": 480, "tooltip": {"formatter": "ER-04 그림 단서 활용 (L2)"}},
+      {"name": "ER-05", "category": 2, "x": 850, "y": 480, "tooltip": {"formatter": "ER-05 명시적 정보 찾기 (L2)"}},
+      {"name": "CV-01", "category": 1, "x": 330, "y": 555, "tooltip": {"formatter": "CV-01 일상 어휘 (L1)"}},
+      {"name": "CV-02", "category": 1, "x": 460, "y": 555, "tooltip": {"formatter": "CV-02 인사·자기소개 (L1)"}},
+      {"name": "CV-03", "category": 1, "x": 590, "y": 555, "tooltip": {"formatter": "CV-03 기본 질문·답변 (L1)"}},
+      {"name": "CV-04", "category": 1, "x": 720, "y": 555, "tooltip": {"formatter": "CV-04 발음·억양 (L1)"}},
+      {"name": "CV-05", "category": 1, "x": 850, "y": 555, "tooltip": {"formatter": "CV-05 듣고 따라하기 (L1)"}},
+      {"name": "P-01", "category": 0, "x": 330, "y": 625, "tooltip": {"formatter": "P-01 음소 인식 (L0)"}},
+      {"name": "P-02", "category": 0, "x": 460, "y": 625, "tooltip": {"formatter": "P-02 자소-음소 대응 (L0)"}},
+      {"name": "P-03", "category": 0, "x": 590, "y": 625, "tooltip": {"formatter": "P-03 단어 해독 (L0)"}},
+      {"name": "P-04", "category": 0, "x": 720, "y": 625, "tooltip": {"formatter": "P-04 유창성 (L0)"}},
+      {"name": "P-05", "category": 0, "x": 850, "y": 625, "tooltip": {"formatter": "P-05 사이트 워드 (L0)"}},
+      {"name": "D-01", "category": 6, "x": 1050, "y": 170, "tooltip": {"formatter": "D-01 오답 소거 (Layer D 메타)"}},
+      {"name": "D-02", "category": 6, "x": 1050, "y": 280, "tooltip": {"formatter": "D-02 반복 읽기 패턴 (Layer D)"}},
+      {"name": "D-03", "category": 6, "x": 1050, "y": 390, "tooltip": {"formatter": "D-03 정체 구간 (Layer D)"}},
+      {"name": "D-04", "category": 6, "x": 1050, "y": 500, "tooltip": {"formatter": "D-04 번역 의존도 (Layer D)"}}
+    ],
+    "links": [
+      {"source": "P-01", "target": "P-02"},
+      {"source": "P-02", "target": "P-03"},
+      {"source": "P-02", "target": "P-05"},
+      {"source": "P-03", "target": "P-04"},
+      {"source": "P-05", "target": "P-04"},
+      {"source": "P-03", "target": "CV-01"},
+      {"source": "P-05", "target": "CV-01"},
+      {"source": "P-04", "target": "CV-04"},
+      {"source": "CV-01", "target": "CV-02"},
+      {"source": "CV-01", "target": "CV-03"},
+      {"source": "CV-04", "target": "CV-05"},
+      {"source": "CV-01", "target": "ER-01"},
+      {"source": "P-04", "target": "ER-01"},
+      {"source": "ER-01", "target": "ER-02"},
+      {"source": "ER-01", "target": "ER-04"},
+      {"source": "ER-01", "target": "ER-05"},
+      {"source": "ER-02", "target": "ER-03"},
+      {"source": "CV-03", "target": "ER-03"},
+      {"source": "ER-02", "target": "MR-01"},
+      {"source": "ER-03", "target": "MR-01"},
+      {"source": "MR-01", "target": "MR-02"},
+      {"source": "MR-01", "target": "MR-03"},
+      {"source": "ER-05", "target": "MR-03"},
+      {"source": "MR-01", "target": "MR-04"},
+      {"source": "ER-05", "target": "MR-04"},
+      {"source": "ER-05", "target": "MR-05"},
+      {"source": "CV-01", "target": "MR-05"},
+      {"source": "ER-05", "target": "MR-06"},
+      {"source": "CV-01", "target": "MR-06"},
+      {"source": "CV-01", "target": "HR-01"},
+      {"source": "MR-01", "target": "HR-02"},
+      {"source": "MR-02", "target": "HR-03"},
+      {"source": "MR-04", "target": "HR-03"},
+      {"source": "MR-04", "target": "HR-04"},
+      {"source": "HR-03", "target": "HR-04"},
+      {"source": "MR-05", "target": "HR-05"},
+      {"source": "HR-04", "target": "HR-05"},
+      {"source": "HR-04", "target": "HR-06"},
+      {"source": "MR-04", "target": "HR-06"},
+      {"source": "HR-01", "target": "A-01", "lineStyle": {"opacity": 0.35}},
+      {"source": "HR-02", "target": "A-02", "lineStyle": {"opacity": 0.35}},
+      {"source": "HR-03", "target": "A-03", "lineStyle": {"opacity": 0.35}},
+      {"source": "HR-04", "target": "B-02", "lineStyle": {"opacity": 0.35}},
+      {"source": "HR-05", "target": "C-02", "lineStyle": {"opacity": 0.35}},
+      {"source": "HR-06", "target": "C-04", "lineStyle": {"opacity": 0.35}},
+      {"source": "A-02", "target": "A-03"},
+      {"source": "A-02", "target": "A-04"},
+      {"source": "A-01", "target": "B-01"},
+      {"source": "A-02", "target": "B-01"},
+      {"source": "A-03", "target": "B-02"},
+      {"source": "A-01", "target": "B-03"},
+      {"source": "A-01", "target": "B-04"},
+      {"source": "B-01", "target": "C-01"},
+      {"source": "B-02", "target": "C-01"},
+      {"source": "B-01", "target": "C-02"},
+      {"source": "B-03", "target": "C-02"},
+      {"source": "C-01", "target": "C-03"},
+      {"source": "B-02", "target": "C-04"},
+      {"source": "C-01", "target": "C-04"},
+      {"source": "D-01", "target": "C-01", "lineStyle": {"type": "dashed", "color": "#8b5cf6", "opacity": 0.5}},
+      {"source": "D-02", "target": "MR-04", "lineStyle": {"type": "dashed", "color": "#8b5cf6", "opacity": 0.5}},
+      {"source": "D-03", "target": "HR-04", "lineStyle": {"type": "dashed", "color": "#8b5cf6", "opacity": 0.5}},
+      {"source": "D-04", "target": "MR-01", "lineStyle": {"type": "dashed", "color": "#8b5cf6", "opacity": 0.5}}
+    ]
+  }]
+}
 ```
 
 **43 skill의 단일 좌표 vector** — 학습자 1명이 P-01부터 C-04까지 단일 trajectory · 학부모·교사·교육청이 *같은 좌표축*으로 의사결정.
