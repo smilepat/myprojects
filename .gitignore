@@ -15,6 +15,7 @@ slides_build/*
 !slides_build/landing.html
 !PITCH_DECK_VIEW.html
 !PITCH_DECK_8_VIEW.html
+!SLIDES_GAP_TO_PROGRESS.html
 
 # Tool state
 .bkit/
